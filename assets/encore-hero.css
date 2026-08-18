@@ -1,4 +1,19 @@
-@property --ew-angle {
+/* ==========================================================================
+   ENCORE WORLDWIDE — hero
+   EW-001 // black, white, chrome. blue is rationed.
+
+   BLUE BUDGET (#0154fd) — the only places it is allowed to appear:
+     1. the live-status dot in the telemetry rail
+     2. the dot travelling the orbit
+     3. the CTA arrow
+     4. one glitch frame on the headline, ~300ms, on load
+     5. the ✳ separators in the ticker
+   Nothing else. No new colours, ever.
+
+   Mobile-first. Desktop starts at 750px.
+   ========================================================================== */
+
+@property --ew-orbit-angle {
   syntax: "<angle>";
   inherits: false;
   initial-value: 0deg;
@@ -11,53 +26,50 @@
   box-sizing: border-box;
 }
 
-/* ==========================================================================
-   Encore Worldwide — Futuristic hero section
-   Single source of truth for hero styling. Loaded by sections/encore-hero.liquid
-   and by preview/index.html.
-   All tunable values are CSS custom properties written by the section's
-   inline <style> block, so theme-editor settings drive the look.
-   ========================================================================== */
-
 .ew-hero {
-  /* Palette — overridden per-section from theme settings */
-  --ew-bg: #05060a;
-  --ew-ink: #f6f4f0;
-  --ew-a1: #d8b876; /* champagne gold */
-  --ew-a2: #6ee7ff; /* ice cyan     */
-  --ew-a3: #a37bff; /* violet       */
+  --ew-ink: #000000;
+  --ew-paper: #ffffff;
+  --ew-chrome: #c0c0c0;
+  --ew-blue: #0154fd;
 
-  --ew-muted: color-mix(in srgb, var(--ew-ink) 62%, transparent);
-  --ew-hairline: color-mix(in srgb, var(--ew-ink) 14%, transparent);
-  --ew-min-h: 88svh;
-  --ew-gutter: clamp(20px, 5vw, 72px);
-  --ew-heading-scale: 1;
-  --ew-overlay: 0.55;
-  --ew-ticker-duration: 34s;
+  --ew-hair: rgb(255 255 255 / 0.22);
+  --ew-dim: rgb(255 255 255 / 0.55);
+  --ew-min-h: 100svh;
+  --ew-min-h-fb: 100vh;
+  --ew-pad: 20px;
+  --ew-scrim: 0.72;
+  --ew-focal-x: var(--ew-focal-x-m, 50%);
+  --ew-focal-y: var(--ew-focal-y-m, 50%);
+  --ew-ticker-duration: 38s;
+
+  --ew-mono: var(--ew-mono-font, "Space Mono", ui-monospace, "SF Mono", Menlo, monospace);
+  --ew-shout: var(--ew-shout-font, "Anton", "Haettenschweiler", "Arial Narrow", Impact, sans-serif);
 
   position: relative;
   isolation: isolate;
   overflow: clip;
-  display: grid;
-  grid-template-rows: 1fr auto;
-  min-height: var(--ew-min-h-fb, 88vh);
-  min-height: var(--ew-min-h, 88svh);
-  background: var(--ew-bg);
-  color: var(--ew-ink);
+  display: flex;
+  flex-direction: column;
+  min-height: var(--ew-min-h-fb);
+  min-height: var(--ew-min-h);
+  background: var(--ew-ink);
+  color: var(--ew-paper);
+  -webkit-font-smoothing: antialiased;
 }
 
 /* --------------------------------------------------------------------------
-   Background stack
+   1. MEDIA — the film still. Always black and white.
    -------------------------------------------------------------------------- */
 
-.ew-hero__bg {
+.ew-hero__media {
   position: absolute;
   inset: 0;
   z-index: 0;
-  pointer-events: none;
+  overflow: hidden;
+  background: var(--ew-ink);
 }
 
-.ew-hero__media,
+.ew-hero__media picture,
 .ew-hero__media img,
 .ew-hero__media video {
   position: absolute;
@@ -65,646 +77,514 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: var(--ew-focal-x) var(--ew-focal-y);
 }
 
-.ew-hero__scrim {
+/* Grayscale is enforced in CSS so any upload conforms to the palette. */
+.ew-hero__media img,
+.ew-hero__media video {
+  filter: grayscale(1) contrast(1.06) brightness(0.94);
+}
+
+/* Slow push-in. Transform lives on the wrapper so the filtered bitmap
+   is rasterised once and only composited after that. */
+.ew-hero__media-inner {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(120% 90% at 70% 20%, transparent 0%, var(--ew-bg) 78%),
-    linear-gradient(to top, var(--ew-bg) 4%, color-mix(in srgb, var(--ew-bg) 40%, transparent) 60%);
-  opacity: var(--ew-overlay);
-}
-
-/* Slow-drifting aurora — the "energy" behind the product */
-.ew-hero__aurora {
-  position: absolute;
-  inset: -25%;
-  filter: blur(70px) saturate(140%);
-  opacity: 0.85;
-}
-
-.ew-hero__aurora span {
-  position: absolute;
-  display: block;
-  border-radius: 50%;
-  mix-blend-mode: screen;
+  transform: scale(1.1);
+  animation: ew-push 24s cubic-bezier(0.33, 0, 0.2, 1) forwards;
   will-change: transform;
 }
 
-.ew-hero__aurora span:nth-child(1) {
-  width: 52vmax;
-  height: 52vmax;
-  top: -8%;
-  right: -6%;
-  background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--ew-a2) 55%, transparent), transparent 68%);
-  animation: ew-drift-a 26s ease-in-out infinite alternate;
-}
-
-.ew-hero__aurora span:nth-child(2) {
-  width: 44vmax;
-  height: 44vmax;
-  bottom: -18%;
-  left: -10%;
-  background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--ew-a3) 50%, transparent), transparent 66%);
-  animation: ew-drift-b 32s ease-in-out infinite alternate;
-}
-
-.ew-hero__aurora span:nth-child(3) {
-  width: 34vmax;
-  height: 34vmax;
-  top: 34%;
-  left: 38%;
-  background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--ew-a1) 42%, transparent), transparent 64%);
-  animation: ew-drift-c 22s ease-in-out infinite alternate;
-}
-
-/* Perspective floor grid */
-.ew-hero__grid {
-  position: absolute;
-  left: -50%;
-  right: -50%;
-  bottom: -12%;
-  height: 62%;
-  background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--ew-ink) 16%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--ew-ink) 16%, transparent) 1px, transparent 1px);
-  background-size: 68px 68px;
-  transform: perspective(520px) rotateX(74deg);
-  transform-origin: 50% 100%;
-  -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 72%);
-  mask-image: linear-gradient(to top, #000 0%, transparent 72%);
-  animation: ew-grid-run 7s linear infinite;
-  opacity: 0.55;
-}
-
-/* Film grain */
-.ew-hero__grain {
-  position: absolute;
-  inset: -100%;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
-  mix-blend-mode: overlay;
-  opacity: 0.35;
-  animation: ew-grain 0.7s steps(4) infinite;
-}
-
-/* Hairline frame — reads as a HUD/instrument bezel */
-.ew-hero__frame {
-  position: absolute;
-  inset: clamp(10px, 2vw, 26px);
-  border: 1px solid var(--ew-hairline);
-  border-radius: 4px;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.ew-hero__frame::before,
-.ew-hero__frame::after {
-  content: "";
-  position: absolute;
-  width: 34px;
-  height: 34px;
-  border: 1px solid color-mix(in srgb, var(--ew-a1) 70%, transparent);
-}
-
-.ew-hero__frame::before {
-  top: -1px;
-  left: -1px;
-  border-width: 1px 0 0 1px;
-}
-
-.ew-hero__frame::after {
-  right: -1px;
-  bottom: -1px;
-  border-width: 0 1px 1px 0;
-}
-
-/* --------------------------------------------------------------------------
-   Layout
-   -------------------------------------------------------------------------- */
-
-.ew-hero__inner {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  gap: clamp(32px, 5vw, 64px);
-  align-items: center;
-  width: 100%;
-  max-width: 1440px;
-  margin-inline: auto;
-  padding: clamp(72px, 11vh, 140px) var(--ew-gutter) clamp(56px, 9vh, 110px);
-}
-
-.ew-hero--split .ew-hero__inner {
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-}
-
-.ew-hero--cinematic .ew-hero__inner {
-  grid-template-columns: minmax(0, 1fr);
-  justify-items: center;
-  text-align: center;
-  max-width: 1100px;
-}
-
-.ew-hero--cinematic .ew-hero__cta,
-.ew-hero--cinematic .ew-hero__highlights {
-  justify-content: center;
-}
-
-.ew-hero--cinematic .ew-hero__sub {
-  margin-inline: auto;
-}
-
-/* --------------------------------------------------------------------------
-   Copy
-   -------------------------------------------------------------------------- */
-
-.ew-hero__eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0 0 clamp(18px, 2.4vw, 28px);
-  padding: 8px 16px 8px 12px;
-  border: 1px solid var(--ew-hairline);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--ew-ink) 5%, transparent);
-  backdrop-filter: blur(8px);
-  font-size: clamp(10px, 1.05vw, 12px);
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--ew-muted);
+.ew-hero__video {
   opacity: 0;
-  animation: ew-fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards;
+  transition: opacity 900ms linear;
 }
 
-.ew-hero__pulse {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--ew-a1);
-  box-shadow: 0 0 0 0 color-mix(in srgb, var(--ew-a1) 70%, transparent);
-  animation: ew-pulse 2.4s ease-out infinite;
-}
-
-.ew-hero__title {
-  margin: 0;
-  font-family: var(--ew-heading-font, inherit);
-  font-weight: var(--ew-heading-weight, 500);
-  font-size: calc(clamp(2.6rem, 6.4vw, 5.6rem) * var(--ew-heading-scale));
-  line-height: 0.94;
-  letter-spacing: -0.03em;
-  text-wrap: balance;
-}
-
-.ew-hero__title--uppercase {
-  text-transform: uppercase;
-  letter-spacing: -0.015em;
-}
-
-.ew-hero__line {
-  display: block;
-}
-
-/* Word-by-word mask reveal */
-.ew-hero__word {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: bottom;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
-}
-
-.ew-hero__word > span {
-  display: inline-block;
-  transform: translateY(112%);
-  animation: ew-rise 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  animation-delay: calc(var(--i, 0) * 65ms + 180ms);
-}
-
-/* Accent words: liquid-metal gradient + slow shine sweep */
-.ew-hero__word--accent > span {
-  background-image: linear-gradient(
-    100deg,
-    var(--ew-a1) 0%,
-    color-mix(in srgb, var(--ew-ink) 92%, transparent) 22%,
-    var(--ew-a2) 46%,
-    var(--ew-a3) 68%,
-    var(--ew-a1) 100%
-  );
-  background-size: 260% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation:
-    ew-rise 1s cubic-bezier(0.16, 1, 0.3, 1) forwards,
-    ew-shine 7s ease-in-out 1.2s infinite;
-}
-
-.ew-hero__sub {
-  max-width: 46ch;
-  margin: clamp(20px, 2.6vw, 30px) 0 0;
-  font-size: clamp(0.95rem, 1.25vw, 1.125rem);
-  line-height: 1.65;
-  color: var(--ew-muted);
-  opacity: 0;
-  animation: ew-fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
-}
-
-.ew-hero__sub p {
-  margin: 0 0 0.7em;
-}
-
-.ew-hero__sub p:last-child {
-  margin-bottom: 0;
-}
-
-/* --------------------------------------------------------------------------
-   Buttons
-   -------------------------------------------------------------------------- */
-
-.ew-hero__cta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin-top: clamp(28px, 3.4vw, 42px);
-  opacity: 0;
-  animation: ew-fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.62s forwards;
-}
-
-.ew-btn {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 30px;
-  border-radius: 999px;
-  border: 1px solid transparent;
-  font: inherit;
-  font-size: clamp(0.8rem, 0.95vw, 0.875rem);
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  text-decoration: none;
-  cursor: pointer;
-  overflow: hidden;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
-}
-
-.ew-btn:hover {
-  transform: translateY(-2px);
-}
-
-.ew-btn:focus-visible {
-  outline: 2px solid var(--ew-a2);
-  outline-offset: 3px;
-}
-
-.ew-btn__arrow {
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.ew-btn:hover .ew-btn__arrow {
-  transform: translateX(4px);
-}
-
-/* Primary — metallic fill with a light sweep on hover */
-.ew-btn--primary {
-  color: var(--ew-bg);
-  background-image: linear-gradient(120deg, var(--ew-a1), color-mix(in srgb, var(--ew-a1) 45%, #fff) 50%, var(--ew-a1));
-  background-size: 200% 100%;
-  box-shadow: 0 10px 40px -12px color-mix(in srgb, var(--ew-a1) 75%, transparent);
-}
-
-.ew-btn--primary:hover {
-  background-position: 100% 0;
-  box-shadow: 0 16px 50px -12px color-mix(in srgb, var(--ew-a1) 85%, transparent);
-}
-
-/* Secondary — glass with an animated conic border */
-.ew-btn--ghost {
-  color: var(--ew-ink);
-  background: color-mix(in srgb, var(--ew-ink) 6%, transparent);
-  backdrop-filter: blur(10px);
-  border-color: var(--ew-hairline);
-}
-
-.ew-btn--ghost::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: conic-gradient(from var(--ew-angle, 0deg), transparent 0 62%, var(--ew-a2) 78%, var(--ew-a3) 88%, transparent 100%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  animation: ew-angle-spin 4s linear infinite;
-}
-
-.ew-btn--ghost:hover::before {
+.ew-hero__video.is-playing {
   opacity: 1;
 }
 
 /* --------------------------------------------------------------------------
-   Highlight blocks (stats / trust markers)
+   2. TREATMENT — scrim, grain, scanline
    -------------------------------------------------------------------------- */
 
-.ew-hero__highlights {
-  display: flex;
-  flex-wrap: wrap;
-  gap: clamp(20px, 3vw, 44px);
-  margin: clamp(34px, 4.4vw, 54px) 0 0;
-  padding: clamp(20px, 2.4vw, 26px) 0 0;
-  border-top: 1px solid var(--ew-hairline);
-  list-style: none;
-  opacity: 0;
-  animation: ew-fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.75s forwards;
+.ew-hero__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgb(0 0 0 / 0.72) 0%, rgb(0 0 0 / 0) 26%),
+    linear-gradient(to top, rgb(0 0 0 / 0.94) 0%, rgb(0 0 0 / 0.6) 42%, rgb(0 0 0 / 0) 80%);
+  opacity: var(--ew-scrim);
 }
 
-.ew-hero__highlight-value {
+.ew-hero__grain {
+  position: absolute;
+  inset: -60%;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.28;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  animation: ew-grain 0.6s steps(3) infinite;
+}
+
+/* A single hairline passing down the frame — the scanner. */
+.ew-hero__scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 3;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.5) 20%, rgb(255 255 255 / 0.5) 80%, transparent);
+  box-shadow: 0 0 18px rgb(255 255 255 / 0.25);
+  animation: ew-scan 8s linear infinite;
+}
+
+/* --------------------------------------------------------------------------
+   3. TELEMETRY RAIL — the paperwork, in Space Mono
+   -------------------------------------------------------------------------- */
+
+.ew-hero__rail {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px var(--ew-pad);
+  font-family: var(--ew-mono);
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ew-dim);
+  border-bottom: 1px solid rgb(255 255 255 / 0.1);
+  opacity: 0;
+  animation: ew-in 700ms ease-out 200ms forwards;
+}
+
+.ew-hero__rail-mid {
+  display: none;
+}
+
+.ew-hero__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.ew-hero__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ew-blue); /* blue 1/5 */
+  animation: ew-blink 2s steps(1) infinite;
+}
+
+/* --------------------------------------------------------------------------
+   4. STAGE — headline, support, cta
+   -------------------------------------------------------------------------- */
+
+.ew-hero__stage {
+  position: relative;
+  z-index: 5;
+  flex: 1 1 auto;
+  display: grid;
+  align-content: end;
+  justify-items: start;
+  gap: 0;
+  padding: 48px var(--ew-pad) 26px;
+}
+
+.ew-hero--center .ew-hero__stage {
+  align-content: center;
+}
+
+.ew-hero--top .ew-hero__stage {
+  align-content: start;
+  padding-top: 32px;
+}
+
+/* Orbit — one lap around everything. */
+.ew-hero__orbit {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  z-index: -1;
+  width: 106vw;
+  aspect-ratio: 1 / 1;
+  translate: -50% -50%;
+  pointer-events: none;
+}
+
+.ew-hero__orbit-ring {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: 50%;
+  transform: rotate(-14deg) scaleY(0.42);
+  animation: ew-orbit-tilt 46s ease-in-out infinite alternate;
+}
+
+.ew-hero__orbit-dot {
+  position: absolute;
+  inset: 0;
+  animation: ew-spin 26s linear infinite;
+}
+
+.ew-hero__orbit-dot::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ew-blue); /* blue 2/5 */
+  translate: -50% 0;
+}
+
+/* --- headline ------------------------------------------------------------ */
+
+.ew-hero__title {
+  margin: 0;
+  font-family: var(--ew-shout);
+  font-weight: 400;
+  font-size: calc(clamp(3.4rem, 21vw, 9.5rem) * var(--ew-title-scale, 1));
+  line-height: 0.86;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+}
+
+.ew-hero__line {
   display: block;
-  font-size: clamp(1.1rem, 1.7vw, 1.5rem);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  background-image: linear-gradient(120deg, var(--ew-ink), color-mix(in srgb, var(--ew-a1) 90%, transparent));
+  overflow: hidden;
+  padding-bottom: 0.06em;
+  margin-bottom: -0.06em;
+}
+
+.ew-hero__line-in {
+  position: relative;
+  display: inline-block;
+  transform: translateY(105%);
+  animation: ew-rise 1.05s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--i, 0) * 105ms + 320ms);
+}
+
+/* Chrome finish — silver is the material. */
+.ew-hero__line-in--chrome {
+  background-image: linear-gradient(
+    100deg,
+    #d4d4d4 0%,
+    #ffffff 14%,
+    #7d7d7d 30%,
+    #ffffff 46%,
+    var(--ew-chrome) 62%,
+    #ffffff 80%,
+    #b4b4b4 100%
+  );
+  background-size: 300% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation:
+    ew-rise 1.05s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+    ew-chrome 9s ease-in-out 1.4s infinite;
 }
 
-.ew-hero__highlight-label {
-  display: block;
-  margin-top: 5px;
-  font-size: clamp(10px, 1vw, 11px);
+/* One glitch frame, blue, ~300ms after the line lands. Then never again. */
+.ew-hero__line-in::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: var(--ew-blue); /* blue 3/5 */
+  -webkit-text-fill-color: var(--ew-blue);
+  opacity: 0;
+  pointer-events: none;
+  animation: ew-glitch 5.5s steps(1) calc(var(--i, 0) * 105ms + 900ms) 1 forwards;
+}
+
+/* --- support + cta ------------------------------------------------------- */
+
+.ew-hero__support {
+  max-width: 34ch;
+  margin: 18px 0 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ew-dim);
+  opacity: 0;
+  animation: ew-in 800ms ease-out 900ms forwards;
+}
+
+.ew-hero__support p {
+  margin: 0;
+}
+
+.ew-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  margin-top: 24px;
+  padding: 0 22px;
+  border: 1px solid var(--ew-paper);
+  background: transparent;
+  color: var(--ew-paper);
+  font-family: var(--ew-mono);
+  font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--ew-muted);
+  text-decoration: none;
+  opacity: 0;
+  animation: ew-in 800ms ease-out 1050ms forwards;
+  transition: background-color 220ms ease, color 220ms ease;
+}
+
+.ew-hero__cta svg {
+  flex: none;
+  color: var(--ew-blue); /* blue 4/5 */
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ew-hero__cta:active {
+  background: var(--ew-paper);
+  color: var(--ew-ink);
+}
+
+.ew-hero__cta:active svg {
+  transform: translateX(4px);
+}
+
+.ew-hero__cta:focus-visible {
+  outline: 2px solid var(--ew-paper);
+  outline-offset: 3px;
 }
 
 /* --------------------------------------------------------------------------
-   Product visual
+   5. CATEGORY CHIPS — the fastest route into the catalogue on a phone
    -------------------------------------------------------------------------- */
 
-.ew-hero__visual {
+.ew-hero__chips {
   position: relative;
-  display: grid;
-  place-items: center;
-  aspect-ratio: 1 / 1;
-  width: 100%;
-}
-
-.ew-hero__halo,
-.ew-hero__halo-inner {
-  position: absolute;
-  border-radius: 50%;
-  will-change: transform;
-}
-
-.ew-hero__halo {
-  inset: 4%;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    color-mix(in srgb, var(--ew-a2) 85%, transparent) 70deg,
-    transparent 150deg,
-    color-mix(in srgb, var(--ew-a3) 85%, transparent) 240deg,
-    transparent 320deg
-  );
-  -webkit-mask: radial-gradient(closest-side, transparent 76%, #000 77%, #000 79%, transparent 80%);
-  mask: radial-gradient(closest-side, transparent 76%, #000 77%, #000 79%, transparent 80%);
-  animation: ew-spin 18s linear infinite;
-}
-
-.ew-hero__halo-inner {
-  inset: 17%;
-  background: conic-gradient(
-    from 180deg,
-    transparent 0deg,
-    color-mix(in srgb, var(--ew-a1) 95%, transparent) 90deg,
-    transparent 190deg,
-    color-mix(in srgb, var(--ew-a1) 60%, transparent) 280deg,
-    transparent 360deg
-  );
-  -webkit-mask: radial-gradient(closest-side, transparent 88%, #000 89%);
-  mask: radial-gradient(closest-side, transparent 88%, #000 89%);
-  animation: ew-spin 26s linear infinite reverse;
-}
-
-.ew-hero__glow {
-  position: absolute;
-  inset: 22%;
-  border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--ew-a1) 42%, transparent), transparent 66%);
-  filter: blur(38px);
-  animation: ew-breathe 6s ease-in-out infinite;
-}
-
-.ew-hero__product {
-  position: relative;
-  z-index: 1;
-  width: 78%;
-  max-width: 560px;
-  height: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 40px 60px rgb(0 0 0 / 0.55));
-  transform: translate3d(calc(var(--ew-px, 0) * 18px), calc(var(--ew-py, 0) * 18px), 0);
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 5;
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 0 var(--ew-pad) 20px;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+  overscroll-behavior-x: contain;
   opacity: 0;
-  animation: ew-reveal-product 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+  animation: ew-in 800ms ease-out 1200ms forwards;
 }
 
-.ew-hero--float .ew-hero__product-wrap {
-  animation: ew-float 7s ease-in-out infinite;
+.ew-hero__chips::-webkit-scrollbar {
+  display: none;
 }
 
-.ew-hero__product-wrap {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  width: 100%;
-  height: 100%;
+.ew-hero__chip {
+  flex: none;
+  scroll-snap-align: start;
 }
 
-/* Caption pinned to the visual, e.g. product name + price */
-.ew-hero__caption {
-  position: absolute;
-  right: 2%;
-  bottom: 4%;
-  z-index: 2;
-  display: grid;
-  gap: 4px;
-  padding: 14px 18px;
-  border: 1px solid var(--ew-hairline);
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--ew-bg) 62%, transparent);
-  backdrop-filter: blur(12px);
-  text-align: left;
-  opacity: 0;
-  animation: ew-fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.95s forwards;
-}
-
-.ew-hero__caption-title {
-  font-size: 0.875rem;
-  letter-spacing: 0.06em;
-}
-
-.ew-hero__caption-meta {
-  font-size: 11px;
-  letter-spacing: 0.18em;
+.ew-hero__chip a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 15px;
+  border: 1px solid var(--ew-hair);
+  background: rgb(0 0 0 / 0.35);
+  color: var(--ew-paper);
+  font-family: var(--ew-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ew-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color 200ms ease, background-color 200ms ease;
+}
+
+.ew-hero__chip a:active {
+  border-color: var(--ew-paper);
+  background: rgb(255 255 255 / 0.12);
 }
 
 /* --------------------------------------------------------------------------
-   Ticker
+   6. TICKER — one per page
    -------------------------------------------------------------------------- */
 
 .ew-hero__ticker {
   position: relative;
-  z-index: 2;
+  z-index: 5;
   display: flex;
   overflow: hidden;
-  padding: 14px 0;
-  border-top: 1px solid var(--ew-hairline);
-  background: color-mix(in srgb, var(--ew-bg) 70%, transparent);
-  backdrop-filter: blur(10px);
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  padding: 11px 0;
+  border-top: 1px solid rgb(255 255 255 / 0.14);
+  background: var(--ew-ink);
   user-select: none;
 }
 
 .ew-hero__ticker-track {
   display: flex;
-  flex-shrink: 0;
-  gap: 44px;
-  padding-right: 44px;
+  flex: none;
+  align-items: center;
+  gap: 30px;
+  padding-right: 30px;
   white-space: nowrap;
   animation: ew-marquee var(--ew-ticker-duration) linear infinite;
-}
-
-.ew-hero__ticker:hover .ew-hero__ticker-track {
-  animation-play-state: paused;
 }
 
 .ew-hero__ticker-item {
   display: inline-flex;
   align-items: center;
-  gap: 44px;
-  font-size: clamp(10px, 1vw, 12px);
-  letter-spacing: 0.26em;
+  gap: 30px;
+  font-family: var(--ew-mono);
+  font-size: 9px;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--ew-muted);
+  color: var(--ew-dim);
 }
 
 .ew-hero__ticker-item::after {
-  content: "";
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--ew-a1);
+  content: "✳";
+  color: var(--ew-blue); /* blue 5/5 */
+  font-size: 8px;
 }
 
 /* --------------------------------------------------------------------------
-   Scroll cue
+   7. SCROLL CUE
    -------------------------------------------------------------------------- */
 
-.ew-hero__scroll {
+.ew-hero__cue {
+  display: none;
   position: absolute;
-  left: 50%;
-  bottom: clamp(74px, 9vh, 96px);
-  z-index: 2;
-  transform: translateX(-50%);
-  display: grid;
+  right: var(--ew-pad);
+  bottom: 96px;
+  z-index: 5;
   justify-items: center;
-  gap: 10px;
-  font-size: 10px;
-  letter-spacing: 0.26em;
+  gap: 8px;
+  font-family: var(--ew-mono);
+  font-size: 8px;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--ew-muted);
+  color: var(--ew-dim);
   pointer-events: none;
+  opacity: 0;
+  animation: ew-in 800ms ease-out 1400ms forwards;
 }
 
-.ew-hero__scroll-rail {
-  width: 1px;
-  height: 46px;
-  background: linear-gradient(to bottom, var(--ew-a1), transparent);
-  animation: ew-rail 2.4s ease-in-out infinite;
-  transform-origin: top;
+.ew-hero__cue svg {
+  animation: ew-bob 2.2s ease-in-out infinite;
 }
 
 /* --------------------------------------------------------------------------
-   Responsive
+   8. HAZARD TAPE — off by default. Edges and warnings only.
    -------------------------------------------------------------------------- */
 
-@media (max-width: 900px) {
+.ew-hero__tape {
+  position: relative;
+  z-index: 6;
+  height: 10px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--ew-paper) 0 8px,
+    var(--ew-ink) 8px 16px
+  );
+}
+
+/* --------------------------------------------------------------------------
+   9. DESKTOP
+   -------------------------------------------------------------------------- */
+
+@media screen and (min-width: 750px) {
   .ew-hero {
-    --ew-min-h: auto;
-    --ew-min-h-fb: auto;
+    --ew-pad: 40px;
+    --ew-focal-x: var(--ew-focal-x-d, 50%);
+    --ew-focal-y: var(--ew-focal-y-d, 50%);
   }
 
-  .ew-hero--split .ew-hero__inner {
-    grid-template-columns: minmax(0, 1fr);
-    text-align: center;
+  .ew-hero__rail {
+    font-size: 10px;
+    padding: 18px var(--ew-pad);
+  }
+
+  .ew-hero__rail-mid {
+    display: block;
+  }
+
+  .ew-hero__stage {
+    padding: 80px var(--ew-pad) 40px;
+  }
+
+  .ew-hero--center .ew-hero__stage {
     justify-items: center;
+    text-align: center;
   }
 
-  .ew-hero--split .ew-hero__visual {
-    order: -1;
-    width: min(78vw, 380px);
+  .ew-hero__title {
+    font-size: calc(clamp(4.5rem, 13.5vw, 13rem) * var(--ew-title-scale, 1));
   }
 
-  .ew-hero--split .ew-hero__cta,
-  .ew-hero--split .ew-hero__highlights {
+  .ew-hero__support {
+    max-width: 42ch;
+    margin-top: 22px;
+    font-size: 14px;
+  }
+
+  .ew-hero__orbit {
+    width: 66vw;
+    top: 50%;
+  }
+
+  .ew-hero__chips {
+    gap: 10px;
+    padding-bottom: 26px;
+    overflow-x: visible;
+    flex-wrap: wrap;
+  }
+
+  .ew-hero--center .ew-hero__chips {
     justify-content: center;
   }
 
-  .ew-hero--split .ew-hero__sub {
-    margin-inline: auto;
+  .ew-hero__cue {
+    display: grid;
+    bottom: 104px;
   }
 
-  .ew-hero__scroll {
-    display: none;
+  .ew-hero__ticker-item,
+  .ew-hero__ticker-track {
+    gap: 44px;
   }
 
-  .ew-hero__caption {
-    left: 0;
-    right: 0;
-    bottom: 2%;
-    width: max-content;
-    max-width: 86%;
-    margin-inline: auto;
-    text-align: center;
-    justify-items: center;
+  .ew-hero__ticker-track {
+    padding-right: 44px;
   }
-}
-
-@media (max-width: 600px) {
-  .ew-hero__frame {
-    display: none;
-  }
-
-  .ew-hero__highlights {
-    gap: 18px 26px;
-  }
-}
-
-.ew-hero--offscreen .ew-hero__aurora span,
-.ew-hero--offscreen .ew-hero__grid,
-.ew-hero--offscreen .ew-hero__grain,
-.ew-hero--offscreen .ew-hero__halo,
-.ew-hero--offscreen .ew-hero__halo-inner,
-.ew-hero--offscreen .ew-hero__glow,
-.ew-hero--offscreen .ew-hero__ticker-track {
-  animation-play-state: paused;
 }
 
 /* --------------------------------------------------------------------------
-   Motion preferences
+   10. MOTION PREFERENCES + OFFSCREEN
    -------------------------------------------------------------------------- */
+
+.ew-hero--offscreen .ew-hero__grain,
+.ew-hero--offscreen .ew-hero__scan,
+.ew-hero--offscreen .ew-hero__orbit-ring,
+.ew-hero--offscreen .ew-hero__orbit-dot,
+.ew-hero--offscreen .ew-hero__ticker-track,
+.ew-hero--offscreen .ew-hero__dot {
+  animation-play-state: paused;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .ew-hero *,
@@ -714,27 +594,37 @@
     transition: none !important;
   }
 
-  .ew-hero__eyebrow,
-  .ew-hero__sub,
+  .ew-hero__rail,
+  .ew-hero__support,
   .ew-hero__cta,
-  .ew-hero__highlights,
-  .ew-hero__caption,
-  .ew-hero__product {
+  .ew-hero__chips,
+  .ew-hero__cue {
     opacity: 1;
   }
 
-  .ew-hero__word > span {
+  .ew-hero__line-in {
     transform: none;
   }
 
-  .ew-hero__word--accent > span {
-    color: var(--ew-a1);
-    -webkit-text-fill-color: currentColor;
+  .ew-hero__line-in::after {
+    display: none;
+  }
+
+  .ew-hero__media-inner {
+    transform: none;
+  }
+
+  .ew-hero__scan {
+    display: none;
+  }
+
+  .ew-hero__video.is-playing {
+    opacity: 1;
   }
 }
 
 /* --------------------------------------------------------------------------
-   Keyframes
+   11. KEYFRAMES
    -------------------------------------------------------------------------- */
 
 @keyframes ew-rise {
@@ -743,10 +633,10 @@
   }
 }
 
-@keyframes ew-fade-up {
+@keyframes ew-in {
   from {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -754,17 +644,13 @@
   }
 }
 
-@keyframes ew-reveal-product {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 26px, 0) scale(0.94);
-  }
+@keyframes ew-push {
   to {
-    opacity: 1;
+    transform: scale(1);
   }
 }
 
-@keyframes ew-shine {
+@keyframes ew-chrome {
   0%,
   100% {
     background-position: 0% 50%;
@@ -774,73 +660,46 @@
   }
 }
 
-@keyframes ew-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes ew-angle-spin {
-  to {
-    --ew-angle: 360deg;
-  }
-}
-
-@keyframes ew-float {
-  0%,
-  100% {
-    transform: translateY(-1.2%);
-  }
-  50% {
-    transform: translateY(1.2%);
-  }
-}
-
-@keyframes ew-breathe {
-  0%,
-  100% {
-    opacity: 0.65;
-    transform: scale(0.96);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.04);
-  }
-}
-
-@keyframes ew-pulse {
+/* Two hard frames of blue offset, then gone for good. */
+@keyframes ew-glitch {
   0% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--ew-a1) 70%, transparent);
+    opacity: 0;
+    transform: translate(0, 0);
   }
-  70% {
-    box-shadow: 0 0 0 9px transparent;
+  1% {
+    opacity: 0.9;
+    transform: translate(-3px, 1px);
+  }
+  2.4% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  3.6% {
+    opacity: 0.75;
+    transform: translate(2px, -1px);
+  }
+  5% {
+    opacity: 0;
   }
   100% {
-    box-shadow: 0 0 0 0 transparent;
+    opacity: 0;
   }
 }
 
-@keyframes ew-drift-a {
-  to {
-    transform: translate3d(-8%, 6%, 0) scale(1.12);
+@keyframes ew-scan {
+  0% {
+    top: -2%;
+    opacity: 0;
   }
-}
-
-@keyframes ew-drift-b {
-  to {
-    transform: translate3d(10%, -8%, 0) scale(1.08);
+  8% {
+    opacity: 1;
   }
-}
-
-@keyframes ew-drift-c {
-  to {
-    transform: translate3d(-6%, -10%, 0) scale(1.15);
+  86% {
+    opacity: 1;
   }
-}
-
-@keyframes ew-grid-run {
-  to {
-    background-position: 0 68px, 0 68px;
+  100% {
+    top: 102%;
+    opacity: 0;
   }
 }
 
@@ -848,29 +707,50 @@
   0% {
     transform: translate(0, 0);
   }
-  25% {
-    transform: translate(-3%, 2%);
+  33% {
+    transform: translate(-2%, 2%);
   }
-  50% {
-    transform: translate(2%, -3%);
-  }
-  75% {
-    transform: translate(-2%, -2%);
+  66% {
+    transform: translate(2%, -1%);
   }
   100% {
-    transform: translate(3%, 1%);
+    transform: translate(-1%, -2%);
   }
 }
 
-@keyframes ew-rail {
+@keyframes ew-blink {
+  0%,
+  55% {
+    opacity: 1;
+  }
+  56%,
+  100% {
+    opacity: 0.15;
+  }
+}
+
+@keyframes ew-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ew-orbit-tilt {
+  from {
+    transform: rotate(-16deg) scaleY(0.42);
+  }
+  to {
+    transform: rotate(10deg) scaleY(0.34);
+  }
+}
+
+@keyframes ew-bob {
   0%,
   100% {
-    transform: scaleY(0.35);
-    opacity: 0.4;
+    transform: translateY(-2px);
   }
   50% {
-    transform: scaleY(1);
-    opacity: 1;
+    transform: translateY(3px);
   }
 }
 

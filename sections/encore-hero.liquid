@@ -1,11 +1,13 @@
 {%- comment -%}
-  Encore Worldwide — Futuristic hero
-  ---------------------------------
-  Drop-in Online Store 2.0 section. No theme dependencies, no external libraries.
+  ENCORE WORLDWIDE — hero
+  EW-001 // black, white, chrome. blue is rationed to five elements.
 
-  Heading tips:
-    • Press Enter in the heading field to force a line break.
-    • Wrap a word in asterisks to give it the liquid-metal gradient: Wear the *Future*
+  Built mobile-first. The still image is the LCP element; video, if set, fades
+  in over it once it can play and is skipped entirely on reduced-motion,
+  save-data and 2G.
+
+  Headline: press Enter for a new line. Wrap a whole line in *asterisks* to
+  give it the chrome finish.
 {%- endcomment -%}
 
 {{ 'encore-hero.css' | asset_url | stylesheet_tag }}
@@ -13,236 +15,211 @@
 
 {%- liquid
   assign s = section.settings
+  assign heading_tag = s.heading_tag | default: 'h1'
+
+  assign img_m = s.image_mobile | default: s.image_desktop
+  assign img_d = s.image_desktop | default: s.image_mobile
+  assign poster = img_m | default: img_d
+
+  assign img_alt = img_m.alt | default: img_d.alt | default: shop.name
 
   case s.height
-    when 'small'
-      assign min_height = '62svh'
-      assign min_height_fallback = '62vh'
+    when 'tall'
+      assign min_h = '100svh'
+      assign min_h_fb = '100vh'
     when 'medium'
-      assign min_height = '78svh'
-      assign min_height_fallback = '78vh'
-    when 'large'
-      assign min_height = '92svh'
-      assign min_height_fallback = '92vh'
+      assign min_h = '86svh'
+      assign min_h_fb = '86vh'
     else
-      assign min_height = '100svh'
-      assign min_height_fallback = '100vh'
+      assign min_h = '72svh'
+      assign min_h_fb = '72vh'
   endcase
-
-  assign heading_tag = s.heading_tag | default: 'h1'
-  assign bg_alt = s.background_image.alt | default: shop.name
-  assign product_alt = s.product_image.alt | default: s.caption_title | default: shop.name
 -%}
 
-{%- if s.heading_font != blank -%}
-  {{ s.heading_font | font_face: font_display: 'swap' }}
-  {{ s.heading_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+{%- if s.load_fonts -%}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&display=swap"
+  >
 {%- endif -%}
+
+{%- comment -%} Pick one mp4 per breakpoint out of Shopify's rendition list. {%- endcomment -%}
+{%- liquid
+  for src in s.video_mobile.sources
+    if src.format == 'mp4'
+      assign video_m = src.url
+      if src.height >= 720
+        break
+      endif
+    endif
+  endfor
+
+  for src in s.video_desktop.sources
+    if src.format == 'mp4'
+      assign video_d = src.url
+    endif
+  endfor
+-%}
 
 <style>
   #EncoreHero--{{ section.id }} {
-    --ew-bg: {{ s.color_bg }};
-    --ew-ink: {{ s.color_text }};
-    --ew-a1: {{ s.color_accent_1 }};
-    --ew-a2: {{ s.color_accent_2 }};
-    --ew-a3: {{ s.color_accent_3 }};
-    --ew-min-h-fb: {{ min_height_fallback }};
-    --ew-min-h: {{ min_height }};
-    --ew-overlay: {{ s.overlay_opacity | divided_by: 100.0 }};
-    --ew-heading-scale: {{ s.heading_scale | divided_by: 100.0 }};
+    --ew-min-h: {{ min_h }};
+    --ew-min-h-fb: {{ min_h_fb }};
+    --ew-scrim: {{ s.scrim | divided_by: 100.0 }};
+    --ew-title-scale: {{ s.title_scale | divided_by: 100.0 }};
     --ew-ticker-duration: {{ s.ticker_speed }}s;
-    {%- if s.heading_font != blank %}
-    --ew-heading-font: {{ s.heading_font.family }}, {{ s.heading_font.fallback_families }};
-    --ew-heading-weight: {{ s.heading_font.weight }};
-    {%- endif %}
+    --ew-focal-x-m: {{ s.focal_x_mobile }}%;
+    --ew-focal-y-m: {{ s.focal_y_mobile }}%;
+    --ew-focal-x-d: {{ s.focal_x_desktop }}%;
+    --ew-focal-y-d: {{ s.focal_y_desktop }}%;
   }
 </style>
 
-<section
-  id="EncoreHero--{{ section.id }}"
-  class="ew-hero ew-hero--{{ s.layout }}{% if s.enable_float %} ew-hero--float{% endif %}"
-  {% if s.eyebrow != blank %}aria-label="{{ s.eyebrow | escape }}"{% endif %}
->
-  <div class="ew-hero__bg">
-    {%- if s.background_video != blank -%}
-      <div class="ew-hero__media">
-        {{
-          s.background_video
-          | video_tag:
-            image_size: '1920x',
-            autoplay: true,
-            loop: true,
-            muted: true,
-            controls: false,
-            playsinline: true
-        }}
+<section id="EncoreHero--{{ section.id }}" class="ew-hero ew-hero--{{ s.content_position }}">
+  {%- if s.show_tape -%}
+    <div class="ew-hero__tape" aria-hidden="true"></div>
+  {%- endif -%}
+
+  <div class="ew-hero__media">
+    <div class="ew-hero__media-inner">
+      {%- if img_m != blank or img_d != blank -%}
+        {%- capture srcset_m -%}
+          {%- for w in (1..5) -%}
+            {%- assign width = w | times: 200 | plus: 200 -%}
+            {%- if img_m.width >= width -%}{{ img_m | image_url: width: width }} {{ width }}w, {% endif %}
+          {%- endfor -%}
+          {{ img_m | image_url: width: img_m.width }} {{ img_m.width }}w
+        {%- endcapture -%}
+        {%- capture srcset_d -%}
+          {%- for w in (1..5) -%}
+            {%- assign width = w | times: 400 | plus: 800 -%}
+            {%- if img_d.width >= width -%}{{ img_d | image_url: width: width }} {{ width }}w, {% endif %}
+          {%- endfor -%}
+          {{ img_d | image_url: width: img_d.width }} {{ img_d.width }}w
+        {%- endcapture -%}
+        <picture>
+          <source media="(min-width: 750px)" srcset="{{ srcset_d }}" sizes="100vw">
+          <img
+            src="{{ img_m | image_url: width: 800 }}"
+            srcset="{{ srcset_m }}"
+            sizes="100vw"
+            width="{{ img_m.width }}"
+            height="{{ img_m.height }}"
+            alt="{{ img_alt | escape }}"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          >
+        </picture>
+      {%- endif -%}
+
+      {%- if video_m != blank or video_d != blank -%}
+        <video
+          class="ew-hero__video"
+          {% if video_m != blank %}data-src-mobile="{{ video_m }}"{% endif %}
+          {% if video_d != blank %}data-src-desktop="{{ video_d }}"{% endif %}
+          {% if poster != blank %}poster="{{ poster | image_url: width: 1200 }}"{% endif %}
+          muted
+          loop
+          playsinline
+          preload="none"
+          aria-hidden="true"
+          tabindex="-1"
+        ></video>
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="ew-hero__scrim" aria-hidden="true"></div>
+  {%- if s.show_grain -%}
+    <div class="ew-hero__grain" aria-hidden="true"></div>
+  {%- endif -%}
+  {%- if s.show_scan -%}
+    <div class="ew-hero__scan" aria-hidden="true"></div>
+  {%- endif -%}
+
+  <div class="ew-hero__rail">
+    <span>{{ s.rail_left | escape }}</span>
+    <span class="ew-hero__rail-mid">{{ s.rail_middle | escape }}</span>
+    <span class="ew-hero__status">
+      <span class="ew-hero__dot" aria-hidden="true"></span>
+      {{ s.rail_status | escape }}
+    </span>
+  </div>
+
+  <div class="ew-hero__stage">
+    {%- if s.show_orbit -%}
+      <div class="ew-hero__orbit" aria-hidden="true">
+        <div class="ew-hero__orbit-ring"></div>
+        <div class="ew-hero__orbit-dot"></div>
       </div>
-    {%- elsif s.background_image != blank -%}
-      <div class="ew-hero__media">
-        {{
-          s.background_image
-          | image_url: width: 3000
-          | image_tag:
-            widths: '750, 1100, 1500, 2000, 2600, 3000',
-            sizes: '100vw',
-            loading: 'eager',
-            fetchpriority: 'high',
-            alt: bg_alt
-        }}
-      </div>
     {%- endif -%}
 
-    {%- if s.show_aurora -%}
-      <div class="ew-hero__aurora" aria-hidden="true"><span></span><span></span><span></span></div>
-    {%- endif -%}
-    {%- if s.show_grid -%}
-      <div class="ew-hero__grid" aria-hidden="true"></div>
+    {%- if s.heading != blank -%}
+      <{{ heading_tag }} class="ew-hero__title">
+        {%- assign lines = s.heading | newline_to_br | split: '<br />' -%}
+        {%- assign i = 0 -%}
+        {%- for line in lines -%}
+          {%- assign text = line | strip -%}
+          {%- if text == blank -%}
+            {%- continue -%}
+          {%- endif -%}
+          {%- assign chrome = false -%}
+          {%- if text contains '*' -%}
+            {%- assign chrome = true -%}
+            {%- assign text = text | remove: '*' -%}
+          {%- endif -%}
+          <span class="ew-hero__line"><span
+              class="ew-hero__line-in{% if chrome %} ew-hero__line-in--chrome{% endif %}"
+              style="--i: {{ i }}"
+              data-text="{{ text | escape }}"
+            >{{ text | escape }}</span></span>
+          {%- assign i = i | plus: 1 -%}
+        {%- endfor -%}
+      </{{ heading_tag }}>
     {%- endif -%}
 
-    <div class="ew-hero__scrim" aria-hidden="true"></div>
+    {%- if s.support != blank -%}
+      <div class="ew-hero__support">{{ s.support }}</div>
+    {%- endif -%}
 
-    {%- if s.show_grain -%}
-      <div class="ew-hero__grain" aria-hidden="true"></div>
+    {%- if s.cta_label != blank -%}
+      <a class="ew-hero__cta" href="{{ s.cta_link | default: '#' }}">
+        {{ s.cta_label | escape }}
+        <svg width="16" height="8" viewBox="0 0 16 8" fill="none" aria-hidden="true">
+          <path d="M0 4h14M11 1l3 3-3 3" stroke="currentColor" stroke-width="1.4"/>
+        </svg>
+      </a>
     {%- endif -%}
   </div>
 
-  {%- if s.show_frame -%}
-    <div class="ew-hero__frame" aria-hidden="true"></div>
+  {%- if section.blocks.size > 0 -%}
+    <ul class="ew-hero__chips">
+      {%- for block in section.blocks -%}
+        {%- if block.settings.label != blank -%}
+          <li class="ew-hero__chip" {{ block.shopify_attributes }}>
+            <a href="{{ block.settings.link | default: '#' }}">{{ block.settings.label | escape }}</a>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
   {%- endif -%}
 
-  <div class="ew-hero__inner">
-    <div class="ew-hero__copy">
-      {%- if s.eyebrow != blank -%}
-        <p class="ew-hero__eyebrow">
-          <span class="ew-hero__pulse" aria-hidden="true"></span>
-          {{ s.eyebrow | escape }}
-        </p>
-      {%- endif -%}
-
-      {%- if s.heading != blank -%}
-        <{{ heading_tag }} class="ew-hero__title{% if s.heading_uppercase %} ew-hero__title--uppercase{% endif %}">
-          {%- liquid
-            assign heading_lines = s.heading | newline_to_br | split: '<br />'
-            assign word_index = 0
-          -%}
-          {%- for line in heading_lines -%}
-            {%- assign clean_line = line | strip -%}
-            {%- if clean_line == blank -%}
-              {%- continue -%}
-            {%- endif -%}
-            <span class="ew-hero__line">
-              {%- assign words = clean_line | split: ' ' -%}
-              {%- for word in words -%}
-                {%- assign clean_word = word | strip -%}
-                {%- if clean_word == blank -%}
-                  {%- continue -%}
-                {%- endif -%}
-                {%- assign is_accent = false -%}
-                {%- if clean_word contains '*' -%}
-                  {%- assign is_accent = true -%}
-                  {%- assign clean_word = clean_word | remove: '*' -%}
-                {%- endif -%}
-                <span
-                  class="ew-hero__word{% if is_accent %} ew-hero__word--accent{% endif %}"
-                  style="--i: {{ word_index }}"
-                ><span>{{ clean_word | escape }}</span></span>
-                {%- assign word_index = word_index | plus: 1 -%}
-                {% unless forloop.last %} {% endunless %}
-              {%- endfor -%}
-            </span>
-          {%- endfor -%}
-        </{{ heading_tag }}>
-      {%- endif -%}
-
-      {%- if s.subheading != blank -%}
-        <div class="ew-hero__sub">{{ s.subheading }}</div>
-      {%- endif -%}
-
-      {%- if s.button_1_label != blank or s.button_2_label != blank -%}
-        <div class="ew-hero__cta">
-          {%- if s.button_1_label != blank -%}
-            <a class="ew-btn ew-btn--primary" href="{{ s.button_1_link | default: '#' }}">
-              {{ s.button_1_label | escape }}
-              <svg class="ew-btn__arrow" width="15" height="10" viewBox="0 0 15 10" fill="none" aria-hidden="true">
-                <path d="M0 5h13M9 1l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </a>
-          {%- endif -%}
-          {%- if s.button_2_label != blank -%}
-            <a class="ew-btn ew-btn--ghost" href="{{ s.button_2_link | default: '#' }}">
-              {{ s.button_2_label | escape }}
-            </a>
-          {%- endif -%}
-        </div>
-      {%- endif -%}
-
-      {%- if section.blocks.size > 0 -%}
-        <ul class="ew-hero__highlights">
-          {%- for block in section.blocks -%}
-            <li class="ew-hero__highlight" {{ block.shopify_attributes }}>
-              {%- if block.settings.value != blank -%}
-                <span class="ew-hero__highlight-value">{{ block.settings.value | escape }}</span>
-              {%- endif -%}
-              {%- if block.settings.label != blank -%}
-                <span class="ew-hero__highlight-label">{{ block.settings.label | escape }}</span>
-              {%- endif -%}
-            </li>
-          {%- endfor -%}
-        </ul>
-      {%- endif -%}
-    </div>
-
-    {%- if s.layout == 'split' -%}
-      <div class="ew-hero__visual">
-        {%- if s.show_halo -%}
-          <div class="ew-hero__glow" aria-hidden="true"></div>
-          <div class="ew-hero__halo" aria-hidden="true"></div>
-          <div class="ew-hero__halo-inner" aria-hidden="true"></div>
-        {%- endif -%}
-
-        <div class="ew-hero__product-wrap">
-          {%- if s.product_image != blank -%}
-            {{
-              s.product_image
-              | image_url: width: 1400
-              | image_tag:
-                class: 'ew-hero__product',
-                widths: '400, 600, 800, 1000, 1200, 1400',
-                sizes: '(max-width: 900px) 70vw, 38vw',
-                loading: 'eager',
-                fetchpriority: 'high',
-                alt: product_alt
-            }}
-          {%- else -%}
-            {{ 'product-1' | placeholder_svg_tag: 'ew-hero__product' }}
-          {%- endif -%}
-        </div>
-
-        {%- if s.caption_title != blank or s.caption_meta != blank -%}
-          <div class="ew-hero__caption">
-            {%- if s.caption_title != blank -%}
-              <span class="ew-hero__caption-title">{{ s.caption_title | escape }}</span>
-            {%- endif -%}
-            {%- if s.caption_meta != blank -%}
-              <span class="ew-hero__caption-meta">{{ s.caption_meta | escape }}</span>
-            {%- endif -%}
-          </div>
-        {%- endif -%}
-      </div>
-    {%- endif -%}
-  </div>
-
-  {%- if s.show_scroll_cue -%}
-    <div class="ew-hero__scroll" aria-hidden="true">
-      <span>{{ s.scroll_label | escape }}</span>
-      <span class="ew-hero__scroll-rail"></span>
+  {%- if s.show_cue -%}
+    <div class="ew-hero__cue" aria-hidden="true">
+      <span>{{ s.cue_label | escape }}</span>
+      <svg width="9" height="16" viewBox="0 0 9 16" fill="none">
+        <path d="M4.5 0v14M1 11l3.5 3.5L8 11" stroke="currentColor" stroke-width="1.2"/>
+      </svg>
     </div>
   {%- endif -%}
 
-  {%- if s.show_ticker and s.ticker_text != blank -%}
-    {%- assign ticker_items = s.ticker_text | split: ',' -%}
+  {%- if s.show_ticker and s.ticker != blank -%}
+    {%- assign ticker_items = s.ticker | split: ',' -%}
     <div class="ew-hero__ticker">
-      {%- for i in (1..2) -%}
+      {%- for pass in (1..2) -%}
         <div class="ew-hero__ticker-track" {% unless forloop.first %}aria-hidden="true"{% endunless %}>
           {%- for item in ticker_items -%}
             <span class="ew-hero__ticker-item">{{ item | strip | escape }}</span>
@@ -261,52 +238,89 @@
   "settings": [
     {
       "type": "header",
-      "content": "Layout"
+      "content": "Media"
     },
     {
-      "type": "select",
-      "id": "layout",
-      "label": "Layout",
-      "options": [
-        { "value": "split", "label": "Split — copy + product" },
-        { "value": "cinematic", "label": "Cinematic — centred copy" }
-      ],
-      "default": "split"
+      "type": "paragraph",
+      "content": "Every image is forced to black and white. Set a separate mobile crop — 99% of visitors are on a phone and a landscape photo will not survive a portrait viewport."
     },
     {
-      "type": "select",
-      "id": "height",
-      "label": "Section height",
-      "options": [
-        { "value": "small", "label": "Small" },
-        { "value": "medium", "label": "Medium" },
-        { "value": "large", "label": "Large" },
-        { "value": "full", "label": "Full screen" }
-      ],
-      "default": "large"
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Image — mobile (portrait)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_desktop",
+      "label": "Image — desktop (landscape)"
+    },
+    {
+      "type": "range",
+      "id": "focal_x_mobile",
+      "label": "Mobile focal point — horizontal",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "focal_y_mobile",
+      "label": "Mobile focal point — vertical",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "focal_x_desktop",
+      "label": "Desktop focal point — horizontal",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "focal_y_desktop",
+      "label": "Desktop focal point — vertical",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 50
+    },
+    {
+      "type": "video",
+      "id": "video_mobile",
+      "label": "Video — mobile (portrait)",
+      "info": "Optional. Fades in over the image. Skipped on reduced-motion, data saver and 2G."
+    },
+    {
+      "type": "video",
+      "id": "video_desktop",
+      "label": "Video — desktop (landscape)"
     },
     {
       "type": "header",
-      "content": "Content"
-    },
-    {
-      "type": "text",
-      "id": "eyebrow",
-      "label": "Eyebrow",
-      "default": "Encore Worldwide — Collection 001"
+      "content": "Headline"
     },
     {
       "type": "textarea",
       "id": "heading",
-      "label": "Heading",
-      "info": "Press Enter for a line break. Wrap a word in *asterisks* for the metallic gradient.",
-      "default": "Jewellery for\nthe *next* century"
+      "label": "Headline",
+      "info": "Enter for a new line. Wrap a whole line in *asterisks* for the chrome finish.",
+      "default": "Jewellery\nfrom the\n*future.*"
     },
     {
       "type": "select",
       "id": "heading_tag",
       "label": "Heading level",
-      "info": "Use H1 when this hero is the first section on the page.",
+      "info": "H1 when this is the first section on the page.",
       "options": [
         { "value": "h1", "label": "H1" },
         { "value": "h2", "label": "H2" }
@@ -314,15 +328,9 @@
       "default": "h1"
     },
     {
-      "type": "checkbox",
-      "id": "heading_uppercase",
-      "label": "Uppercase heading",
-      "default": false
-    },
-    {
       "type": "range",
-      "id": "heading_scale",
-      "label": "Heading size",
+      "id": "title_scale",
+      "label": "Headline size",
       "min": 70,
       "max": 130,
       "step": 5,
@@ -331,158 +339,79 @@
     },
     {
       "type": "richtext",
-      "id": "subheading",
-      "label": "Subheading",
-      "default": "<p>Sculpted in recycled 18k gold and lab-grown stone. Engineered to outlive the trend cycle — worn now, inherited later.</p>"
-    },
-    {
-      "type": "font_picker",
-      "id": "heading_font",
-      "label": "Heading font",
-      "default": "assets/futura_n4"
-    },
-    {
-      "type": "header",
-      "content": "Buttons"
+      "id": "support",
+      "label": "Support line",
+      "default": "<p>small runs, made because we wanted them. shipped worldwide. no restocks.</p>"
     },
     {
       "type": "text",
-      "id": "button_1_label",
-      "label": "Primary button label",
-      "default": "Shop the drop"
+      "id": "cta_label",
+      "label": "Button label",
+      "default": "Discover collection"
     },
     {
       "type": "url",
-      "id": "button_1_link",
-      "label": "Primary button link"
-    },
-    {
-      "type": "text",
-      "id": "button_2_label",
-      "label": "Secondary button label",
-      "default": "The atelier"
-    },
-    {
-      "type": "url",
-      "id": "button_2_link",
-      "label": "Secondary button link"
+      "id": "cta_link",
+      "label": "Button link"
     },
     {
       "type": "header",
-      "content": "Product visual",
-      "info": "Used by the split layout. A PNG or WebP with a transparent background looks best."
+      "content": "Layout"
     },
     {
-      "type": "image_picker",
-      "id": "product_image",
-      "label": "Product image"
+      "type": "select",
+      "id": "height",
+      "label": "Height",
+      "options": [
+        { "value": "short", "label": "Short" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "tall", "label": "Full screen" }
+      ],
+      "default": "tall"
     },
     {
-      "type": "checkbox",
-      "id": "show_halo",
-      "label": "Show orbiting halo",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_float",
-      "label": "Float the product",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "caption_title",
-      "label": "Caption title",
-      "default": "Halo Signet — Ion Gold"
-    },
-    {
-      "type": "text",
-      "id": "caption_meta",
-      "label": "Caption meta",
-      "default": "Limited to 100 pieces"
-    },
-    {
-      "type": "header",
-      "content": "Background"
-    },
-    {
-      "type": "image_picker",
-      "id": "background_image",
-      "label": "Background image"
-    },
-    {
-      "type": "video",
-      "id": "background_video",
-      "label": "Background video",
-      "info": "Takes priority over the background image. Muted and looping."
+      "type": "select",
+      "id": "content_position",
+      "label": "Content position",
+      "options": [
+        { "value": "bottom", "label": "Bottom" },
+        { "value": "center", "label": "Centre" },
+        { "value": "top", "label": "Top" }
+      ],
+      "default": "bottom"
     },
     {
       "type": "range",
-      "id": "overlay_opacity",
-      "label": "Overlay strength",
+      "id": "scrim",
+      "label": "Darkening over the photo",
       "min": 0,
       "max": 100,
       "step": 5,
       "unit": "%",
-      "default": 60
-    },
-    {
-      "type": "checkbox",
-      "id": "show_aurora",
-      "label": "Show aurora glow",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_grid",
-      "label": "Show perspective grid",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_grain",
-      "label": "Show film grain",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_frame",
-      "label": "Show hairline frame",
-      "default": true
+      "default": 72
     },
     {
       "type": "header",
-      "content": "Colours"
+      "content": "Telemetry rail"
     },
     {
-      "type": "color",
-      "id": "color_bg",
-      "label": "Background",
-      "default": "#05060a"
+      "type": "text",
+      "id": "rail_left",
+      "label": "Left",
+      "default": "EW-001 // DROP 001"
     },
     {
-      "type": "color",
-      "id": "color_text",
-      "label": "Text",
-      "default": "#f6f4f0"
+      "type": "text",
+      "id": "rail_middle",
+      "label": "Middle",
+      "info": "Desktop only.",
+      "default": "LAT 19.99 / LON 73.78"
     },
     {
-      "type": "color",
-      "id": "color_accent_1",
-      "label": "Accent 1 — metal",
-      "default": "#d8b876"
-    },
-    {
-      "type": "color",
-      "id": "color_accent_2",
-      "label": "Accent 2 — glow",
-      "default": "#6ee7ff"
-    },
-    {
-      "type": "color",
-      "id": "color_accent_3",
-      "label": "Accent 3 — glow",
-      "default": "#a37bff"
+      "type": "text",
+      "id": "rail_status",
+      "label": "Status",
+      "default": "Live"
     },
     {
       "type": "header",
@@ -496,55 +425,91 @@
     },
     {
       "type": "text",
-      "id": "ticker_text",
+      "id": "ticker",
       "label": "Ticker items",
-      "info": "Separate items with commas.",
-      "default": "Recycled 18k gold, Lab-grown stones, Free worldwide shipping, Lifetime warranty, Made in limited runs"
+      "info": "Separate with commas.",
+      "default": "Priority — cool shit, 50 made, 0 restocks, 0 ads ever, shipped worldwide obviously"
     },
     {
       "type": "range",
       "id": "ticker_speed",
       "label": "Ticker duration",
-      "min": 15,
+      "min": 20,
       "max": 90,
-      "step": 5,
+      "step": 2,
       "unit": "s",
-      "default": 34
+      "default": 38
     },
     {
       "type": "header",
-      "content": "Scroll cue"
+      "content": "Motion and grit"
     },
     {
       "type": "checkbox",
-      "id": "show_scroll_cue",
-      "label": "Show scroll cue",
+      "id": "show_orbit",
+      "label": "Orbit",
+      "info": "One lap around everything.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scan",
+      "label": "Scan line",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_grain",
+      "label": "Film grain",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cue",
+      "label": "Scroll cue",
       "default": true
     },
     {
       "type": "text",
-      "id": "scroll_label",
+      "id": "cue_label",
       "label": "Scroll cue label",
       "default": "Scroll"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tape",
+      "label": "Hazard tape",
+      "info": "Edges and warnings only. Off by default.",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Type"
+    },
+    {
+      "type": "checkbox",
+      "id": "load_fonts",
+      "label": "Load Anton and Space Mono",
+      "info": "Turn off if the theme already self-hosts them. Falls back to condensed system faces.",
+      "default": true
     }
   ],
   "blocks": [
     {
-      "type": "highlight",
-      "name": "Highlight",
-      "limit": 4,
+      "type": "category",
+      "name": "Category",
+      "limit": 8,
       "settings": [
-        {
-          "type": "text",
-          "id": "value",
-          "label": "Value",
-          "default": "18k"
-        },
         {
           "type": "text",
           "id": "label",
           "label": "Label",
-          "default": "Recycled gold"
+          "default": "Necklaces"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
         }
       ]
     }
@@ -553,18 +518,12 @@
     {
       "name": "Encore hero",
       "blocks": [
-        {
-          "type": "highlight",
-          "settings": { "value": "18k", "label": "Recycled gold" }
-        },
-        {
-          "type": "highlight",
-          "settings": { "value": "100", "label": "Pieces per drop" }
-        },
-        {
-          "type": "highlight",
-          "settings": { "value": "∞", "label": "Lifetime warranty" }
-        }
+        { "type": "category", "settings": { "label": "Necklaces" } },
+        { "type": "category", "settings": { "label": "Ear cuffs" } },
+        { "type": "category", "settings": { "label": "Rings" } },
+        { "type": "category", "settings": { "label": "Bracelets" } },
+        { "type": "category", "settings": { "label": "Earrings" } },
+        { "type": "category", "settings": { "label": "Accessories" } }
       ]
     }
   ]

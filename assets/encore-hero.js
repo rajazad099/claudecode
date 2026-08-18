@@ -1,60 +1,82 @@
-/* Encore Worldwide — hero section behaviour.
-   Progressive enhancement only: the section is fully usable without this file.
-   - pointer parallax on the product visual
-   - conic border angle for ghost buttons
-   - pauses ambient work when the hero scrolls out of view */
+/* ENCORE WORLDWIDE — hero
+   Progressive enhancement. The hero is complete without this file: the still
+   is the LCP image and every animation is CSS. This only:
+     - picks the phone or desktop video and fades it in over the still
+     - skips video entirely on reduced-motion, save-data or slow connections
+     - pauses ambient motion when the hero is off-screen */
 (function () {
   'use strict';
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+  function wantsHeavyMedia() {
+    if (reduceMotion.matches) return false;
+    var c = navigator.connection;
+    if (!c) return true;
+    if (c.saveData) return false;
+    return !/(^|-)2g$/.test(c.effectiveType || '');
+  }
+
+  function initVideo(hero) {
+    var video = hero.querySelector('.ew-hero__video');
+    if (!video) return null;
+
+    if (!wantsHeavyMedia()) {
+      video.remove();
+      return null;
+    }
+
+    var desktop = window.matchMedia('(min-width: 750px)').matches;
+    var src = (desktop && video.dataset.srcDesktop) || video.dataset.srcMobile || video.dataset.srcDesktop;
+
+    if (!src) {
+      video.remove();
+      return null;
+    }
+
+    video.addEventListener(
+      'canplay',
+      function () {
+        video.classList.add('is-playing');
+      },
+      { once: true }
+    );
+
+    video.src = src;
+
+    var attempt = video.play();
+    if (attempt && typeof attempt.catch === 'function') {
+      // Autoplay refused (low power mode, for one) — the still already carries the hero.
+      attempt.catch(function () {
+        video.remove();
+      });
+    }
+
+    return video;
+  }
+
   function initHero(hero) {
-    if (hero.dataset.ewHeroReady === 'true') return;
-    hero.dataset.ewHeroReady = 'true';
+    if (hero.dataset.ewReady === 'true') return;
+    hero.dataset.ewReady = 'true';
 
-    var visual = hero.querySelector('.ew-hero__visual');
-    var frame = null;
-    var visible = true;
-    var target = { x: 0, y: 0 };
+    var video = initVideo(hero);
 
-    function apply() {
-      frame = null;
-      hero.style.setProperty('--ew-px', target.x.toFixed(3));
-      hero.style.setProperty('--ew-py', target.y.toFixed(3));
-    }
+    if (!('IntersectionObserver' in window)) return;
 
-    function onPointerMove(event) {
-      if (!visible || reduceMotion.matches) return;
-      var rect = hero.getBoundingClientRect();
-      if (!rect.width || !rect.height) return;
-      target.x = (event.clientX - rect.left) / rect.width - 0.5;
-      target.y = (event.clientY - rect.top) / rect.height - 0.5;
-      if (frame === null) frame = window.requestAnimationFrame(apply);
-    }
-
-    function reset() {
-      target.x = 0;
-      target.y = 0;
-      if (frame === null) frame = window.requestAnimationFrame(apply);
-    }
-
-    if (visual && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-      hero.addEventListener('pointermove', onPointerMove);
-      hero.addEventListener('pointerleave', reset);
-    }
-
-    // Stop ambient animation work while the hero is off-screen.
-    if ('IntersectionObserver' in window) {
-      var observer = new IntersectionObserver(
-        function (entries) {
-          visible = entries[0].isIntersecting;
-          hero.classList.toggle('ew-hero--offscreen', !visible);
-          if (!visible) reset();
-        },
-        { threshold: 0 }
-      );
-      observer.observe(hero);
-    }
+    new IntersectionObserver(
+      function (entries) {
+        var visible = entries[0].isIntersecting;
+        hero.classList.toggle('ew-hero--offscreen', !visible);
+        if (!video) return;
+        if (visible) {
+          var attempt = video.play();
+          if (attempt && typeof attempt.catch === 'function') attempt.catch(function () {});
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0 }
+    ).observe(hero);
   }
 
   function initAll(root) {
@@ -69,7 +91,6 @@
     initAll();
   }
 
-  // Shopify theme editor: re-init when the section is added or re-rendered.
   document.addEventListener('shopify:section:load', function (event) {
     initAll(event.target);
   });
