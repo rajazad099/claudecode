@@ -1,0 +1,572 @@
+{%- comment -%}
+  Encore Worldwide — Futuristic hero
+  ---------------------------------
+  Drop-in Online Store 2.0 section. No theme dependencies, no external libraries.
+
+  Heading tips:
+    • Press Enter in the heading field to force a line break.
+    • Wrap a word in asterisks to give it the liquid-metal gradient: Wear the *Future*
+{%- endcomment -%}
+
+{{ 'encore-hero.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'encore-hero.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign s = section.settings
+
+  case s.height
+    when 'small'
+      assign min_height = '62svh'
+      assign min_height_fallback = '62vh'
+    when 'medium'
+      assign min_height = '78svh'
+      assign min_height_fallback = '78vh'
+    when 'large'
+      assign min_height = '92svh'
+      assign min_height_fallback = '92vh'
+    else
+      assign min_height = '100svh'
+      assign min_height_fallback = '100vh'
+  endcase
+
+  assign heading_tag = s.heading_tag | default: 'h1'
+  assign bg_alt = s.background_image.alt | default: shop.name
+  assign product_alt = s.product_image.alt | default: s.caption_title | default: shop.name
+-%}
+
+{%- if s.heading_font != blank -%}
+  {{ s.heading_font | font_face: font_display: 'swap' }}
+  {{ s.heading_font | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+{%- endif -%}
+
+<style>
+  #EncoreHero--{{ section.id }} {
+    --ew-bg: {{ s.color_bg }};
+    --ew-ink: {{ s.color_text }};
+    --ew-a1: {{ s.color_accent_1 }};
+    --ew-a2: {{ s.color_accent_2 }};
+    --ew-a3: {{ s.color_accent_3 }};
+    --ew-min-h-fb: {{ min_height_fallback }};
+    --ew-min-h: {{ min_height }};
+    --ew-overlay: {{ s.overlay_opacity | divided_by: 100.0 }};
+    --ew-heading-scale: {{ s.heading_scale | divided_by: 100.0 }};
+    --ew-ticker-duration: {{ s.ticker_speed }}s;
+    {%- if s.heading_font != blank %}
+    --ew-heading-font: {{ s.heading_font.family }}, {{ s.heading_font.fallback_families }};
+    --ew-heading-weight: {{ s.heading_font.weight }};
+    {%- endif %}
+  }
+</style>
+
+<section
+  id="EncoreHero--{{ section.id }}"
+  class="ew-hero ew-hero--{{ s.layout }}{% if s.enable_float %} ew-hero--float{% endif %}"
+  {% if s.eyebrow != blank %}aria-label="{{ s.eyebrow | escape }}"{% endif %}
+>
+  <div class="ew-hero__bg">
+    {%- if s.background_video != blank -%}
+      <div class="ew-hero__media">
+        {{
+          s.background_video
+          | video_tag:
+            image_size: '1920x',
+            autoplay: true,
+            loop: true,
+            muted: true,
+            controls: false,
+            playsinline: true
+        }}
+      </div>
+    {%- elsif s.background_image != blank -%}
+      <div class="ew-hero__media">
+        {{
+          s.background_image
+          | image_url: width: 3000
+          | image_tag:
+            widths: '750, 1100, 1500, 2000, 2600, 3000',
+            sizes: '100vw',
+            loading: 'eager',
+            fetchpriority: 'high',
+            alt: bg_alt
+        }}
+      </div>
+    {%- endif -%}
+
+    {%- if s.show_aurora -%}
+      <div class="ew-hero__aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+    {%- endif -%}
+    {%- if s.show_grid -%}
+      <div class="ew-hero__grid" aria-hidden="true"></div>
+    {%- endif -%}
+
+    <div class="ew-hero__scrim" aria-hidden="true"></div>
+
+    {%- if s.show_grain -%}
+      <div class="ew-hero__grain" aria-hidden="true"></div>
+    {%- endif -%}
+  </div>
+
+  {%- if s.show_frame -%}
+    <div class="ew-hero__frame" aria-hidden="true"></div>
+  {%- endif -%}
+
+  <div class="ew-hero__inner">
+    <div class="ew-hero__copy">
+      {%- if s.eyebrow != blank -%}
+        <p class="ew-hero__eyebrow">
+          <span class="ew-hero__pulse" aria-hidden="true"></span>
+          {{ s.eyebrow | escape }}
+        </p>
+      {%- endif -%}
+
+      {%- if s.heading != blank -%}
+        <{{ heading_tag }} class="ew-hero__title{% if s.heading_uppercase %} ew-hero__title--uppercase{% endif %}">
+          {%- liquid
+            assign heading_lines = s.heading | newline_to_br | split: '<br />'
+            assign word_index = 0
+          -%}
+          {%- for line in heading_lines -%}
+            {%- assign clean_line = line | strip -%}
+            {%- if clean_line == blank -%}
+              {%- continue -%}
+            {%- endif -%}
+            <span class="ew-hero__line">
+              {%- assign words = clean_line | split: ' ' -%}
+              {%- for word in words -%}
+                {%- assign clean_word = word | strip -%}
+                {%- if clean_word == blank -%}
+                  {%- continue -%}
+                {%- endif -%}
+                {%- assign is_accent = false -%}
+                {%- if clean_word contains '*' -%}
+                  {%- assign is_accent = true -%}
+                  {%- assign clean_word = clean_word | remove: '*' -%}
+                {%- endif -%}
+                <span
+                  class="ew-hero__word{% if is_accent %} ew-hero__word--accent{% endif %}"
+                  style="--i: {{ word_index }}"
+                ><span>{{ clean_word | escape }}</span></span>
+                {%- assign word_index = word_index | plus: 1 -%}
+                {% unless forloop.last %} {% endunless %}
+              {%- endfor -%}
+            </span>
+          {%- endfor -%}
+        </{{ heading_tag }}>
+      {%- endif -%}
+
+      {%- if s.subheading != blank -%}
+        <div class="ew-hero__sub">{{ s.subheading }}</div>
+      {%- endif -%}
+
+      {%- if s.button_1_label != blank or s.button_2_label != blank -%}
+        <div class="ew-hero__cta">
+          {%- if s.button_1_label != blank -%}
+            <a class="ew-btn ew-btn--primary" href="{{ s.button_1_link | default: '#' }}">
+              {{ s.button_1_label | escape }}
+              <svg class="ew-btn__arrow" width="15" height="10" viewBox="0 0 15 10" fill="none" aria-hidden="true">
+                <path d="M0 5h13M9 1l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          {%- endif -%}
+          {%- if s.button_2_label != blank -%}
+            <a class="ew-btn ew-btn--ghost" href="{{ s.button_2_link | default: '#' }}">
+              {{ s.button_2_label | escape }}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <ul class="ew-hero__highlights">
+          {%- for block in section.blocks -%}
+            <li class="ew-hero__highlight" {{ block.shopify_attributes }}>
+              {%- if block.settings.value != blank -%}
+                <span class="ew-hero__highlight-value">{{ block.settings.value | escape }}</span>
+              {%- endif -%}
+              {%- if block.settings.label != blank -%}
+                <span class="ew-hero__highlight-label">{{ block.settings.label | escape }}</span>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+
+    {%- if s.layout == 'split' -%}
+      <div class="ew-hero__visual">
+        {%- if s.show_halo -%}
+          <div class="ew-hero__glow" aria-hidden="true"></div>
+          <div class="ew-hero__halo" aria-hidden="true"></div>
+          <div class="ew-hero__halo-inner" aria-hidden="true"></div>
+        {%- endif -%}
+
+        <div class="ew-hero__product-wrap">
+          {%- if s.product_image != blank -%}
+            {{
+              s.product_image
+              | image_url: width: 1400
+              | image_tag:
+                class: 'ew-hero__product',
+                widths: '400, 600, 800, 1000, 1200, 1400',
+                sizes: '(max-width: 900px) 70vw, 38vw',
+                loading: 'eager',
+                fetchpriority: 'high',
+                alt: product_alt
+            }}
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'ew-hero__product' }}
+          {%- endif -%}
+        </div>
+
+        {%- if s.caption_title != blank or s.caption_meta != blank -%}
+          <div class="ew-hero__caption">
+            {%- if s.caption_title != blank -%}
+              <span class="ew-hero__caption-title">{{ s.caption_title | escape }}</span>
+            {%- endif -%}
+            {%- if s.caption_meta != blank -%}
+              <span class="ew-hero__caption-meta">{{ s.caption_meta | escape }}</span>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- if s.show_scroll_cue -%}
+    <div class="ew-hero__scroll" aria-hidden="true">
+      <span>{{ s.scroll_label | escape }}</span>
+      <span class="ew-hero__scroll-rail"></span>
+    </div>
+  {%- endif -%}
+
+  {%- if s.show_ticker and s.ticker_text != blank -%}
+    {%- assign ticker_items = s.ticker_text | split: ',' -%}
+    <div class="ew-hero__ticker">
+      {%- for i in (1..2) -%}
+        <div class="ew-hero__ticker-track" {% unless forloop.first %}aria-hidden="true"{% endunless %}>
+          {%- for item in ticker_items -%}
+            <span class="ew-hero__ticker-item">{{ item | strip | escape }}</span>
+          {%- endfor -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Encore hero",
+  "tag": "div",
+  "class": "encore-hero-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "split", "label": "Split — copy + product" },
+        { "value": "cinematic", "label": "Cinematic — centred copy" }
+      ],
+      "default": "split"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Section height",
+      "options": [
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" },
+        { "value": "full", "label": "Full screen" }
+      ],
+      "default": "large"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Encore Worldwide — Collection 001"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Press Enter for a line break. Wrap a word in *asterisks* for the metallic gradient.",
+      "default": "Jewellery for\nthe *next* century"
+    },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Heading level",
+      "info": "Use H1 when this hero is the first section on the page.",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "checkbox",
+      "id": "heading_uppercase",
+      "label": "Uppercase heading",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "heading_scale",
+      "label": "Heading size",
+      "min": 70,
+      "max": 130,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "<p>Sculpted in recycled 18k gold and lab-grown stone. Engineered to outlive the trend cycle — worn now, inherited later.</p>"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "assets/futura_n4"
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "text",
+      "id": "button_1_label",
+      "label": "Primary button label",
+      "default": "Shop the drop"
+    },
+    {
+      "type": "url",
+      "id": "button_1_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "button_2_label",
+      "label": "Secondary button label",
+      "default": "The atelier"
+    },
+    {
+      "type": "url",
+      "id": "button_2_link",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "header",
+      "content": "Product visual",
+      "info": "Used by the split layout. A PNG or WebP with a transparent background looks best."
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "Product image"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_halo",
+      "label": "Show orbiting halo",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_float",
+      "label": "Float the product",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "caption_title",
+      "label": "Caption title",
+      "default": "Halo Signet — Ion Gold"
+    },
+    {
+      "type": "text",
+      "id": "caption_meta",
+      "label": "Caption meta",
+      "default": "Limited to 100 pieces"
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
+      "type": "video",
+      "id": "background_video",
+      "label": "Background video",
+      "info": "Takes priority over the background image. Muted and looping."
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay strength",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 60
+    },
+    {
+      "type": "checkbox",
+      "id": "show_aurora",
+      "label": "Show aurora glow",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_grid",
+      "label": "Show perspective grid",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_grain",
+      "label": "Show film grain",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_frame",
+      "label": "Show hairline frame",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Colours"
+    },
+    {
+      "type": "color",
+      "id": "color_bg",
+      "label": "Background",
+      "default": "#05060a"
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "label": "Text",
+      "default": "#f6f4f0"
+    },
+    {
+      "type": "color",
+      "id": "color_accent_1",
+      "label": "Accent 1 — metal",
+      "default": "#d8b876"
+    },
+    {
+      "type": "color",
+      "id": "color_accent_2",
+      "label": "Accent 2 — glow",
+      "default": "#6ee7ff"
+    },
+    {
+      "type": "color",
+      "id": "color_accent_3",
+      "label": "Accent 3 — glow",
+      "default": "#a37bff"
+    },
+    {
+      "type": "header",
+      "content": "Ticker"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_ticker",
+      "label": "Show ticker",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "ticker_text",
+      "label": "Ticker items",
+      "info": "Separate items with commas.",
+      "default": "Recycled 18k gold, Lab-grown stones, Free worldwide shipping, Lifetime warranty, Made in limited runs"
+    },
+    {
+      "type": "range",
+      "id": "ticker_speed",
+      "label": "Ticker duration",
+      "min": 15,
+      "max": 90,
+      "step": 5,
+      "unit": "s",
+      "default": 34
+    },
+    {
+      "type": "header",
+      "content": "Scroll cue"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_cue",
+      "label": "Show scroll cue",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "scroll_label",
+      "label": "Scroll cue label",
+      "default": "Scroll"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "highlight",
+      "name": "Highlight",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "18k"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Recycled gold"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Encore hero",
+      "blocks": [
+        {
+          "type": "highlight",
+          "settings": { "value": "18k", "label": "Recycled gold" }
+        },
+        {
+          "type": "highlight",
+          "settings": { "value": "100", "label": "Pieces per drop" }
+        },
+        {
+          "type": "highlight",
+          "settings": { "value": "∞", "label": "Lifetime warranty" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

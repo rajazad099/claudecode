@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Encore Worldwide — hero preview</title>
+    <link rel="stylesheet" href="../assets/encore-hero.css" />
+    <script src="../assets/encore-hero.js" defer></script>
+    <style>
+      /* Preview chrome only — none of this ships with the Shopify section. */
+      body {
+        margin: 0;
+        background: #05060a;
+        color: #f6f4f0;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      #EncoreHero--preview {
+        --ew-bg: #05060a;
+        --ew-ink: #f6f4f0;
+        --ew-a1: #d8b876;
+        --ew-a2: #6ee7ff;
+        --ew-a3: #a37bff;
+        --ew-min-h-fb: 92vh;
+        --ew-min-h: 92svh;
+        --ew-overlay: 0.6;
+        --ew-heading-scale: 1;
+        --ew-ticker-duration: 34s;
+        --ew-heading-font: "Futura", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+        --ew-heading-weight: 500;
+      }
+
+      .preview-note {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 64px 24px 96px;
+        font-size: 14px;
+        line-height: 1.7;
+        color: rgb(246 244 240 / 0.6);
+      }
+
+      .preview-note code {
+        color: #d8b876;
+      }
+    </style>
+  </head>
+  <body>
+    <section id="EncoreHero--preview" class="ew-hero ew-hero--split ew-hero--float">
+      <div class="ew-hero__bg">
+        <div class="ew-hero__aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div class="ew-hero__grid" aria-hidden="true"></div>
+        <div class="ew-hero__scrim" aria-hidden="true"></div>
+        <div class="ew-hero__grain" aria-hidden="true"></div>
+      </div>
+
+      <div class="ew-hero__frame" aria-hidden="true"></div>
+
+      <div class="ew-hero__inner">
+        <div class="ew-hero__copy">
+          <p class="ew-hero__eyebrow">
+            <span class="ew-hero__pulse" aria-hidden="true"></span>
+            Encore Worldwide — Collection 001
+          </p>
+
+          <h1 class="ew-hero__title">
+            <span class="ew-hero__line">
+              <span class="ew-hero__word" style="--i: 0"><span>Jewellery</span></span>
+              <span class="ew-hero__word" style="--i: 1"><span>for</span></span>
+            </span>
+            <span class="ew-hero__line">
+              <span class="ew-hero__word" style="--i: 2"><span>the</span></span>
+              <span class="ew-hero__word ew-hero__word--accent" style="--i: 3"><span>next</span></span>
+              <span class="ew-hero__word" style="--i: 4"><span>century</span></span>
+            </span>
+          </h1>
+
+          <div class="ew-hero__sub">
+            <p>
+              Sculpted in recycled 18k gold and lab-grown stone. Engineered to outlive the trend cycle —
+              worn now, inherited later.
+            </p>
+          </div>
+
+          <div class="ew-hero__cta">
+            <a class="ew-btn ew-btn--primary" href="#">
+              Shop the drop
+              <svg class="ew-btn__arrow" width="15" height="10" viewBox="0 0 15 10" fill="none" aria-hidden="true">
+                <path d="M0 5h13M9 1l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+            <a class="ew-btn ew-btn--ghost" href="#">The atelier</a>
+          </div>
+
+          <ul class="ew-hero__highlights">
+            <li class="ew-hero__highlight">
+              <span class="ew-hero__highlight-value">18k</span>
+              <span class="ew-hero__highlight-label">Recycled gold</span>
+            </li>
+            <li class="ew-hero__highlight">
+              <span class="ew-hero__highlight-value">100</span>
+              <span class="ew-hero__highlight-label">Pieces per drop</span>
+            </li>
+            <li class="ew-hero__highlight">
+              <span class="ew-hero__highlight-value">&#8734;</span>
+              <span class="ew-hero__highlight-label">Lifetime warranty</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="ew-hero__visual">
+          <div class="ew-hero__glow" aria-hidden="true"></div>
+          <div class="ew-hero__halo" aria-hidden="true"></div>
+          <div class="ew-hero__halo-inner" aria-hidden="true"></div>
+
+          <div class="ew-hero__product-wrap">
+            <!-- Stand-in for the merchant's cut-out product photo. -->
+            <svg class="ew-hero__product" viewBox="0 0 400 400" role="img" aria-label="Placeholder ring">
+              <defs>
+                <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#fbe9b8" />
+                  <stop offset="28%" stop-color="#d8b876" />
+                  <stop offset="52%" stop-color="#8c6d33" />
+                  <stop offset="72%" stop-color="#f3dda6" />
+                  <stop offset="100%" stop-color="#a8823f" />
+                </linearGradient>
+                <linearGradient id="stone" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#dffaff" />
+                  <stop offset="45%" stop-color="#6ee7ff" />
+                  <stop offset="100%" stop-color="#a37bff" />
+                </linearGradient>
+              </defs>
+              <ellipse cx="200" cy="245" rx="104" ry="104" fill="none" stroke="url(#metal)" stroke-width="26" />
+              <ellipse cx="200" cy="245" rx="104" ry="104" fill="none" stroke="#fff" stroke-opacity="0.35" stroke-width="2" />
+              <path d="M200 92l52 42-52 46-52-46z" fill="url(#stone)" />
+              <path d="M200 92l52 42-52 20-52-20z" fill="#fff" fill-opacity="0.35" />
+              <path d="M148 134h104" stroke="#fff" stroke-opacity="0.5" stroke-width="1.5" />
+            </svg>
+          </div>
+
+          <div class="ew-hero__caption">
+            <span class="ew-hero__caption-title">Halo Signet — Ion Gold</span>
+            <span class="ew-hero__caption-meta">Limited to 100 pieces</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ew-hero__scroll" aria-hidden="true">
+        <span>Scroll</span>
+        <span class="ew-hero__scroll-rail"></span>
+      </div>
+
+      <div class="ew-hero__ticker">
+        <div class="ew-hero__ticker-track">
+          <span class="ew-hero__ticker-item">Recycled 18k gold</span>
+          <span class="ew-hero__ticker-item">Lab-grown stones</span>
+          <span class="ew-hero__ticker-item">Free worldwide shipping</span>
+          <span class="ew-hero__ticker-item">Lifetime warranty</span>
+          <span class="ew-hero__ticker-item">Made in limited runs</span>
+        </div>
+        <div class="ew-hero__ticker-track" aria-hidden="true">
+          <span class="ew-hero__ticker-item">Recycled 18k gold</span>
+          <span class="ew-hero__ticker-item">Lab-grown stones</span>
+          <span class="ew-hero__ticker-item">Free worldwide shipping</span>
+          <span class="ew-hero__ticker-item">Lifetime warranty</span>
+          <span class="ew-hero__ticker-item">Made in limited runs</span>
+        </div>
+      </div>
+    </section>
+
+    <p class="preview-note">
+      Static preview of <code>sections/encore-hero.liquid</code>. It loads the exact same
+      <code>assets/encore-hero.css</code> and <code>assets/encore-hero.js</code> the Shopify section uses, so what you
+      see here is what renders in the theme. Swap the placeholder SVG for a cut-out product photo to judge the real
+      thing.
+    </p>
+  </body>
+</html>
