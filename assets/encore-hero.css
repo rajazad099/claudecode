@@ -1,23 +1,15 @@
 /* ==========================================================================
-   ENCORE WORLDWIDE — hero
-   EW-001 // black, white, chrome. blue is rationed.
+   ENCORE WORLDWIDE — the storefront hero
+   EW-002 // the whole store is drawn in CSS. no photography, no image uploads.
 
-   BLUE BUDGET (#0154fd) — the only places it is allowed to appear:
-     1. the live-status dot in the telemetry rail
-     2. the dot travelling the orbit
-     3. the CTA arrow
-     4. one glitch frame on the headline, ~300ms, on load
-     5. the ✳ separators in the ticker
-   Nothing else. No new colours, ever.
+   BLUE (#0154fd) is spent almost entirely on one object: the display table.
+   Everything else in the room is ink, paper and chrome. The remaining blue is
+   the REC dot, the CTA arrow and the ticker mark.
 
+   Geometry is percentage-based clip-path, so the room re-frames itself at any
+   aspect ratio without a single media query doing the heavy lifting.
    Mobile-first. Desktop starts at 750px.
    ========================================================================== */
-
-@property --ew-orbit-angle {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
-}
 
 .ew-hero,
 .ew-hero *,
@@ -26,305 +18,583 @@
   box-sizing: border-box;
 }
 
+/* The sprite carrying the chrome gradient and the six pieces. */
+.ew-hero__defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
 .ew-hero {
   --ew-ink: #000000;
   --ew-paper: #ffffff;
   --ew-chrome: #c0c0c0;
   --ew-blue: #0154fd;
 
-  --ew-hair: rgb(255 255 255 / 0.22);
-  --ew-dim: rgb(255 255 255 / 0.55);
+  --ew-hair: rgb(255 255 255 / 0.14);
+  --ew-dim: rgb(255 255 255 / 0.52);
+  --ew-pad: 18px;
   --ew-min-h: 100svh;
   --ew-min-h-fb: 100vh;
-  --ew-pad: 20px;
-  --ew-scrim: 0.72;
-  --ew-focal-x: var(--ew-focal-x-m, 50%);
-  --ew-focal-y: var(--ew-focal-y-m, 50%);
-  --ew-ticker-duration: 38s;
+  --ew-ticker-duration: 40s;
+  --ew-lamp: 1;
 
-  --ew-mono: var(--ew-mono-font, "Space Mono", ui-monospace, "SF Mono", Menlo, monospace);
-  --ew-shout: var(--ew-shout-font, "Anton", "Haettenschweiler", "Arial Narrow", Impact, sans-serif);
+  /* Room proportions — overridden at 750px. */
+  --ew-ceil: 19%;
+  --ew-horizon: 66%;
+  --ew-side: 9%;
+
+  --ew-mono: "Space Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --ew-serif: var(--ew-serif-font, "Playfair Display"), "Times New Roman", Georgia, serif;
 
   position: relative;
   isolation: isolate;
-  overflow: clip;
   display: flex;
   flex-direction: column;
   min-height: var(--ew-min-h-fb);
   min-height: var(--ew-min-h);
+  overflow: clip;
   background: var(--ew-ink);
   color: var(--ew-paper);
   -webkit-font-smoothing: antialiased;
 }
 
 /* --------------------------------------------------------------------------
-   1. MEDIA — the film still. Always black and white.
+   HUD — the shop camera
    -------------------------------------------------------------------------- */
 
-.ew-hero__media {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  background: var(--ew-ink);
-}
-
-.ew-hero__media picture,
-.ew-hero__media img,
-.ew-hero__media video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: var(--ew-focal-x) var(--ew-focal-y);
-}
-
-/* Grayscale is enforced in CSS so any upload conforms to the palette. */
-.ew-hero__media img,
-.ew-hero__media video {
-  filter: grayscale(1) contrast(1.06) brightness(0.94);
-}
-
-/* Slow push-in. Transform lives on the wrapper so the filtered bitmap
-   is rasterised once and only composited after that. */
-.ew-hero__media-inner {
-  position: absolute;
-  inset: 0;
-  transform: scale(1.1);
-  animation: ew-push 24s cubic-bezier(0.33, 0, 0.2, 1) forwards;
-  will-change: transform;
-}
-
-.ew-hero__video {
-  opacity: 0;
-  transition: opacity 900ms linear;
-}
-
-.ew-hero__video.is-playing {
-  opacity: 1;
-}
-
-/* --------------------------------------------------------------------------
-   2. TREATMENT — scrim, grain, scanline
-   -------------------------------------------------------------------------- */
-
-.ew-hero__scrim {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    linear-gradient(to bottom, rgb(0 0 0 / 0.72) 0%, rgb(0 0 0 / 0) 26%),
-    linear-gradient(to top, rgb(0 0 0 / 0.94) 0%, rgb(0 0 0 / 0.6) 42%, rgb(0 0 0 / 0) 80%);
-  opacity: var(--ew-scrim);
-}
-
-.ew-hero__grain {
-  position: absolute;
-  inset: -60%;
-  z-index: 2;
-  pointer-events: none;
-  opacity: 0.28;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
-  animation: ew-grain 0.6s steps(3) infinite;
-}
-
-/* A single hairline passing down the frame — the scanner. */
-.ew-hero__scan {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  z-index: 3;
-  height: 1px;
-  pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.5) 20%, rgb(255 255 255 / 0.5) 80%, transparent);
-  box-shadow: 0 0 18px rgb(255 255 255 / 0.25);
-  animation: ew-scan 8s linear infinite;
-}
-
-/* --------------------------------------------------------------------------
-   3. TELEMETRY RAIL — the paperwork, in Space Mono
-   -------------------------------------------------------------------------- */
-
-.ew-hero__rail {
-  position: relative;
-  z-index: 5;
+.ew-hero__hud {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 14px var(--ew-pad);
+  gap: 10px;
+  padding: 11px var(--ew-pad);
+  border-bottom: 1px solid var(--ew-hair);
   font-family: var(--ew-mono);
   font-size: 9px;
   line-height: 1;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ew-dim);
-  border-bottom: 1px solid rgb(255 255 255 / 0.1);
-  opacity: 0;
-  animation: ew-in 700ms ease-out 200ms forwards;
 }
 
-.ew-hero__rail-mid {
-  display: none;
-}
-
-.ew-hero__status {
+.ew-hero__rec {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 6px;
   white-space: nowrap;
 }
 
-.ew-hero__dot {
+.ew-hero__rec::before {
+  content: "";
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--ew-blue); /* blue 1/5 */
-  animation: ew-blink 2s steps(1) infinite;
+  background: var(--ew-blue);
+  animation: ew-rec 2.6s steps(1) infinite;
+}
+
+.ew-hero__hud-mid {
+  display: none;
+}
+
+.ew-hero__clock {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 /* --------------------------------------------------------------------------
-   4. STAGE — headline, support, cta
+   FASCIA — the illuminated sign over the shopfront
    -------------------------------------------------------------------------- */
 
-.ew-hero__stage {
+.ew-hero__fascia {
   position: relative;
-  z-index: 5;
-  flex: 1 1 auto;
+  z-index: 2;
   display: grid;
-  align-content: end;
-  justify-items: start;
-  gap: 0;
-  padding: 48px var(--ew-pad) 26px;
+  place-items: center;
+  padding: 16px var(--ew-pad) 18px;
+  background: linear-gradient(180deg, #000 0%, #050505 70%, #0b0b0b 100%);
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
 }
 
-.ew-hero--center .ew-hero__stage {
-  align-content: center;
-}
-
-.ew-hero--top .ew-hero__stage {
-  align-content: start;
-  padding-top: 32px;
-}
-
-/* Orbit — one lap around everything. */
-.ew-hero__orbit {
-  position: absolute;
-  left: 50%;
-  top: 46%;
-  z-index: -1;
-  width: 106vw;
-  aspect-ratio: 1 / 1;
-  translate: -50% -50%;
-  pointer-events: none;
-}
-
-.ew-hero__orbit-ring {
-  position: absolute;
-  inset: 0;
-  border: 1px solid rgb(255 255 255 / 0.2);
-  border-radius: 50%;
-  transform: rotate(-14deg) scaleY(0.42);
-  animation: ew-orbit-tilt 46s ease-in-out infinite alternate;
-}
-
-.ew-hero__orbit-dot {
-  position: absolute;
-  inset: 0;
-  animation: ew-spin 26s linear infinite;
-}
-
-.ew-hero__orbit-dot::after {
+/* The louvred canopy above the sign, as in a real shopfront. */
+.ew-hero__fascia::before {
   content: "";
   position: absolute;
-  top: -3px;
+  inset: 0 0 auto;
+  height: 7px;
+  background: repeating-linear-gradient(90deg, rgb(255 255 255 / 0.1) 0 1px, transparent 1px 5px);
+}
+
+.ew-fascia__word {
+  font-family: var(--ew-serif);
+  font-weight: 500;
+  font-size: clamp(19px, 6.2vw, 46px);
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-indent: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #fff;
+  text-shadow:
+    0 0 14px rgb(255 255 255 / 0.55),
+    0 0 46px rgb(255 255 255 / 0.3),
+    0 0 90px rgb(255 255 255 / 0.16);
+  animation:
+    ew-strike 1.1s ease-out 1.1s 1 backwards,
+    ew-sign 11s ease-in-out 2.2s infinite;
+}
+
+/* The sign spilling light onto the top of the room. */
+.ew-hero__fascia::after {
+  content: "";
+  position: absolute;
   left: 50%;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--ew-blue); /* blue 2/5 */
+  bottom: -1px;
+  width: min(560px, 84%);
+  height: 34px;
+  translate: -50% 100%;
+  background: radial-gradient(ellipse at 50% 0%, rgb(255 255 255 / 0.16), transparent 72%);
+  pointer-events: none;
+  animation:
+    ew-strike 1.1s ease-out 1.1s 1 backwards,
+    ew-sign 11s ease-in-out 2.2s infinite;
+}
+
+/* --------------------------------------------------------------------------
+   THE ROOM
+   -------------------------------------------------------------------------- */
+
+.ew-store {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  min-height: 46svh;
+  overflow: hidden;
+  background: #030303;
+}
+
+/* A very slow camera breath over the whole room. */
+.ew-store__room {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 62%;
+  animation:
+    ew-open 1.6s ease-out backwards,
+    ew-breath 34s ease-in-out infinite alternate;
+}
+
+.ew-store__ceiling,
+.ew-store__floor,
+.ew-store__wall-l,
+.ew-store__wall-r,
+.ew-store__wall {
+  position: absolute;
+  inset: 0;
+}
+
+.ew-store__ceiling {
+  clip-path: polygon(0 0, 100% 0, calc(100% - var(--ew-side)) var(--ew-ceil), var(--ew-side) var(--ew-ceil));
+  background: linear-gradient(180deg, #0a0a0a, #131313);
+}
+
+.ew-store__wall-l {
+  clip-path: polygon(0 0, var(--ew-side) var(--ew-ceil), var(--ew-side) var(--ew-horizon), 0 100%);
+  background: linear-gradient(90deg, #000 0%, #101010 100%);
+}
+
+.ew-store__wall-r {
+  clip-path: polygon(100% 0, calc(100% - var(--ew-side)) var(--ew-ceil), calc(100% - var(--ew-side)) var(--ew-horizon), 100% 100%);
+  background: linear-gradient(270deg, #000 0%, #101010 100%);
+}
+
+.ew-store__floor {
+  clip-path: polygon(0 100%, var(--ew-side) var(--ew-horizon), calc(100% - var(--ew-side)) var(--ew-horizon), 100% 100%);
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 0%, rgb(255 255 255 / 0.13), transparent 70%),
+    linear-gradient(180deg, #141414 0%, #050505 55%, #0a0a0a 100%);
+}
+
+/* Polished floor: a faint horizontal smear of the wall light. */
+.ew-store__floor::after {
+  content: "";
+  position: absolute;
+  left: var(--ew-side);
+  right: var(--ew-side);
+  top: var(--ew-horizon);
+  height: 17%;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0.02) 60%, transparent);
+  filter: blur(2px);
+}
+
+.ew-store__wall {
+  inset: var(--ew-ceil) var(--ew-side) calc(100% - var(--ew-horizon));
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgb(255 255 255 / 0.09), transparent 70%),
+    linear-gradient(180deg, #191919, #0c0c0c);
+  border-bottom: 1px solid rgb(255 255 255 / 0.07);
+}
+
+/* --------------------------------------------------------------------------
+   DISPLAY NICHES — one per category, lit from above
+   -------------------------------------------------------------------------- */
+
+.ew-store__niches {
+  position: absolute;
+  inset: 13% 4% 8%;
+  display: flex;
+  gap: 1.6%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ew-niche {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6%;
+  padding: 6% 2%;
+  background: linear-gradient(180deg, #d9d9d9 0%, #8a8a8a 6%, #2a2a2a 46%, #0e0e0e 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.5),
+    inset 0 -14px 26px rgb(0 0 0 / 0.7);
+  opacity: calc(0.72 + 0.28 * var(--ew-lamp));
+}
+
+/* The shelf the piece rests on. */
+.ew-niche::after {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 26%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.45), transparent);
+}
+
+.ew-niche__piece {
+  width: 62%;
+  max-width: 46px;
+  height: auto;
+  filter: drop-shadow(0 2px 5px rgb(0 0 0 / 0.85));
+}
+
+/* Chrome fill for the jewellery, with a highlight that travels across it. */
+.ew-niche__piece .ew-metal {
+  fill: url(#ewChrome);
+}
+
+.ew-niche__label {
+  position: absolute;
+  bottom: 5%;
+  left: 0;
+  right: 0;
+  font-family: var(--ew-mono);
+  font-size: clamp(4.6px, 1.28vw, 8px);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgb(255 255 255 / 0.62);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 2%;
+}
+
+/* A specular glint crossing the piece. */
+.ew-niche__glint {
+  position: absolute;
+  top: 10%;
+  bottom: 30%;
+  width: 26%;
+  background: linear-gradient(100deg, transparent, rgb(255 255 255 / 0.5), transparent);
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: ew-glint 9s ease-in-out infinite;
+  animation-delay: calc(var(--n, 0) * 1.4s);
+}
+
+/* --------------------------------------------------------------------------
+   CEILING LAMPS + THEIR CONES
+   -------------------------------------------------------------------------- */
+
+.ew-lamp {
+  position: absolute;
+  top: calc(var(--ew-ceil) * 0.62);
+  left: var(--x);
+  width: 7%;
+  height: 3px;
+  translate: -50% 0;
+  border-radius: 1px;
+  background: linear-gradient(90deg, transparent, #ffffff 22%, #ffffff 78%, transparent);
+  box-shadow: 0 0 14px rgb(255 255 255 / 0.75), 0 0 40px rgb(255 255 255 / 0.35);
+  animation:
+    ew-strike 900ms ease-out calc(var(--n, 0) * 190ms) 1 backwards,
+    ew-lamp 7s ease-in-out calc(var(--n, 0) * 190ms + 900ms) infinite;
+}
+
+/* One tube in the room is on its way out. */
+.ew-lamp--faulty {
+  animation:
+    ew-strike 900ms ease-out calc(var(--n, 0) * 190ms) 1 backwards,
+    ew-flicker 6.5s steps(1) calc(var(--n, 0) * 190ms + 900ms) infinite;
+}
+
+.ew-cone {
+  position: absolute;
+  top: calc(var(--ew-ceil) * 0.62);
+  left: var(--x);
+  width: 34%;
+  bottom: 0;
+  translate: -50% 0;
+  clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%);
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.12), rgb(255 255 255 / 0.02) 58%, transparent 88%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation:
+    ew-strike 900ms ease-out calc(var(--n, 0) * 190ms) 1 backwards,
+    ew-lamp 7s ease-in-out calc(var(--n, 0) * 190ms + 900ms) infinite;
+}
+
+.ew-cone--faulty {
+  animation:
+    ew-strike 900ms ease-out calc(var(--n, 0) * 190ms) 1 backwards,
+    ew-flicker 6.5s steps(1) calc(var(--n, 0) * 190ms + 900ms) infinite;
+}
+
+/* --------------------------------------------------------------------------
+   THE BLUE TABLE — the one object allowed to be blue
+   -------------------------------------------------------------------------- */
+
+.ew-store__table {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--ew-horizon) - 3%);
+  width: 52%;
+  height: 15%;
   translate: -50% 0;
 }
 
-/* --- headline ------------------------------------------------------------ */
-
-.ew-hero__title {
-  margin: 0;
-  font-family: var(--ew-shout);
-  font-weight: 400;
-  font-size: calc(clamp(3.4rem, 21vw, 9.5rem) * var(--ew-title-scale, 1));
-  line-height: 0.86;
-  letter-spacing: 0.005em;
-  text-transform: uppercase;
-}
-
-.ew-hero__line {
-  display: block;
-  overflow: hidden;
-  padding-bottom: 0.06em;
-  margin-bottom: -0.06em;
-}
-
-.ew-hero__line-in {
-  position: relative;
-  display: inline-block;
-  transform: translateY(105%);
-  animation: ew-rise 1.05s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  animation-delay: calc(var(--i, 0) * 105ms + 320ms);
-}
-
-/* Chrome finish — silver is the material. */
-.ew-hero__line-in--chrome {
-  background-image: linear-gradient(
-    100deg,
-    #d4d4d4 0%,
-    #ffffff 14%,
-    #7d7d7d 30%,
-    #ffffff 46%,
-    var(--ew-chrome) 62%,
-    #ffffff 80%,
-    #b4b4b4 100%
+.ew-table__top {
+  position: absolute;
+  inset: 0 0 54%;
+  clip-path: polygon(13% 0, 87% 0, 100% 100%, 0 100%);
+  background: linear-gradient(
+    180deg,
+    rgb(1 84 253 / 0.85) 0 1px,
+    rgb(255 255 255 / 0.09) 1px,
+    rgb(1 84 253 / 0.13) 100%
   );
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  animation:
-    ew-rise 1.05s cubic-bezier(0.16, 1, 0.3, 1) forwards,
-    ew-chrome 9s ease-in-out 1.4s infinite;
 }
 
-/* One glitch frame, blue, ~300ms after the line lands. Then never again. */
-.ew-hero__line-in::after {
-  content: attr(data-text);
+.ew-table__front {
+  position: absolute;
+  inset: 46% 0 0;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, #06090f 0%, #010204 82%);
+  border-top: 1px solid var(--ew-blue);
+  box-shadow: 0 0 20px rgb(1 84 253 / 0.4), 0 0 54px rgb(1 84 253 / 0.16);
+  animation: ew-pulse 6.5s ease-in-out infinite;
+}
+
+/* Etched on the front of the vitrine. */
+.ew-table__plate {
+  font-family: var(--ew-mono);
+  font-size: clamp(5px, 1.15vw, 9px);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.42);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 88%;
+}
+
+/* Light pooling on the floor under the table. */
+.ew-store__pool {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--ew-horizon) + 4%);
+  width: 96%;
+  height: 34%;
+  translate: -50% 0;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgb(1 84 253 / 0.15), transparent 72%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: ew-pulse 6.5s ease-in-out infinite;
+}
+
+/* And a wash of it back up onto the ceiling. */
+.ew-store__caustic {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 70%;
+  height: var(--ew-ceil);
+  translate: -50% 0;
+  background: radial-gradient(ellipse 50% 90% at 50% 100%, rgb(1 84 253 / 0.08), transparent 70%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: ew-pulse 6.5s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------------------
+   THE GLOBE — standing on the table, one lap around everything
+   -------------------------------------------------------------------------- */
+
+.ew-store__globe {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  width: 36%;
+  max-width: 118px;
+  aspect-ratio: 1 / 1;
+  translate: -50% 0;
+  /* The house light finding the mark. */
+  background: radial-gradient(circle at 50% 44%, rgb(255 255 255 / 0.13), transparent 62%);
+}
+
+/* Contact shadow where it meets the glass. */
+.ew-store__globe::before {
+  content: "";
+  position: absolute;
+  left: 16%;
+  right: 16%;
+  bottom: -3%;
+  height: 12%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%, rgb(0 0 0 / 0.85), transparent 72%);
+}
+
+.ew-store__globe svg,
+.ew-store__globe img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 16px rgb(0 0 0 / 0.8));
+}
+
+.ew-globe__spin {
+  transform-box: fill-box;
+  animation: ew-globe 26s linear infinite;
+}
+
+/* Its reflection in the tabletop. */
+.ew-store__globe::after {
+  content: "";
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  top: 100%;
+  height: 60%;
+  background: radial-gradient(ellipse 50% 100% at 50% 0%, rgb(255 255 255 / 0.14), transparent 70%);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   ATMOSPHERE
+   -------------------------------------------------------------------------- */
+
+.ew-store__dust {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ew-store__dust span {
+  position: absolute;
+  top: var(--y);
+  left: var(--x);
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.5);
+  animation: ew-mote var(--d, 18s) linear infinite;
+  animation-delay: calc(var(--n, 0) * -3.1s);
+}
+
+/* Shopfront glazing: mullions, then a sheen crossing the glass. */
+.ew-store__mullions {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.ew-store__mullions span {
   position: absolute;
   top: 0;
-  left: 0;
-  color: var(--ew-blue); /* blue 3/5 */
-  -webkit-text-fill-color: var(--ew-blue);
-  opacity: 0;
+  bottom: 0;
+  left: var(--x);
+  width: 2px;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0.05));
+  box-shadow: 0 0 8px rgb(0 0 0 / 0.6);
+}
+
+.ew-store__sheen {
+  position: absolute;
+  inset: -20% -60%;
+  z-index: 4;
   pointer-events: none;
-  animation: ew-glitch 5.5s steps(1) calc(var(--i, 0) * 105ms + 900ms) 1 forwards;
+  background: linear-gradient(104deg, transparent 42%, rgb(255 255 255 / 0.07) 50%, transparent 58%);
+  mix-blend-mode: screen;
+  animation: ew-sheen 17s ease-in-out infinite;
 }
 
-/* --- support + cta ------------------------------------------------------- */
+.ew-store__vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: radial-gradient(ellipse 76% 68% at 50% 52%, transparent 42%, rgb(0 0 0 / 0.72) 100%);
+}
 
-.ew-hero__support {
-  max-width: 34ch;
-  margin: 18px 0 0;
-  font-size: 13px;
-  line-height: 1.55;
-  color: var(--ew-dim);
+.ew-store__grain {
+  position: absolute;
+  inset: -50%;
+  z-index: 6;
+  pointer-events: none;
+  opacity: 0.22;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  animation: ew-grain 0.62s steps(3) infinite;
+}
+
+/* --------------------------------------------------------------------------
+   COPY — etched on the glass
+   -------------------------------------------------------------------------- */
+
+.ew-store__copy {
+  position: absolute;
+  z-index: 7;
+  left: var(--ew-pad);
+  right: var(--ew-pad);
+  bottom: 16px;
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+}
+
+.ew-store__decal {
+  margin: 0;
+  max-width: 26ch;
+  font-size: clamp(12px, 3.4vw, 15px);
+  line-height: 1.5;
+  color: rgb(255 255 255 / 0.82);
+  text-shadow: 0 1px 14px rgb(0 0 0 / 0.9);
   opacity: 0;
-  animation: ew-in 800ms ease-out 900ms forwards;
+  animation: ew-in 900ms ease-out 500ms forwards;
 }
 
-.ew-hero__support p {
+.ew-store__decal p {
   margin: 0;
 }
 
@@ -333,10 +603,9 @@
   align-items: center;
   gap: 12px;
   min-height: 48px;
-  margin-top: 24px;
   padding: 0 22px;
   border: 1px solid var(--ew-paper);
-  background: transparent;
+  background: rgb(0 0 0 / 0.4);
   color: var(--ew-paper);
   font-family: var(--ew-mono);
   font-size: 11px;
@@ -344,13 +613,13 @@
   text-transform: uppercase;
   text-decoration: none;
   opacity: 0;
-  animation: ew-in 800ms ease-out 1050ms forwards;
+  animation: ew-in 900ms ease-out 700ms forwards;
   transition: background-color 220ms ease, color 220ms ease;
 }
 
 .ew-hero__cta svg {
   flex: none;
-  color: var(--ew-blue); /* blue 4/5 */
+  color: var(--ew-blue);
   transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -369,24 +638,24 @@
 }
 
 /* --------------------------------------------------------------------------
-   5. CATEGORY CHIPS — the fastest route into the catalogue on a phone
+   CHIPS + TICKER
    -------------------------------------------------------------------------- */
 
 .ew-hero__chips {
   position: relative;
-  z-index: 5;
+  z-index: 2;
   display: flex;
   gap: 8px;
   margin: 0;
-  padding: 0 var(--ew-pad) 20px;
+  padding: 14px var(--ew-pad);
   list-style: none;
   overflow-x: auto;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x proximity;
   overscroll-behavior-x: contain;
-  opacity: 0;
-  animation: ew-in 800ms ease-out 1200ms forwards;
+  background: var(--ew-ink);
+  border-top: 1px solid var(--ew-hair);
 }
 
 .ew-hero__chips::-webkit-scrollbar {
@@ -404,7 +673,6 @@
   min-height: 40px;
   padding: 0 15px;
   border: 1px solid var(--ew-hair);
-  background: rgb(0 0 0 / 0.35);
   color: var(--ew-paper);
   font-family: var(--ew-mono);
   font-size: 10px;
@@ -420,17 +688,13 @@
   background: rgb(255 255 255 / 0.12);
 }
 
-/* --------------------------------------------------------------------------
-   6. TICKER — one per page
-   -------------------------------------------------------------------------- */
-
 .ew-hero__ticker {
   position: relative;
-  z-index: 5;
+  z-index: 2;
   display: flex;
   overflow: hidden;
-  padding: 11px 0;
-  border-top: 1px solid rgb(255 255 255 / 0.14);
+  padding: 10px 0;
+  border-top: 1px solid var(--ew-hair);
   background: var(--ew-ink);
   user-select: none;
 }
@@ -451,120 +715,78 @@
   gap: 30px;
   font-family: var(--ew-mono);
   font-size: 9px;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--ew-dim);
 }
 
 .ew-hero__ticker-item::after {
   content: "✳";
-  color: var(--ew-blue); /* blue 5/5 */
+  color: var(--ew-blue);
   font-size: 8px;
 }
 
 /* --------------------------------------------------------------------------
-   7. SCROLL CUE
-   -------------------------------------------------------------------------- */
-
-.ew-hero__cue {
-  display: none;
-  position: absolute;
-  right: var(--ew-pad);
-  bottom: 96px;
-  z-index: 5;
-  justify-items: center;
-  gap: 8px;
-  font-family: var(--ew-mono);
-  font-size: 8px;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--ew-dim);
-  pointer-events: none;
-  opacity: 0;
-  animation: ew-in 800ms ease-out 1400ms forwards;
-}
-
-.ew-hero__cue svg {
-  animation: ew-bob 2.2s ease-in-out infinite;
-}
-
-/* --------------------------------------------------------------------------
-   8. HAZARD TAPE — off by default. Edges and warnings only.
-   -------------------------------------------------------------------------- */
-
-.ew-hero__tape {
-  position: relative;
-  z-index: 6;
-  height: 10px;
-  background: repeating-linear-gradient(
-    -45deg,
-    var(--ew-paper) 0 8px,
-    var(--ew-ink) 8px 16px
-  );
-}
-
-/* --------------------------------------------------------------------------
-   9. DESKTOP
+   DESKTOP — the camera pulls back, the room widens
    -------------------------------------------------------------------------- */
 
 @media screen and (min-width: 750px) {
   .ew-hero {
     --ew-pad: 40px;
-    --ew-focal-x: var(--ew-focal-x-d, 50%);
-    --ew-focal-y: var(--ew-focal-y-d, 50%);
+    --ew-ceil: 22%;
+    --ew-horizon: 63%;
+    --ew-side: 21%;
   }
 
-  .ew-hero__rail {
+  .ew-hero__hud {
+    padding: 14px var(--ew-pad);
     font-size: 10px;
-    padding: 18px var(--ew-pad);
   }
 
-  .ew-hero__rail-mid {
+  .ew-hero__hud-mid {
     display: block;
   }
 
-  .ew-hero__stage {
-    padding: 80px var(--ew-pad) 40px;
+  .ew-hero__fascia {
+    padding: 22px var(--ew-pad) 26px;
   }
 
-  .ew-hero--center .ew-hero__stage {
-    justify-items: center;
-    text-align: center;
+  .ew-fascia__word {
+    font-size: clamp(30px, 3.6vw, 58px);
+    letter-spacing: 0.2em;
+    text-indent: 0.2em;
   }
 
-  .ew-hero__title {
-    font-size: calc(clamp(4.5rem, 13.5vw, 13rem) * var(--ew-title-scale, 1));
+  .ew-store__niches {
+    inset: 12% 5% 7%;
+    gap: 1.4%;
   }
 
-  .ew-hero__support {
-    max-width: 42ch;
-    margin-top: 22px;
-    font-size: 14px;
+  .ew-store__table {
+    width: 34%;
+    height: 17%;
   }
 
-  .ew-hero__orbit {
-    width: 66vw;
-    top: 50%;
+  .ew-store__globe {
+    width: 24%;
+  }
+
+  .ew-store__copy {
+    bottom: 26px;
+    gap: 18px;
+  }
+
+  .ew-store__decal {
+    max-width: 34ch;
   }
 
   .ew-hero__chips {
-    gap: 10px;
-    padding-bottom: 26px;
-    overflow-x: visible;
     flex-wrap: wrap;
+    overflow-x: visible;
   }
 
-  .ew-hero--center .ew-hero__chips {
-    justify-content: center;
-  }
-
-  .ew-hero__cue {
-    display: grid;
-    bottom: 104px;
-  }
-
-  .ew-hero__ticker-item,
-  .ew-hero__ticker-track {
+  .ew-hero__ticker-track,
+  .ew-hero__ticker-item {
     gap: 44px;
   }
 
@@ -574,15 +796,19 @@
 }
 
 /* --------------------------------------------------------------------------
-   10. MOTION PREFERENCES + OFFSCREEN
+   OFF-SCREEN + MOTION PREFERENCES
    -------------------------------------------------------------------------- */
 
-.ew-hero--offscreen .ew-hero__grain,
-.ew-hero--offscreen .ew-hero__scan,
-.ew-hero--offscreen .ew-hero__orbit-ring,
-.ew-hero--offscreen .ew-hero__orbit-dot,
+.ew-hero--offscreen .ew-store__room,
+.ew-hero--offscreen .ew-lamp,
+.ew-hero--offscreen .ew-cone,
+.ew-hero--offscreen .ew-store__grain,
+.ew-hero--offscreen .ew-store__sheen,
+.ew-hero--offscreen .ew-store__dust span,
+.ew-hero--offscreen .ew-niche__glint,
+.ew-hero--offscreen .ew-globe__spin,
 .ew-hero--offscreen .ew-hero__ticker-track,
-.ew-hero--offscreen .ew-hero__dot {
+.ew-hero--offscreen .ew-fascia__word {
   animation-play-state: paused;
 }
 
@@ -594,44 +820,21 @@
     transition: none !important;
   }
 
-  .ew-hero__rail,
-  .ew-hero__support,
-  .ew-hero__cta,
-  .ew-hero__chips,
-  .ew-hero__cue {
+  .ew-store__decal,
+  .ew-hero__cta {
     opacity: 1;
   }
 
-  .ew-hero__line-in {
-    transform: none;
-  }
-
-  .ew-hero__line-in::after {
+  .ew-store__dust,
+  .ew-store__sheen,
+  .ew-store__grain {
     display: none;
-  }
-
-  .ew-hero__media-inner {
-    transform: none;
-  }
-
-  .ew-hero__scan {
-    display: none;
-  }
-
-  .ew-hero__video.is-playing {
-    opacity: 1;
   }
 }
 
 /* --------------------------------------------------------------------------
-   11. KEYFRAMES
+   KEYFRAMES — everything is transform or opacity
    -------------------------------------------------------------------------- */
-
-@keyframes ew-rise {
-  to {
-    transform: translateY(0);
-  }
-}
 
 @keyframes ew-in {
   from {
@@ -644,62 +847,182 @@
   }
 }
 
-@keyframes ew-push {
+@keyframes ew-open {
+  from {
+    opacity: 0;
+  }
   to {
+    opacity: 1;
+  }
+}
+
+/* A tube striking: catches, drops out, catches again, holds. */
+@keyframes ew-strike {
+  0% {
+    opacity: 0;
+  }
+  34% {
+    opacity: 1;
+  }
+  42% {
+    opacity: 0.12;
+  }
+  54% {
+    opacity: 1;
+  }
+  61% {
+    opacity: 0.3;
+  }
+  72%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes ew-breath {
+  from {
     transform: scale(1);
   }
+  to {
+    transform: scale(1.035);
+  }
 }
 
-@keyframes ew-chrome {
+/* Halogen: never perfectly steady, never obviously animated. */
+@keyframes ew-lamp {
   0%,
   100% {
-    background-position: 0% 50%;
+    opacity: 1;
+  }
+  38% {
+    opacity: 0.88;
+  }
+  62% {
+    opacity: 0.97;
+  }
+  80% {
+    opacity: 0.84;
+  }
+}
+
+/* The failing tube. Long stretches of normal, then a stutter. */
+@keyframes ew-flicker {
+  0%,
+  62% {
+    opacity: 1;
+  }
+  63% {
+    opacity: 0.18;
+  }
+  64% {
+    opacity: 0.95;
+  }
+  65% {
+    opacity: 0.25;
+  }
+  67% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  89% {
+    opacity: 0.4;
+  }
+  90.5% {
+    opacity: 1;
+  }
+}
+
+@keyframes ew-sign {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  41% {
+    opacity: 0.94;
+  }
+  43% {
+    opacity: 0.62;
+  }
+  44.5% {
+    opacity: 0.97;
+  }
+  46% {
+    opacity: 0.7;
+  }
+  48% {
+    opacity: 1;
+  }
+}
+
+@keyframes ew-pulse {
+  0%,
+  100% {
+    opacity: 0.82;
   }
   50% {
-    background-position: 100% 50%;
+    opacity: 1;
   }
 }
 
-/* Two hard frames of blue offset, then gone for good. */
-@keyframes ew-glitch {
-  0% {
+@keyframes ew-glint {
+  0%,
+  62% {
     opacity: 0;
-    transform: translate(0, 0);
+    transform: translateX(-140%) skewX(-14deg);
   }
-  1% {
-    opacity: 0.9;
-    transform: translate(-3px, 1px);
+  70% {
+    opacity: 1;
   }
-  2.4% {
-    opacity: 0;
-    transform: translate(0, 0);
-  }
-  3.6% {
-    opacity: 0.75;
-    transform: translate(2px, -1px);
-  }
-  5% {
-    opacity: 0;
-  }
+  84%,
   100% {
     opacity: 0;
+    transform: translateX(420%) skewX(-14deg);
   }
 }
 
-@keyframes ew-scan {
-  0% {
-    top: -2%;
-    opacity: 0;
+@keyframes ew-globe {
+  to {
+    transform: translateX(-50%);
   }
-  8% {
-    opacity: 1;
+}
+
+@keyframes ew-mote {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+  14% {
+    opacity: 0.8;
   }
   86% {
-    opacity: 1;
+    opacity: 0.5;
   }
   100% {
-    top: 102%;
     opacity: 0;
+    transform: translate3d(14px, -120px, 0);
+  }
+}
+
+@keyframes ew-sheen {
+  0%,
+  100% {
+    transform: translateX(-38%);
+  }
+  50% {
+    transform: translateX(38%);
+  }
+}
+
+@keyframes ew-rec {
+  0%,
+  55% {
+    opacity: 1;
+  }
+  56%,
+  100% {
+    opacity: 0.12;
   }
 }
 
@@ -715,42 +1038,6 @@
   }
   100% {
     transform: translate(-1%, -2%);
-  }
-}
-
-@keyframes ew-blink {
-  0%,
-  55% {
-    opacity: 1;
-  }
-  56%,
-  100% {
-    opacity: 0.15;
-  }
-}
-
-@keyframes ew-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes ew-orbit-tilt {
-  from {
-    transform: rotate(-16deg) scaleY(0.42);
-  }
-  to {
-    transform: rotate(10deg) scaleY(0.34);
-  }
-}
-
-@keyframes ew-bob {
-  0%,
-  100% {
-    transform: translateY(-2px);
-  }
-  50% {
-    transform: translateY(3px);
   }
 }
 

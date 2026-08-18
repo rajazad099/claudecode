@@ -1,65 +1,49 @@
-/* ENCORE WORLDWIDE — hero
-   Progressive enhancement. The hero is complete without this file: the still
-   is the LCP image and every animation is CSS. This only:
-     - picks the phone or desktop video and fades it in over the still
-     - skips video entirely on reduced-motion, save-data or slow connections
-     - pauses ambient motion when the hero is off-screen */
+/* ENCORE WORLDWIDE — storefront hero
+   Progressive enhancement only. The room, the lighting and every animation are
+   CSS; without this file you lose the running clock and the off-screen pause,
+   and nothing else. */
 (function () {
   'use strict';
 
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  function wantsHeavyMedia() {
-    if (reduceMotion.matches) return false;
-    var c = navigator.connection;
-    if (!c) return true;
-    if (c.saveData) return false;
-    return !/(^|-)2g$/.test(c.effectiveType || '');
+  function pad(n) {
+    return n < 10 ? '0' + n : String(n);
   }
 
-  function initVideo(hero) {
-    var video = hero.querySelector('.ew-hero__video');
-    if (!video) return null;
+  function startClock(hero) {
+    var el = hero.querySelector('[data-ew-clock]');
+    if (!el) return null;
 
-    if (!wantsHeavyMedia()) {
-      video.remove();
-      return null;
+    var frame = null;
+    var last = '';
+
+    function tick() {
+      var now = new Date();
+      var text = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+      if (text !== last) {
+        last = text;
+        el.textContent = text;
+      }
+      frame = window.setTimeout(tick, 1000 - (Date.now() % 1000));
     }
 
-    var desktop = window.matchMedia('(min-width: 750px)').matches;
-    var src = (desktop && video.dataset.srcDesktop) || video.dataset.srcMobile || video.dataset.srcDesktop;
+    tick();
 
-    if (!src) {
-      video.remove();
-      return null;
-    }
-
-    video.addEventListener(
-      'canplay',
-      function () {
-        video.classList.add('is-playing');
+    return {
+      stop: function () {
+        if (frame !== null) window.clearTimeout(frame);
+        frame = null;
       },
-      { once: true }
-    );
-
-    video.src = src;
-
-    var attempt = video.play();
-    if (attempt && typeof attempt.catch === 'function') {
-      // Autoplay refused (low power mode, for one) — the still already carries the hero.
-      attempt.catch(function () {
-        video.remove();
-      });
-    }
-
-    return video;
+      start: function () {
+        if (frame === null) tick();
+      }
+    };
   }
 
   function initHero(hero) {
     if (hero.dataset.ewReady === 'true') return;
     hero.dataset.ewReady = 'true';
 
-    var video = initVideo(hero);
+    var clock = startClock(hero);
 
     if (!('IntersectionObserver' in window)) return;
 
@@ -67,13 +51,9 @@
       function (entries) {
         var visible = entries[0].isIntersecting;
         hero.classList.toggle('ew-hero--offscreen', !visible);
-        if (!video) return;
-        if (visible) {
-          var attempt = video.play();
-          if (attempt && typeof attempt.catch === 'function') attempt.catch(function () {});
-        } else {
-          video.pause();
-        }
+        if (!clock) return;
+        if (visible) clock.start();
+        else clock.stop();
       },
       { threshold: 0 }
     ).observe(hero);

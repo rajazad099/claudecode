@@ -1,106 +1,128 @@
-# ENCORE WORLDWIDE — hero section
+# ENCORE WORLDWIDE — storefront hero
 
-`EW-001 // DROP 001`
+`EW-002 // DROP 001`
 
-A drop-in Online Store 2.0 hero, built to the deck: black, white, chrome, with
-blue rationed to five elements. Mobile-first, because 99% of visitors are.
+A drop-in Online Store 2.0 hero. The shop — room, track lighting, display
+cases, jewellery, the globe and the blue vitrine — is drawn entirely in CSS and
+SVG. **No photography. No image uploads. Nothing to art-direct.**
 
 <img src="preview/hero-mobile.jpg" width="300" alt="Mobile"> <img src="preview/hero-desktop.jpg" width="520" alt="Desktop">
-
-*(The image is an abstract stand-in. Drop in a real film still to judge the art direction.)*
 
 ## Files
 
 | File | |
 | --- | --- |
 | `sections/encore-hero.liquid` | The section + theme-editor schema |
-| `assets/encore-hero.css` | All styling |
-| `assets/encore-hero.js` | Video swap + off-screen pausing. Progressive enhancement only |
+| `assets/encore-hero.css` | The whole shop |
+| `assets/encore-hero.js` | Running clock + off-screen pause. Progressive enhancement only |
 | `preview/index.html` | Static preview — open in a browser, no store needed |
+
+Total weight: about 34 KB of CSS, HTML and SVG, plus two webfonts. No images,
+no libraries, no build step.
 
 ## Install
 
 1. **Online Store → Themes → ⋯ → Edit code**
 2. **Assets → Add a new asset** → upload `encore-hero.css` and `encore-hero.js`
 3. **Sections → Add a new section** → name it `encore-hero` → paste in `sections/encore-hero.liquid`
-4. **Customize → Add section → Encore hero**, drag to the top
+4. **Customize → Add section → Encore storefront hero**, drag to the top
 
-## How it follows the deck
+It sits directly under your existing black nav, in the same register: black
+ground, white rules, Space Mono for anything that reads as instrumentation.
 
-**Colour.** Ink `#000000`, paper `#ffffff`, chrome `#c0c0c0`. No colour pickers
-are exposed — *no new colors, ever* is a brand rule, so it's enforced in code
-rather than left to a setting. Every uploaded image is forced to greyscale in
-CSS, so the hero cannot go off-palette even by accident.
+## The room
 
-**The blue budget.** `#0154fd` appears in exactly five places, listed at the top
-of the stylesheet: the live dot in the telemetry rail, the dot travelling the
-orbit, the CTA arrow, one 300ms glitch frame on the headline at load, and the ✳
-in the ticker. Together that's well under 5% of the frame.
+Geometry is percentage-based `clip-path`, so the ceiling, side walls, back wall
+and floor re-frame themselves at any aspect ratio. On a phone the camera stands
+close and the room is narrow; past 750px it pulls back and widens. Two numbers
+do it — `--ew-ceil` and `--ew-side`.
 
-**Type.** Anton is the shout — the headline. Space Mono is the paperwork — rail,
-ticker, chips, button. Body copy inherits your theme font, which is the uniform.
-Both webfonts load from Google Fonts and can be switched off if you self-host.
-
-**Voice.** Defaults are lowercase, first person, no filler: *"small runs, made
-because we wanted them. shipped worldwide. no restocks."* No emoji anywhere.
-
-**Toolkit.** Orbit (one lap around everything), film grain, halftone-free hard
-edges, the ticker (one per page), and hazard tape — tape ships **off**, since
-the site's register is the quiet one.
+**Display cases** come from the section's blocks — one lit niche per category,
+each with the piece drawn inside it: necklace, ear cuff, ring, bracelet,
+earring, charm. The labels are the same six collections as your `ALT/
+COLLECTION` grid, and the chip row below the glass is the tappable version of
+the same list.
 
 ## The motion
 
-Everything is CSS transform/opacity, nothing runs on the main thread.
+Slow, and never all at once.
 
-- **Push-in** — the still scales 1.10 → 1.00 over 24s
-- **Line reveal** — each headline line rises out of a mask, 105ms apart
-- **Chrome sweep** — silver travels across the `*asterisked*` line every 9s
-- **Glitch** — two hard blue frames, ~300ms, once on load, then never again
-- **Scanner** — a single hairline crosses the frame every 8s
-- **Orbit** — a tilting ellipse with the blue dot running it
-- **Grain** — 3-step film grain
-- **Ticker** — marquee, pauses when the hero leaves the viewport
+- **Lights on.** The room fades up, then the five tubes strike one after
+  another — catch, drop out, catch again, hold. The sign warms up last, at 1.1s.
+- **Halogen wander.** Once lit, every tube drifts between 84% and 100%, each on
+  its own offset, so the room is never perfectly still.
+- **One failing tube.** The fourth one stutters every six and a half seconds.
+  It's the detail that makes the other four read as real.
+- **Camera breath.** The whole room scales 1.000 → 1.035 over 34 seconds.
+- **Glints.** A specular highlight crosses each piece of jewellery on a stagger.
+- **The globe** turns on its axis, 26 seconds a lap, inside its orbit ring.
+- **The vitrine** breathes its blue over 6.5 seconds, up onto the ceiling and
+  down into the floor.
+- **Dust** drifts up through the light beams.
+- **A reflection** crosses the shop glass every 17 seconds.
+- **The clock** in the camera rail runs live.
 
-All of it is removed under `prefers-reduced-motion: reduce`, which also drops
-the video and renders every element in its final state.
+All of it is `opacity` and `transform` only — nothing touches layout, nothing
+runs on the main thread. Every animation is removed under
+`prefers-reduced-motion: reduce`, and the whole room pauses when it scrolls out
+of view.
 
-## Mobile specifics
+## Where the blue went
 
-- **Separate mobile crop.** `image_mobile` and `image_desktop` are distinct
-  settings behind a `<picture>`, with independent focal points. Your current
-  hero is a landscape frame in a portrait viewport — this is the fix.
-- **Video is optional and never blocks.** The still is the LCP element; video
-  loads with `preload="none"`, is chosen per breakpoint by JS, and fades in on
-  `canplay`. It is skipped entirely on reduced-motion, data saver and 2G, and
-  removed if autoplay is refused (low power mode).
-- **Tap targets** — 48px button, 40px chips.
-- **Category chips** put the six collections one thumb-tap from the hero.
-- **No backdrop blur** anywhere; it's the most expensive thing you can put on a
-  mid-range Android.
-- Heights use `svh` with a `vh` fallback, so the browser chrome doesn't clip it.
+You asked for 5%. Almost all of it is spent on one object — the display table —
+and it is edge-light rather than fill: a 1px lit rim on the glass top, a lit
+seam on the front panel, a soft pool on the floor and a faint wash on the
+ceiling. The only other blue in the frame is the REC dot, the button arrow and
+the ✳ in the ticker. There are no colour pickers in the schema, because *no new
+colors, ever* is a brand rule and belongs in code rather than in a setting.
+
+## The sign
+
+Set in a high-contrast serif, letter-spaced wide and lit from within — the
+shopfront convention your reference uses. Playfair Display by default, with
+Prata and Libre Baskerville also wired up in the picker if you want it heavier
+or more transitional. If you hold a licence for the exact face, self-host it and
+switch the webfont loading off.
+
+## Mobile
+
+- One column, 100svh with a vh fallback, nothing that needs a hover.
+- 48px button, 40px chips, the chip row scrolls with snap.
+- Six case labels fit without clipping down to 320px — verified, not assumed.
+- No `backdrop-filter` and only two 2px blurs in the entire stylesheet, both on
+  static elements. Everything animated is compositor-only.
+- The dust, the glass reflection and the grain are individually switchable if
+  you want to strip even more off older Androids.
+
+## Details worth finding
+
+- The plate etched on the vitrine reads **Drop 001 — 50 made**, and it's a
+  setting.
+- The globe's orbit ring is tilted to the same angle as the swoosh in your
+  wordmark.
+- The camera rail is a shop CCTV overlay: `CAM 01 — FLOOR`, your store's real
+  coordinates, and a clock that actually ticks.
+- The louvred strip above the sign is the same slatted canopy as a real
+  shopfront fascia.
+- The two vertical lines are the window mullions. You are standing outside,
+  looking in.
 
 ## Settings worth knowing
 
 | Setting | Notes |
 | --- | --- |
-| Headline | Enter for a new line. Wrap a whole line in `*asterisks*` for the chrome finish |
-| Heading level | H1 when the hero is first on the page |
-| Mobile / desktop focal point | Where the crop centres on each breakpoint |
-| Content position | Bottom (default), centre, top |
-| Darkening | Scrim over the photo — raise it if your still is bright |
-| Telemetry rail | `EW-001 // DROP 001` · `LAT 19.99 / LON 73.78` · `LIVE` |
-| Categories | Up to 8 blocks — the chip row |
+| Sign / Sign typeface | The illuminated fascia |
+| Line on the glass | The vinyl decal, lower left |
+| Display case blocks | Label, link, and which piece sits inside |
+| Etched on the vitrine | The plate on the table front |
+| Globe artwork | Optional — drop in the real mark to replace the drawn one |
+| One failing tube | Turn the flicker off if you want the room pristine |
 
 ## Verified
 
 Headless Chromium at 320 / 360 / 390 / 414 / 430 / 768 / 1024 / 1440 / 1920 px:
-no horizontal overflow, headline fits at every width, 48px and 40px tap targets
-hold, ticker sits flush to the hero's bottom edge, no console errors. Checked
-again with `prefers-reduced-motion: reduce`.
-
-## One open item
-
-**Gotham** is the uniform in the deck but it's a licensed Hoefler face and isn't
-on Google Fonts, so body copy currently inherits whatever your theme is set to.
-If you hold a Gotham web licence, add the files under **Assets** and point the
-theme's body font at it — the section will follow automatically.
+no horizontal overflow, no clipped case labels at any width, 48px and 40px tap
+targets hold, ticker flush to the hero's bottom edge, globe seated on the table
+at every breakpoint, no console errors. Re-checked under
+`prefers-reduced-motion: reduce`: animations gone, dust and grain removed, every
+element at its final state.
