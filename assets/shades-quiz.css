@@ -1,0 +1,438 @@
+/* PROJECT SHADES — THE FITTING ROOM (PS-003)
+   Black ground, white rules, one tint. The face and the frames are drawn, so
+   there is nothing to art-direct and nothing to upload. */
+
+.psq {
+  --psq-ink: #000;
+  --psq-paper: #fff;
+  --psq-dim: rgba(255, 255, 255, .58);
+  --psq-faint: rgba(255, 255, 255, .28);
+  --psq-rule: rgba(255, 255, 255, .16);
+  --psq-glass: rgba(255, 255, 255, .04);
+  --psq-tint: #5B8CFF;
+  --psq-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --psq-serif: "Playfair Display", Georgia, "Times New Roman", serif;
+  --psq-pad: clamp(20px, 5vw, 64px);
+
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: minmax(240px, 38svh) 1fr;
+  min-height: var(--psq-min-h-fb, 100vh);
+  min-height: var(--psq-min-h, 100svh);
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--psq-ink);
+  color: var(--psq-paper);
+  font-family: var(--psq-mono);
+  -webkit-font-smoothing: antialiased;
+}
+
+.psq *, .psq *::before, .psq *::after { box-sizing: border-box; }
+
+/* ------------------------------------------------------------------ ground */
+
+.psq__grain {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: .5;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.34'/%3E%3C/svg%3E");
+}
+
+/* ------------------------------------------------------------------- stage */
+
+.psq__stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-bottom: 1px solid var(--psq-rule);
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, .07), transparent 62%),
+    radial-gradient(80% 60% at 50% 120%, color-mix(in srgb, var(--psq-tint) 22%, transparent), transparent 70%);
+}
+
+/* The overhead tube. One soft cone, nothing more. */
+.psq__beam {
+  position: absolute;
+  top: -14%;
+  left: 50%;
+  width: min(72%, 460px);
+  aspect-ratio: 1 / 1.35;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .13), transparent 68%);
+  clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
+  animation: psq-breathe 7.5s ease-in-out infinite;
+}
+
+.psq__rig {
+  position: relative;
+  z-index: 1;
+  width: min(88%, 480px);
+  height: auto;
+  color: var(--psq-paper);
+  overflow: visible;
+  animation: psq-drift 30s ease-in-out infinite alternate;
+}
+
+/* Faces and frames both live in the DOM at once and crossfade. No path
+   interpolation, no library, and it degrades to a static drawing. */
+.psq__faces path,
+.psq__frames > g {
+  opacity: 0;
+  transition: opacity .5s cubic-bezier(.2, .7, .2, 1);
+}
+.psq__faces path { color: var(--psq-faint); stroke: currentColor; }
+.psq__faces path.is-on { opacity: 1; }
+
+.psq__frames > g {
+  fill: none;
+  stroke: var(--psq-paper);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 14px color-mix(in srgb, var(--psq-tint) 55%, transparent));
+}
+.psq__frames > g.is-on { opacity: 1; }
+/* The lens fill sits behind the stroke of whichever frame is showing. */
+.psq__frames > g.is-on > rect,
+.psq__frames > g.is-on > circle,
+.psq__frames > g.is-on > ellipse,
+.psq__frames > g.is-on > path:not(:last-child) {
+  fill: color-mix(in srgb, var(--psq-tint) 26%, transparent);
+}
+
+.psq__features { color: var(--psq-faint); transition: opacity .5s ease; }
+.psq.is-faceless .psq__features { opacity: 0; }
+
+.psq__glint {
+  opacity: 0;
+  animation: psq-glint 9s ease-in-out infinite;
+}
+.psq__glint--r { animation-delay: .5s; }
+
+.psq__caption {
+  position: absolute;
+  left: var(--psq-pad);
+  bottom: 14px;
+  z-index: 2;
+  margin: 0;
+  font-size: 10px;
+  letter-spacing: .18em;
+  color: var(--psq-faint);
+}
+.psq__caption b { color: var(--psq-dim); font-weight: 400; }
+
+/* ------------------------------------------------------------------- panel */
+
+.psq__panel {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(18px, 4vw, 40px) var(--psq-pad) calc(var(--psq-pad) * .8);
+  overflow-y: auto;
+}
+
+.psq__rail {
+  display: flex;
+  gap: 5px;
+  margin-bottom: clamp(16px, 3vw, 26px);
+  min-height: 2px;
+}
+.psq__tick {
+  flex: 1;
+  height: 2px;
+  background: var(--psq-rule);
+  transition: background .35s ease;
+}
+.psq__tick.is-done { background: var(--psq-paper); }
+.psq__tick.is-now { background: var(--psq-tint); }
+
+.psq__screens { flex: 1; display: flex; }
+.psq__screen { display: none; width: 100%; max-width: 760px; }
+.psq__screen.is-active { display: block; animation: psq-in .45s cubic-bezier(.2, .7, .2, 1) both; }
+
+.psq__eyebrow {
+  margin: 0 0 clamp(12px, 2vw, 20px);
+  font-size: 10px;
+  letter-spacing: .22em;
+  color: var(--psq-faint);
+}
+.psq__eyebrow i { font-style: normal; opacity: .5; margin: 0 .4em; }
+
+.psq__title {
+  margin: 0 0 18px;
+  font-family: var(--psq-serif);
+  font-weight: 500;
+  font-size: clamp(30px, 6.2vw, 60px);
+  line-height: 1.03;
+  letter-spacing: -.015em;
+}
+
+.psq__q {
+  margin: 0 0 10px;
+  font-family: var(--psq-serif);
+  font-weight: 500;
+  font-size: clamp(23px, 4.2vw, 38px);
+  line-height: 1.12;
+  outline: none;
+}
+
+.psq__body, .psq__hint {
+  margin: 0 0 22px;
+  max-width: 54ch;
+  font-size: clamp(13px, 1.5vw, 14px);
+  line-height: 1.65;
+  color: var(--psq-dim);
+}
+.psq__hint { margin-bottom: clamp(16px, 3vw, 26px); font-size: 12px; }
+
+/* ----------------------------------------------------------------- options */
+
+.psq__options { display: grid; gap: 8px; }
+
+.psq__opt {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+  min-height: 56px;
+  padding: 13px 16px;
+  border: 1px solid var(--psq-rule);
+  border-radius: 2px;
+  background: var(--psq-glass);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .22s ease, background .22s ease, transform .22s ease;
+}
+.psq__opt:hover, .psq__opt:focus-visible {
+  border-color: var(--psq-paper);
+  background: rgba(255, 255, 255, .09);
+  transform: translateX(3px);
+  outline: none;
+}
+.psq__opt:focus-visible { box-shadow: 0 0 0 2px var(--psq-tint); }
+.psq__opt[aria-checked="true"] { border-color: var(--psq-tint); background: rgba(255, 255, 255, .1); }
+.psq__opt-l { font-size: 14px; letter-spacing: .01em; }
+.psq__opt-s { font-size: 11px; line-height: 1.45; color: var(--psq-faint); }
+
+/* -------------------------------------------------------- buttons and nav */
+
+.psq__cta {
+  display: inline-block;
+  min-height: 48px;
+  padding: 0 30px;
+  border: 0;
+  border-radius: 2px;
+  background: var(--psq-paper);
+  color: var(--psq-ink);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.psq__cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px color-mix(in srgb, var(--psq-tint) 45%, transparent); }
+.psq__cta:focus-visible { outline: 2px solid var(--psq-tint); outline-offset: 3px; }
+
+.psq__nav { display: flex; gap: 20px; margin-top: 22px; align-items: center; }
+.psq__nav--result { margin-top: 28px; }
+
+.psq__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  background: none;
+  color: var(--psq-dim);
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+.psq__link:hover { color: var(--psq-paper); }
+.psq__link:focus-visible { outline: 2px solid var(--psq-tint); outline-offset: 3px; }
+.psq__link[hidden] { display: none; }
+.psq__note { margin: 16px 0 0; }
+
+/* ---------------------------------------------------------------- result */
+
+.psq__alias {
+  margin: 0 0 12px;
+  font-family: var(--psq-mono);
+  font-weight: 700;
+  font-size: clamp(22px, 4.6vw, 40px);
+  letter-spacing: .04em;
+}
+.psq__verdict {
+  margin: 0 0 20px;
+  max-width: 58ch;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--psq-dim);
+}
+
+.psq__spec {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 1px;
+  margin: 0 0 26px;
+  padding: 0;
+  list-style: none;
+  background: var(--psq-rule);
+  border: 1px solid var(--psq-rule);
+}
+.psq__spec li {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 12px 14px;
+  background: var(--psq-ink);
+}
+.psq__spec b { font-size: 9px; font-weight: 400; letter-spacing: .2em; color: var(--psq-faint); text-transform: uppercase; }
+.psq__spec span { font-size: 12px; line-height: 1.35; }
+
+.psq__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: clamp(10px, 2vw, 18px);
+}
+
+.psq__card {
+  display: flex;
+  flex-direction: column;
+  color: inherit;
+  text-decoration: none;
+  animation: psq-in .5s cubic-bezier(.2, .7, .2, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+.psq__card:focus-visible { outline: 2px solid var(--psq-tint); outline-offset: 4px; }
+
+.psq__shot {
+  position: relative;
+  margin: 0 0 10px;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border: 1px solid var(--psq-rule);
+  background: rgba(255, 255, 255, .05);
+}
+.psq__shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .55s cubic-bezier(.2, .7, .2, 1);
+}
+.psq__card:hover .psq__shot img { transform: scale(1.06); }
+.psq__shot.is-blank::after {
+  content: "NO IMAGE";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  letter-spacing: .2em;
+  color: var(--psq-faint);
+}
+
+.psq__flag, .psq__oos {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 4px 7px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  background: var(--psq-tint);
+  color: #fff;
+}
+.psq__oos { top: auto; bottom: 8px; left: 8px; background: rgba(0, 0, 0, .82); color: var(--psq-dim); }
+
+.psq__meta { display: flex; flex-direction: column; gap: 3px; }
+.psq__name { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .05em; }
+.psq__desc { margin: 0; font-size: 10.5px; line-height: 1.4; color: var(--psq-faint); }
+.psq__price { margin: 2px 0 0; font-size: 12px; }
+.psq__price s { color: var(--psq-faint); font-size: 10.5px; }
+.psq__ways { margin: 0; font-size: 9.5px; letter-spacing: .1em; color: var(--psq-faint); }
+
+.psq__empty { margin: 18px 0 0; font-size: 13px; line-height: 1.6; color: var(--psq-dim); }
+.psq__empty a, .psq__body a { color: var(--psq-paper); }
+
+/* ------------------------------------------------------------------ motion */
+
+@keyframes psq-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes psq-breathe {
+  0%, 100% { opacity: .75; }
+  50% { opacity: 1; }
+}
+@keyframes psq-drift {
+  from { transform: scale(1) translateY(0); }
+  to { transform: scale(1.03) translateY(-6px); }
+}
+@keyframes psq-glint {
+  0%, 78%, 100% { opacity: 0; transform: translateX(-90px); }
+  86% { opacity: .85; }
+  94% { opacity: 0; transform: translateX(90px); }
+}
+
+/* ------------------------------------------------------------- wide screens */
+
+@media (min-width: 900px) {
+  .psq {
+    grid-template-columns: 1.05fr 1fr;
+    grid-template-rows: 1fr;
+  }
+  .psq__stage { border-bottom: 0; border-right: 1px solid var(--psq-rule); }
+  .psq__panel { justify-content: center; }
+  .psq__screens { flex: 0 1 auto; }
+  /* Bigger than the mobile track: in a panel this width, 136px produced three
+     columns and left the fourth frame orphaned on its own row. Eyewear also
+     simply sells better large. */
+  .psq__grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+}
+
+@media (min-width: 1400px) {
+  .psq__rig { width: min(76%, 560px); }
+}
+
+/* ------------------------------------------------------------ reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .psq *,
+  .psq *::before,
+  .psq *::after {
+    animation: none !important;
+    transition-duration: .01ms !important;
+  }
+  .psq__grain { display: none; }
+  .psq__glint { opacity: 0; }
+  .psq__screen.is-active, .psq__card { opacity: 1; transform: none; }
+}
+
+/* --------------------------------------------------------------- fallbacks */
+
+/* color-mix is well supported but not universal; these keep the tint visible
+   on older engines rather than dropping to transparent. */
+@supports not (color: color-mix(in srgb, red 50%, blue)) {
+  .psq__frames > g { filter: drop-shadow(0 0 14px rgba(91, 140, 255, .55)); }
+  .psq__frames > g.is-on > rect,
+  .psq__frames > g.is-on > circle,
+  .psq__frames > g.is-on > ellipse,
+  .psq__frames > g.is-on > path:not(:last-child) { fill: rgba(91, 140, 255, .26); }
+  .psq__cta:hover { box-shadow: 0 8px 24px rgba(91, 140, 255, .45); }
+  .psq__stage { background: radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, .07), transparent 62%); }
+}
