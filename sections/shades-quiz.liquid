@@ -1,24 +1,37 @@
 {%- comment -%}
   PROJECT SHADES — THE FITTING ROOM
-  PS-003 // an immersive frame-finder quiz.
+  PS-003 // a frame-finder quiz that answers in the storefront's own voice.
 
-  The customer answers six questions. A pair of lenses is drawn in SVG in front
-  of a face silhouette, and both morph live as they answer — the face becomes
-  their face shape, the lenses become the frame being recommended. At the end
-  the drawn pair resolves into real products from this store.
+  The customer answers six questions. A face silhouette and a pair of lenses,
+  drawn in SVG, morph as they answer — the face becomes their face shape, the
+  lenses become the frame being recommended. The results are the theme's own
+  product cards.
+
+  LOOKS LIKE THE REST OF THE SITE, BY CONSTRUCTION
+  -----------------------------------------------
+  This section declares no colours, typefaces or spacing of its own. Everything
+  is read from the theme's custom properties (see assets/shades-quiz.css), so
+  changing a colour or a font in the theme editor moves the quiz with it.
+
+  The recommendations are rendered by the theme's own `card-product` snippet,
+  fetched per product through the Section Rendering API (see
+  sections/shades-quiz-card.liquid). They are not a lookalike — they are the
+  same cards the collection pages use.
 
   HOW IT KNOWS WHAT TO RECOMMEND
   ------------------------------
-  The catalogue has almost no tags, so nothing here reads tags. Traits come
-  from COLLECTION MEMBERSHIP via `product.collections`, which means the quiz
-  re-merchandises itself: put a frame in `techno` and the quiz starts offering
-  it to people who pick the techno aesthetic. No re-coding, no re-tagging.
+  The catalogue is essentially untagged, so nothing here reads tags. Traits
+  come from COLLECTION MEMBERSHIP via `product.collections`, which means the
+  quiz re-merchandises itself: put a frame in `techno` and it starts being
+  offered to people who pick the techno aesthetic.
 
-  Each collection below is mapped to a short trait token. The scoring table
-  that consumes those tokens lives in assets/shades-quiz.js.
+  The scoring table that consumes those traits lives in assets/shades-quiz.js.
 {%- endcomment -%}
 
 {{ 'shades-quiz.css' | asset_url | stylesheet_tag }}
+{%- comment -%} The stylesheets the theme's own product card depends on. {%- endcomment -%}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'shades-quiz.js' | asset_url }}" defer="defer"></script>
 
 {%- liquid
@@ -78,10 +91,6 @@
 {%- if c_staff != blank %}{{ c_staff.handle }}>staff,{% endif -%}
 {%- endcapture -%}
 
-{%- comment -%}
-  The candidate pool. Shape collections first so the frames that carry the
-  strongest fit signal are always in the index even if `cap` is set low.
-{%- endcomment -%}
 {%- capture products_json -%}
 [
 {%- assign seen = ',' -%}
@@ -114,7 +123,6 @@
     {%- assign key = product.handle | prepend: ',' | append: ',' -%}
     {%- unless seen contains key -%}
       {%- assign seen = seen | append: product.handle | append: ',' -%}
-      {%- comment -%} Eyewear only — the catalogue also holds jewellery and lens add-ons. {%- endcomment -%}
       {%- comment -%}
         The catalogue also holds jewellery, tees and lens add-ons, and they must
         not reach a frame-fitting quiz. Two tiers on purpose: a title that says
@@ -159,20 +167,6 @@
 ]
 {%- endcapture -%}
 
-{%- if s.load_fonts -%}
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Playfair+Display:wght@500;600&display=swap">
-{%- endif -%}
-
-<style>
-  #ShadesQuiz--{{ uid }} {
-    --psq-min-h: {% if s.height == 'short' %}82svh{% elsif s.height == 'medium' %}92svh{% else %}100svh{% endif %};
-    --psq-min-h-fb: {% if s.height == 'short' %}82vh{% elsif s.height == 'medium' %}92vh{% else %}100vh{% endif %};
-    --psq-tint: {{ s.tint | default: '#5B8CFF' }};
-  }
-</style>
-
 <section
   id="ShadesQuiz--{{ uid }}"
   class="psq"
@@ -181,117 +175,104 @@
   data-results="{{ s.result_count | default: 4 }}"
   data-hide-oos="{{ s.hide_sold_out }}"
   data-persist="{{ s.remember_result }}"
+  data-theme-cards="{{ s.use_theme_cards }}"
+  data-card-section="{{ s.card_section | default: 'shades-quiz-card' }}"
   {% if s.fallback_collection != blank %}data-fallback="{{ s.fallback_collection.url }}"{% endif %}
 >
-  <div class="psq__grain" aria-hidden="true"></div>
+  <div class="psq__inner">
+    <div class="psq__layout">
 
-  {%- comment -%} ---------- THE STAGE: face + lenses, drawn, never photographed ---------- {%- endcomment -%}
-  <div class="psq__stage" aria-hidden="true">
-    <div class="psq__beam"></div>
-    <svg class="psq__rig" viewBox="0 0 400 320" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="psqGlint-{{ uid }}" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#fff" stop-opacity="0"/>
-          <stop offset="45%" stop-color="#fff" stop-opacity=".55"/>
-          <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
-        </linearGradient>
-        <clipPath id="psqFaceClip-{{ uid }}"><rect x="0" y="0" width="400" height="320"/></clipPath>
-      </defs>
+      {%- comment -%} ---------- THE STAGE: face + lenses, drawn, never photographed ---------- {%- endcomment -%}
+      <div class="psq__stage" aria-hidden="true">
+        <svg class="psq__rig" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g class="psq__faces" stroke-width="1.5" fill="none">
+            <path data-face="oval"    d="M200 36c40 0 66 30 66 74 0 52-28 106-66 106s-66-54-66-106c0-44 26-74 66-74Z"/>
+            <path data-face="round"   d="M200 34c46 0 74 34 74 84 0 50-30 98-74 98s-74-48-74-98c0-50 28-84 74-84Z"/>
+            <path data-face="square"  d="M136 52c0-10 8-16 18-16h92c10 0 18 6 18 16v92c0 44-26 76-64 76s-64-32-64-76V52Z"/>
+            <path data-face="heart"   d="M132 56c0-12 10-20 24-20h88c14 0 24 8 24 20v52c0 62-34 108-68 108s-68-46-68-108V56Z"/>
+            <path data-face="long"    d="M200 24c38 0 62 26 62 66 0 74-28 134-62 134s-62-60-62-134c0-40 24-66 62-66Z"/>
+            <path data-face="diamond" d="M200 28c30 0 50 24 56 62 6 40-18 126-56 126s-62-86-56-126c6-38 26-62 56-62Z"/>
+          </g>
 
-      {%- comment -%} Face silhouettes — one per shape, crossfaded by JS. {%- endcomment -%}
-      <g class="psq__faces" stroke="currentColor" stroke-width="1.25" fill="none">
-        <path data-face="oval"    d="M200 46c40 0 66 30 66 74 0 52-28 106-66 106s-66-54-66-106c0-44 26-74 66-74Z"/>
-        <path data-face="round"   d="M200 44c46 0 74 34 74 84 0 50-30 98-74 98s-74-48-74-98c0-50 28-84 74-84Z"/>
-        <path data-face="square"  d="M136 62c0-10 8-16 18-16h92c10 0 18 6 18 16v92c0 44-26 76-64 76s-64-32-64-76V62Z"/>
-        <path data-face="heart"   d="M132 66c0-12 10-20 24-20h88c14 0 24 8 24 20v52c0 62-34 108-68 108s-68-46-68-108V66Z"/>
-        <path data-face="long"    d="M200 34c38 0 62 26 62 66 0 74-28 134-62 134s-62-60-62-134c0-40 24-66 62-66Z"/>
-        <path data-face="diamond" d="M200 38c30 0 50 24 56 62 6 40-18 126-56 126s-62-86-56-126c6-38 26-62 56-62Z"/>
-      </g>
+          <g class="psq__features" stroke-width="1.25" fill="none">
+            <path d="M170 112c8-5 18-5 26-1"/>
+            <path d="M204 112c8-4 18-4 26 1"/>
+            <path d="M200 128v34c0 5-4 8-9 9"/>
+            <path d="M182 198c11 6 25 6 36 0"/>
+          </g>
 
-      {%- comment -%} Brow + nose, constant. Small anchors that make the silhouette read as a face. {%- endcomment -%}
-      <g class="psq__features" stroke="currentColor" stroke-width="1" fill="none" opacity=".45">
-        <path d="M170 122c8-5 18-5 26-1"/>
-        <path d="M204 122c8-4 18-4 26 1"/>
-        <path d="M200 138v34c0 5-4 8-9 9"/>
-        <path d="M182 208c11 6 25 6 36 0"/>
-      </g>
+          <g class="psq__frames">
+            <g data-frame="rect">
+              <rect x="120" y="118" width="72" height="44" rx="7"/>
+              <rect x="208" y="118" width="72" height="44" rx="7"/>
+              <path d="M192 136h16M120 132l-24-8M280 132l24-8"/>
+            </g>
+            <g data-frame="round">
+              <circle cx="156" cy="140" r="27"/>
+              <circle cx="244" cy="140" r="27"/>
+              <path d="M183 140h34M129 130l-33-9M271 130l33-9"/>
+            </g>
+            <g data-frame="oval">
+              <ellipse cx="156" cy="140" rx="32" ry="23"/>
+              <ellipse cx="244" cy="140" rx="32" ry="23"/>
+              <path d="M188 140h24M124 132l-28-9M276 132l28-9"/>
+            </g>
+            <g data-frame="cate">
+              <path d="M122 146c2-18 16-28 38-28 16 0 30 6 32 18 2 12-12 24-34 24-22 0-38-4-36-14Z"/>
+              <path d="M278 146c-2-18-16-28-38-28-16 0-30 6-32 18-2 12 12 24 34 24 22 0 38-4 36-14Z"/>
+              <path d="M192 136h16M122 130l-26-8M278 130l26-8"/>
+            </g>
+            <g data-frame="riml">
+              <path d="M124 128h64v26a6 6 0 0 1-6 6h-52a6 6 0 0 1-6-6v-26Z"/>
+              <path d="M212 128h64v26a6 6 0 0 1-6 6h-52a6 6 0 0 1-6-6v-26Z"/>
+              <path d="M188 132h24M124 128l-28-6M276 128l28-6" stroke-width="1"/>
+            </g>
+            <g data-frame="wrap">
+              <path d="M112 126c26-10 56-12 86-12s60 2 86 12c4 20-8 38-30 42-20 4-40-4-56-4s-36 8-56 4c-22-4-34-22-30-42Z"/>
+              <path d="M196 118v12"/>
+            </g>
+            <g data-frame="ovsz">
+              <rect x="108" y="110" width="88" height="58" rx="12"/>
+              <rect x="204" y="110" width="88" height="58" rx="12"/>
+              <path d="M196 132h8M108 126l-16-6M292 126l16-6"/>
+            </g>
+          </g>
+        </svg>
 
-      {%- comment -%} Frames — one group per shape, crossfaded by JS. {%- endcomment -%}
-      <g class="psq__frames">
-        <g data-frame="rect">
-          <rect x="120" y="128" width="72" height="44" rx="7"/>
-          <rect x="208" y="128" width="72" height="44" rx="7"/>
-          <path d="M192 146h16M120 142l-24-8M280 142l24-8"/>
-        </g>
-        <g data-frame="round">
-          <circle cx="156" cy="150" r="27"/>
-          <circle cx="244" cy="150" r="27"/>
-          <path d="M183 150h34M129 140l-33-9M271 140l33-9"/>
-        </g>
-        <g data-frame="oval">
-          <ellipse cx="156" cy="150" rx="32" ry="23"/>
-          <ellipse cx="244" cy="150" rx="32" ry="23"/>
-          <path d="M188 150h24M124 142l-28-9M276 142l28-9"/>
-        </g>
-        <g data-frame="cate">
-          <path d="M122 156c2-18 16-28 38-28 16 0 30 6 32 18 2 12-12 24-34 24-22 0-38-4-36-14Z"/>
-          <path d="M278 156c-2-18-16-28-38-28-16 0-30 6-32 18-2 12 12 24 34 24 22 0 38-4 36-14Z"/>
-          <path d="M192 146h16M122 140l-26-8M278 140l26-8"/>
-        </g>
-        <g data-frame="riml">
-          <path d="M124 138h64v26a6 6 0 0 1-6 6h-52a6 6 0 0 1-6-6v-26Z" stroke-dasharray="0"/>
-          <path d="M212 138h64v26a6 6 0 0 1-6 6h-52a6 6 0 0 1-6-6v-26Z"/>
-          <path d="M188 142h24M124 138l-28-6M276 138l28-6" stroke-width=".8"/>
-        </g>
-        <g data-frame="wrap">
-          <path d="M112 136c26-10 56-12 86-12s60 2 86 12c4 20-8 38-30 42-20 4-40-4-56-4s-36 8-56 4c-22-4-34-22-30-42Z"/>
-          <path d="M196 128v12"/>
-        </g>
-        <g data-frame="ovsz">
-          <rect x="108" y="120" width="88" height="58" rx="12"/>
-          <rect x="204" y="120" width="88" height="58" rx="12"/>
-          <path d="M196 142h8M108 136l-16-6M292 136l16-6"/>
-        </g>
-      </g>
+        <p class="psq__caption" data-psq-caption>{{ s.stage_caption | default: 'Your fit, so far' }}</p>
+      </div>
 
-      <g class="psq__glints" aria-hidden="true">
-        <rect class="psq__glint" x="118" y="118" width="76" height="62" rx="10" fill="url(#psqGlint-{{ uid }})"/>
-        <rect class="psq__glint psq__glint--r" x="206" y="118" width="76" height="62" rx="10" fill="url(#psqGlint-{{ uid }})"/>
-      </g>
-    </svg>
+      {%- comment -%} ---------- THE PANEL: intro, questions, result ---------- {%- endcomment -%}
+      <div class="psq__panel">
+        <div class="psq__rail" data-psq-rail aria-hidden="true"></div>
 
-    <p class="psq__caption"><span data-psq-caption>{{ s.stage_caption | default: 'FITTING ROOM — CAM 01' }}</span> <b data-psq-clock>--:--</b></p>
-  </div>
+        <div class="psq__screens" data-psq-screens>
+          <article class="psq__screen is-active" data-screen="intro">
+            <p class="psq__eyebrow">{{ s.eyebrow | default: 'The fitting room' }}</p>
+            <h2 class="psq__title">{{ s.heading | default: 'Find the frame that fits your face.' }}</h2>
+            <p class="psq__body">{{ s.intro | default: 'Six questions. About a minute. We read your face shape, how frames sit on you and what you actually wear — then pull the frames that match.' }}</p>
+            <button type="button" class="psq__cta" data-psq-start>{{ s.start_label | default: 'Begin the fitting' }}</button>
+            <p class="psq__note" data-psq-resume hidden>
+              <button type="button" class="psq__link" data-psq-restore>{{ s.resume_label | default: 'Show my last result' }}</button>
+            </p>
+          </article>
 
-  {%- comment -%} ---------- THE PANEL: intro, questions, result ---------- {%- endcomment -%}
-  <div class="psq__panel">
-    <div class="psq__rail" data-psq-rail aria-hidden="true"></div>
-
-    <div class="psq__screens" data-psq-screens>
-      <article class="psq__screen is-active" data-screen="intro">
-        <p class="psq__eyebrow">{{ s.eyebrow | default: 'PS-003 // THE FITTING ROOM' }}</p>
-        <h2 class="psq__title">{{ s.heading | default: 'Find the frame<br>that fits your face.' }}</h2>
-        <p class="psq__body">{{ s.intro | default: 'Six questions. About a minute. We read your face shape, how frames sit on you and what you actually wear — then pull the frames from our shelf that match.' }}</p>
-        <button type="button" class="psq__cta" data-psq-start>{{ s.start_label | default: 'Begin the fitting' }}</button>
-        <p class="psq__note" data-psq-resume hidden>
-          <button type="button" class="psq__link" data-psq-restore>{{ s.resume_label | default: 'Show my last result' }}</button>
-        </p>
-      </article>
-
-      {%- comment -%} Question screens are rendered by JS from the config in shades-quiz.js {%- endcomment -%}
-      <article class="psq__screen" data-screen="question" hidden>
-        <p class="psq__eyebrow"><span data-psq-step>01</span> <i>/</i> <span data-psq-total>06</span></p>
-        <h2 class="psq__q" data-psq-question tabindex="-1"></h2>
-        <p class="psq__hint" data-psq-hint></p>
-        <div class="psq__options" role="radiogroup" data-psq-options></div>
-        <div class="psq__nav">
-          <button type="button" class="psq__link" data-psq-back>Back</button>
-          <button type="button" class="psq__link psq__link--skip" data-psq-skip>Not sure — skip</button>
+          {%- comment -%} Question screens are rendered by JS from the config in shades-quiz.js {%- endcomment -%}
+          <article class="psq__screen" data-screen="question" hidden>
+            <p class="psq__eyebrow"><span data-psq-step>01</span> <i>/</i> <span data-psq-total>06</span></p>
+            <h2 class="psq__q" data-psq-question tabindex="-1"></h2>
+            <p class="psq__hint" data-psq-hint></p>
+            <div class="psq__options" role="radiogroup" data-psq-options></div>
+            <div class="psq__nav">
+              <button type="button" class="psq__link" data-psq-back>Back</button>
+              <button type="button" class="psq__link" data-psq-skip>Not sure — skip</button>
+            </div>
+          </article>
         </div>
-      </article>
+      </div>
 
       <article class="psq__screen psq__screen--result" data-screen="result" hidden>
-        <p class="psq__eyebrow">{{ s.result_eyebrow | default: 'YOUR FITTING — COMPLETE' }}</p>
+        <p class="psq__eyebrow">{{ s.result_eyebrow | default: 'Your fitting' }}</p>
         <h2 class="psq__alias" data-psq-alias></h2>
         <p class="psq__verdict" data-psq-verdict></p>
         <ul class="psq__spec" data-psq-spec></ul>
@@ -302,12 +283,13 @@
           <button type="button" class="psq__link" data-psq-share>{{ s.share_label | default: 'Copy my result' }}</button>
         </div>
       </article>
-    </div>
 
-    <noscript>
-      <p class="psq__body">The fitting room needs JavaScript. {% if s.fallback_collection != blank %}You can <a href="{{ s.fallback_collection.url }}">browse every frame here</a> instead.{% endif %}</p>
-    </noscript>
+    </div>
   </div>
+
+  <noscript>
+    <p class="psq__body">The fitting room needs JavaScript.{% if s.fallback_collection != blank %} You can <a href="{{ s.fallback_collection.url }}">browse every frame here</a> instead.{% endif %}</p>
+  </noscript>
 
   <script type="application/json" data-psq-products>{{ products_json }}</script>
 </section>
@@ -319,27 +301,24 @@
   "class": "shades-quiz-section",
   "settings": [
     { "type": "header", "content": "Copy" },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "PS-003 // THE FITTING ROOM" },
-    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Find the frame<br>that fits your face." },
-    { "type": "textarea", "id": "intro", "label": "Intro", "default": "Six questions. About a minute. We read your face shape, how frames sit on you and what you actually wear — then pull the frames from our shelf that match." },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The fitting room" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Find the frame that fits your face." },
+    { "type": "textarea", "id": "intro", "label": "Intro", "default": "Six questions. About a minute. We read your face shape, how frames sit on you and what you actually wear — then pull the frames that match." },
     { "type": "text", "id": "start_label", "label": "Start button", "default": "Begin the fitting" },
-    { "type": "text", "id": "result_eyebrow", "label": "Result eyebrow", "default": "YOUR FITTING — COMPLETE" },
+    { "type": "text", "id": "result_eyebrow", "label": "Result eyebrow", "default": "Your fitting" },
     { "type": "text", "id": "retake_label", "label": "Retake button", "default": "Retake the fitting" },
     { "type": "text", "id": "share_label", "label": "Share button", "default": "Copy my result" },
     { "type": "text", "id": "resume_label", "label": "Resume link", "default": "Show my last result" },
-    { "type": "text", "id": "stage_caption", "label": "Stage caption", "default": "FITTING ROOM — CAM 01" },
+    { "type": "text", "id": "stage_caption", "label": "Caption under the drawing", "default": "Your fit, so far" },
 
-    { "type": "header", "content": "Behaviour" },
+    { "type": "header", "content": "Results" },
+    { "type": "checkbox", "id": "use_theme_cards", "label": "Use the theme's own product cards", "default": true, "info": "Fetches the same card markup your collection pages use, so results match the rest of the store. Falls back to a simple built-in card if unavailable." },
+    { "type": "text", "id": "card_section", "label": "Card section name", "default": "shades-quiz-card", "info": "The companion section file, without the .liquid extension." },
     { "type": "range", "id": "result_count", "min": 2, "max": 8, "step": 1, "label": "Frames to recommend", "default": 4 },
     { "type": "checkbox", "id": "hide_sold_out", "label": "Hide sold-out frames", "default": true },
     { "type": "checkbox", "id": "remember_result", "label": "Remember the visitor's result", "default": true, "info": "Stored in the browser only. Nothing is sent anywhere." },
     { "type": "range", "id": "per_collection", "min": 10, "max": 50, "step": 5, "label": "Frames read per collection", "default": 40, "info": "Higher = better matches, heavier page. 40 covers this catalogue." },
     { "type": "collection", "id": "fallback_collection", "label": "Fallback collection", "info": "Linked when a fitting returns too few matches, and from the no-JavaScript message." },
-
-    { "type": "header", "content": "Look" },
-    { "type": "select", "id": "height", "label": "Height", "options": [ { "value": "short", "label": "Short" }, { "value": "medium", "label": "Medium" }, { "value": "full", "label": "Full screen" } ], "default": "full" },
-    { "type": "color", "id": "tint", "label": "Lens tint", "default": "#5B8CFF" },
-    { "type": "checkbox", "id": "load_fonts", "label": "Load Space Mono + Playfair Display", "default": true, "info": "Turn off if your theme already loads them." },
 
     { "type": "header", "content": "Frame shape collections", "info": "These drive the fit logic. Leave blank to use this store's existing handles." },
     { "type": "collection", "id": "col_rect", "label": "Rectangular" },

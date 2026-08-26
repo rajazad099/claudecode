@@ -303,6 +303,8 @@
     this.count = parseInt(root.dataset.results, 10) || 4;
     this.hideOOS = root.dataset.hideOos === 'true';
     this.persist = root.dataset.persist === 'true';
+    this.themeCards = root.dataset.themeCards === 'true';
+    this.cardSection = root.dataset.cardSection || 'shades-quiz-card';
     this.key = 'psq:' + (root.dataset.uid || 'x');
     this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -325,14 +327,12 @@
       grid: root.querySelector('[data-psq-grid]'),
       empty: root.querySelector('[data-psq-empty]'),
       resume: root.querySelector('[data-psq-resume]'),
-      clock: root.querySelector('[data-psq-clock]'),
       caption: root.querySelector('[data-psq-caption]')
     };
 
     this.bind();
     this.setFace(null);
     this.setFrame('rect');
-    this.clock();
     this.offerResume();
   }
 
@@ -389,6 +389,7 @@
     this.asked = [];
     this.at = 0;
     this.plan();
+    this.root.classList.remove('is-result');
     this.emit('start', {});
     this.show('question');
     this.render();
@@ -437,7 +438,7 @@
 
     this.rail();
     this.el.question.focus();
-    if (this.el.caption) this.el.caption.textContent = 'FITTING — STEP ' + (this.at + 1) + ' OF ' + this.order.length;
+    if (this.el.caption) this.el.caption.textContent = 'Step ' + (this.at + 1) + ' of ' + this.order.length;
   };
 
   /* Hovering a face-shape option morphs the silhouette; hovering anything else
@@ -537,8 +538,7 @@
       s.textContent = spec[i][1];
     });
 
-    this.el.grid.innerHTML = '';
-    top.forEach(function (r, i) { self.el.grid.appendChild(self.card(r, i)); });
+    this.renderCards(top);
 
     var fb = this.root.dataset.fallback;
     if (!top.length) {
@@ -550,7 +550,8 @@
     }
 
     this.show('result');
-    if (this.el.caption) this.el.caption.textContent = 'FITTING — COMPLETE';
+    this.root.classList.add('is-result');
+    if (this.el.caption) this.el.caption.textContent = 'Your fit';
     if (this.persist && !restored) this.save();
     this.emit('complete', {
       face: face, archetype: arch.n,
@@ -558,12 +559,64 @@
     });
   };
 
-  Quiz.prototype.card = function (r, i) {
+  /* Results are rendered twice over: a built-in card goes in immediately so the
+     shelf is never empty, then the theme's own card-product markup replaces it
+     as it arrives. That way the recommendations are the same cards the
+     collection pages use — same badges, same price formatting, same sale
+     highlighting — without this file having to imitate any of it. */
+  Quiz.prototype.renderCards = function (top) {
+    var self = this;
+    this.el.grid.innerHTML = '';
+    top.forEach(function (r, i) {
+      var slot = document.createElement('div');
+      slot.className = 'psq__slot';
+      slot.style.setProperty('--i', i);
+
+      var body = document.createElement('div');
+      body.className = 'psq__slot-body';
+      body.appendChild(self.fallbackCard(r));
+      slot.appendChild(body);
+
+      if (i === 0) {
+        var flag = document.createElement('b');
+        flag.className = 'psq__flag';
+        flag.textContent = 'Best fit';
+        slot.appendChild(flag);
+      }
+      self.el.grid.appendChild(slot);
+      if (self.themeCards) self.loadThemeCard(body, r);
+    });
+  };
+
+  /* Section Rendering API: asking for a section against a product URL puts that
+     product in scope, which is what lets a storefront-side quiz render a
+     server-side product card. */
+  Quiz.prototype.loadThemeCard = function (mount, r) {
+    var url = r.p.u + (r.p.u.indexOf('?') > -1 ? '&' : '?') + 'section_id=' + encodeURIComponent(this.cardSection);
+    fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+      .then(function (res) { return res.ok ? res.text() : null; })
+      .then(function (html) {
+        if (!html) return;
+        var trimmed = html.trim();
+        /* A missing or misnamed section hands back the whole page instead of a
+           card. Keep the fallback rather than injecting a document. */
+        if (!trimmed || /^<!doctype/i.test(trimmed) || /<html[\s>]/i.test(trimmed)) return;
+        var holder = document.createElement('div');
+        holder.innerHTML = trimmed;
+        if (!holder.querySelector('.card-product, .card')) return;
+        mount.innerHTML = '';
+        while (holder.firstChild) mount.appendChild(holder.firstChild);
+      })
+      .catch(function () { /* keep the fallback card */ });
+  };
+
+  /* Used until the theme card lands, and permanently if it never does. Built
+     from the theme's own card tokens so the two are hard to tell apart. */
+  Quiz.prototype.fallbackCard = function (r) {
     var p = r.p, m = r.meta;
     var a = document.createElement('a');
     a.className = 'psq__card';
     a.href = p.u;
-    a.style.setProperty('--i', i);
 
     var fig = document.createElement('figure');
     fig.className = 'psq__shot';
@@ -573,7 +626,6 @@
       img.alt = p.ia || p.t;
       img.loading = 'lazy';
       img.decoding = 'async';
-      /* A pulled image shouldn't leave a silent empty box in the results. */
       img.addEventListener('error', function () {
         fig.classList.add('is-blank');
         img.remove();
@@ -582,55 +634,49 @@
     } else {
       fig.classList.add('is-blank');
     }
-    if (i === 0) {
-      var flag = document.createElement('b');
-      flag.className = 'psq__flag';
-      flag.textContent = 'BEST FIT';
-      fig.appendChild(flag);
-    }
-    if (!p.a) {
-      var oos = document.createElement('b');
-      oos.className = 'psq__oos';
-      oos.textContent = 'SOLD OUT';
-      fig.appendChild(oos);
-    }
     a.appendChild(fig);
 
     var body = document.createElement('div');
     body.className = 'psq__meta';
+
     var h = document.createElement('h3');
     h.className = 'psq__name';
-    h.textContent = '[ ' + m.alias + ' ]';
-    var d = document.createElement('p');
-    d.className = 'psq__desc';
-    d.textContent = m.desc || '';
+    h.textContent = p.t;
+    body.appendChild(h);
+
     var pr = document.createElement('p');
     pr.className = 'psq__price';
     pr.textContent = p.pf;
     if (p.cp) {
       var was = document.createElement('s');
       was.textContent = p.cp;
-      pr.appendChild(document.createTextNode(' '));
       pr.appendChild(was);
     }
-    body.appendChild(h);
-    body.appendChild(d);
     body.appendChild(pr);
+
     if (r.ways > 1) {
       var w = document.createElement('p');
       w.className = 'psq__ways';
       w.textContent = r.ways + ' colourways';
       body.appendChild(w);
     }
+    if (!p.a) {
+      var oos = document.createElement('p');
+      oos.className = 'psq__ways';
+      oos.textContent = 'Sold out';
+      body.appendChild(oos);
+    }
+
     a.appendChild(body);
     return a;
   };
 
   Quiz.prototype.share = function (btn) {
     var alias = this.el.alias.textContent;
-    var names = Array.prototype.map.call(this.el.grid.querySelectorAll('.psq__name'), function (n) {
-      return n.textContent;
-    }).join(', ');
+    var names = Array.prototype.map.call(
+      this.el.grid.querySelectorAll('.psq__name, .card-product-title-h3'),
+      function (n) { return n.textContent.trim(); }
+    ).join(', ');
     var text = 'My Project Shades fitting: ' + alias + ' — ' + names + ' — ' + location.href;
     var done = function () {
       var was = btn.textContent;
@@ -658,22 +704,10 @@
   Quiz.prototype.reset = function () {
     try { localStorage.removeItem(this.key); } catch (e) {}
     this.setFace(null);
+    this.root.classList.remove('is-result');
     this.show('intro');
     if (this.el.resume) this.el.resume.hidden = true;
-    if (this.el.caption) this.el.caption.textContent = 'FITTING ROOM — CAM 01';
-  };
-
-  Quiz.prototype.clock = function () {
-    var el = this.el.clock;
-    if (!el) return;
-    var tick = function () {
-      var d = new Date();
-      el.textContent = String(d.getHours()).padStart(2, '0') + ':' +
-                       String(d.getMinutes()).padStart(2, '0') + ':' +
-                       String(d.getSeconds()).padStart(2, '0');
-    };
-    tick();
-    setInterval(tick, 1000);
+    if (this.el.caption) this.el.caption.textContent = 'Your fit, so far';
   };
 
   /* ------------------------------------------------------------------ boot */

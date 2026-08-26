@@ -4,33 +4,56 @@
 
 Six questions, about a minute, and the customer walks out with frames chosen
 for their face rather than for the algorithm's convenience. A face silhouette
-and a pair of lenses are drawn in SVG on the left; both morph as they answer.
-The face becomes their face shape. The lenses become the frame being
-recommended. At the end the drawn pair resolves into real products from the
-store.
+and a pair of lenses are drawn in SVG; both morph as they answer. The face
+becomes their face shape. The lenses become the frame being recommended. At the
+end the drawn pair resolves into real products from the store.
 
 <img src="../preview/quiz-question.jpg" width="520" alt="Question screen"> <img src="../preview/quiz-mobile.jpg" width="240" alt="Mobile">
 
 **No app, no subscription, no monthly fee.** One section, one stylesheet, one
 script. Nothing leaves the browser.
 
+## It looks like the rest of the store, by construction
+
+The quiz declares almost no colours, typefaces or spacing of its own. It reads
+the theme's own custom properties — `--color-background`, `--color-foreground`,
+`--font-body-family`, `--font-heading-family`, `--buttons-radius`,
+`--page-margin-desktop`, `--product-card-*` and the rest. Change a colour or a
+font in the theme editor and the quiz moves with it. Nothing here needs
+re-styling when the storefront is re-styled.
+
+**The recommendations are the theme's own product cards.** They are not a
+lookalike rebuilt in JavaScript — the section fetches `card-product` through
+the Section Rendering API, so the results carry the same badges, price
+formatting and sale highlighting as every collection page.
+
+Every `var()` in the stylesheet carries a fallback matching the current theme
+settings, so nothing collapses if a property is missing.
+
 ## Files
 
 | File | |
 | --- | --- |
 | `sections/shades-quiz.liquid` | The section, the product index and the theme-editor schema |
-| `assets/shades-quiz.css` | The room, the stage and the panel |
+| `sections/shades-quiz-card.liquid` | Renders one theme product card, fetched per result |
+| `assets/shades-quiz.css` | Layout, drawn entirely from the theme's tokens |
 | `assets/shades-quiz.js` | The fitting logic and the whole interface |
 | `preview/quiz.html` | Static preview — open in a browser, no store needed |
+| `preview/build-preview.py` | Regenerates the preview from the section, so the two cannot drift |
 
 ## Install
 
 1. **Online Store → Themes → ⋯ → Edit code**
 2. **Assets → Add a new asset** → upload `shades-quiz.css` and `shades-quiz.js`
 3. **Sections → Add a new section** → name it `shades-quiz` → paste in `sections/shades-quiz.liquid`
-4. **Customize → Add section → Shades fitting quiz**
+4. **Sections → Add a new section** → name it `shades-quiz-card` → paste in `sections/shades-quiz-card.liquid`
+5. **Customize → Add section → Shades fitting quiz**
 
-It works with zero configuration. Every collection it reads is already
+Step 4 is what makes the results use your own product cards. Skip it and the
+quiz still works — it falls back to a simple built-in card built from the same
+theme tokens — but the cards will not carry your badges or sale styling.
+
+It works with zero configuration otherwise. Every collection it reads is already
 pre-filled with the handle this store uses.
 
 Where to put it: its own page (`/pages/find-your-frames`) linked from the nav
@@ -123,6 +146,8 @@ reads as a fitting.
   rather than vanishing, because a near-miss beats an empty result.
 - **The result is remembered** in `localStorage` — returning visitors are
   offered it back. Nothing is transmitted anywhere.
+- **Quick-add is off** on the result cards. These frames come in colourways, so
+  the customer should land on the product page and choose one.
 - **Analytics.** `psq:start`, `psq:answer` and `psq:complete` fire as DOM events
   on the section and are pushed to `window.dataLayer` when GTM is present. The
   complete event carries the face shape, archetype and product handles.
@@ -131,6 +156,7 @@ reads as a fitting.
 
 | Setting | Notes |
 | --- | --- |
+| Use the theme's own product cards | On by default. Falls back to a built-in card if the companion section is missing |
 | Frames to recommend | 2–8, default 4 |
 | Hide sold-out frames | On by default |
 | Frames read per collection | 40 covers this catalogue; raise for better matches, lower for a lighter page |
@@ -161,6 +187,19 @@ catalogue:
   on each step.
 - Under `prefers-reduced-motion: reduce`: zero animating elements, grain removed.
 - Back button re-plans correctly, including backing out of a skipped question.
+
+Re-verified after the section was rebuilt to inherit the theme: the quiz reads
+`#ffffff` background, `#000000` text, Work Sans at 15px, black square uppercase
+buttons and a 40px page margin straight from the theme's tokens — none of it
+hardcoded.
+
+Two things the preview cannot reproduce, both noted in the file itself:
+
+- Headings fall back to Archivo. The live theme uses Basic Commercial, which is
+  Shopify-hosted and cannot load in a static file. Both are grotesques of the
+  same weight, so the layout reads the same.
+- Results use the built-in fallback card, because a `file://` page has no
+  storefront to fetch from. On the store the theme's own cards are used.
 
 The preview's product images load from the Shopify CDN, so they appear when you
 open it on a normal connection.

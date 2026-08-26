@@ -1,438 +1,455 @@
 /* PROJECT SHADES — THE FITTING ROOM (PS-003)
-   Black ground, white rules, one tint. The face and the frames are drawn, so
-   there is nothing to art-direct and nothing to upload. */
+ *
+ * This stylesheet declares almost no colours, fonts or spacing of its own.
+ * Everything is read from the theme's own custom properties so the quiz
+ * inherits the storefront: change a colour or a typeface in the theme editor
+ * and the quiz follows without anyone touching this file.
+ *
+ * Every var() carries a fallback matching the current theme settings, so the
+ * standalone preview (which has no theme) still renders correctly.
+ *
+ * Note on formats — the theme is not consistent, and neither can we be:
+ *   --color-background      hex        -> use directly
+ *   --color-foreground-rgb  "0, 0, 0"  -> use inside rgba()
+ *   --color-button-background "r, g, b" -> use inside rgb()
+ *   --color-price-sale      "r g b"    -> use inside rgb() unquoted
+ */
 
 .psq {
-  --psq-ink: #000;
-  --psq-paper: #fff;
-  --psq-dim: rgba(255, 255, 255, .58);
-  --psq-faint: rgba(255, 255, 255, .28);
-  --psq-rule: rgba(255, 255, 255, .16);
-  --psq-glass: rgba(255, 255, 255, .04);
-  --psq-tint: #5B8CFF;
-  --psq-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --psq-serif: "Playfair Display", Georgia, "Times New Roman", serif;
-  --psq-pad: clamp(20px, 5vw, 64px);
+  /* ---- inherited from the theme ---- */
+  --psq-bg: var(--color-background, #ffffff);
+  --psq-fg: var(--color-foreground, #000000);
+  --psq-fg-rgb: var(--color-foreground-rgb, 0, 0, 0);
+  --psq-muted: var(--color-accent-two, #666666);
+  --psq-faint: var(--color-accent-three, #999999);
+  --psq-panel: var(--color-bg-one, #eeeeee);
+  --psq-sale: rgb(var(--color-price-sale, 247 0 0));
 
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: minmax(240px, 38svh) 1fr;
-  min-height: var(--psq-min-h-fb, 100vh);
-  min-height: var(--psq-min-h, 100svh);
-  isolation: isolate;
-  overflow: hidden;
-  background: var(--psq-ink);
-  color: var(--psq-paper);
-  font-family: var(--psq-mono);
-  -webkit-font-smoothing: antialiased;
+  --psq-line: rgba(var(--psq-fg-rgb), 0.14);
+  --psq-line-strong: rgba(var(--psq-fg-rgb), 0.6);
+
+  --psq-body-font: var(--font-body-family, "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
+  --psq-body-weight: var(--font-body-weight, 400);
+  --psq-head-font: var(--font-heading-family, "Basic Commercial", Helvetica, Arial, sans-serif);
+  --psq-head-weight: var(--font-heading-weight, 700);
+  --psq-accent-font: var(--font-accent-family, Montserrat, sans-serif);
+
+  --psq-size: var(--font-body-base-size-desktop, 15px);
+  --psq-size-ui: var(--font-ui-size-desktop, 13px);
+  --psq-lh: var(--base-line-height, 1.5);
+
+  --psq-h1: var(--font-h1-size-desktop, 34px);
+  --psq-h2: var(--font-h2-size-desktop, 22px);
+  --psq-h3: var(--font-h3-size-desktop, 18px);
+  --psq-h2-case: var(--font-h2-case, none);
+  --psq-h3-case: var(--font-h3-case, uppercase);
+
+  --psq-pad: var(--page-margin-desktop, 4rem);
+  --psq-gap: var(--grid-desktop-horizontal-spacing, 20px);
+  --psq-gap-y: var(--grid-desktop-vertical-spacing, 40px);
+
+  --psq-radius: var(--media-radius, 0px);
+  --psq-btn-radius: var(--buttons-radius, 0px);
+  --psq-btn-border: var(--buttons-border-width, 1px);
+  --psq-btn-case: var(--buttons-text-case, uppercase);
+  --psq-btn-weight: var(--buttons-font-weight, bold);
+  --psq-btn-size: var(--buttons-font-size-desktop, 13px);
+  --psq-btn-ls: var(--buttons-letter-spacing, 0em);
+  --psq-btn-fg: rgb(var(--color-button-foreground, 255, 255, 255));
+  --psq-btn-bg: rgb(var(--color-button-background, 0, 0, 0));
+  --psq-input-radius: var(--inputs-radius, 0px);
+  --psq-input-border: var(--inputs-border-width, 1px);
+
+  display: block;
+  padding: var(--psq-gap-y) var(--psq-pad);
+  background: var(--psq-bg);
+  color: var(--psq-fg);
+  font-family: var(--psq-body-font);
+  font-weight: var(--psq-body-weight);
+  font-size: var(--psq-size);
+  line-height: var(--psq-lh);
 }
 
 .psq *, .psq *::before, .psq *::after { box-sizing: border-box; }
 
-/* ------------------------------------------------------------------ ground */
+.psq__inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
 
-.psq__grain {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-  opacity: .5;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.34'/%3E%3C/svg%3E");
+/* ------------------------------------------------------------------ layout */
+
+.psq__layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--psq-gap-y) var(--psq-gap);
+  align-items: start;
 }
 
 /* ------------------------------------------------------------------- stage */
 
+/* The drawing. Black line on the theme's own light panel colour — no new
+   colours are introduced anywhere in this section. */
 .psq__stage {
   position: relative;
   display: grid;
   place-items: center;
-  border-bottom: 1px solid var(--psq-rule);
-  background:
-    radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, .07), transparent 62%),
-    radial-gradient(80% 60% at 50% 120%, color-mix(in srgb, var(--psq-tint) 22%, transparent), transparent 70%);
-}
-
-/* The overhead tube. One soft cone, nothing more. */
-.psq__beam {
-  position: absolute;
-  top: -14%;
-  left: 50%;
-  width: min(72%, 460px);
-  aspect-ratio: 1 / 1.35;
-  transform: translateX(-50%);
-  pointer-events: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, .13), transparent 68%);
-  clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
-  animation: psq-breathe 7.5s ease-in-out infinite;
+  aspect-ratio: 4 / 3;
+  padding: 24px;
+  background: var(--psq-panel);
+  border-radius: var(--psq-radius);
+  overflow: hidden;
 }
 
 .psq__rig {
-  position: relative;
-  z-index: 1;
-  width: min(88%, 480px);
+  width: 100%;
+  max-width: 420px;
   height: auto;
-  color: var(--psq-paper);
+  color: var(--psq-fg);
   overflow: visible;
-  animation: psq-drift 30s ease-in-out infinite alternate;
 }
 
-/* Faces and frames both live in the DOM at once and crossfade. No path
-   interpolation, no library, and it degrades to a static drawing. */
 .psq__faces path,
 .psq__frames > g {
   opacity: 0;
-  transition: opacity .5s cubic-bezier(.2, .7, .2, 1);
+  transition: opacity .45s cubic-bezier(.2, .7, .2, 1);
 }
-.psq__faces path { color: var(--psq-faint); stroke: currentColor; }
+.psq__faces path {
+  stroke: rgba(var(--psq-fg-rgb), .3);
+  fill: none;
+}
 .psq__faces path.is-on { opacity: 1; }
 
 .psq__frames > g {
   fill: none;
-  stroke: var(--psq-paper);
-  stroke-width: 2;
+  stroke: var(--psq-fg);
+  stroke-width: 2.25;
   stroke-linejoin: round;
-  filter: drop-shadow(0 0 14px color-mix(in srgb, var(--psq-tint) 55%, transparent));
 }
 .psq__frames > g.is-on { opacity: 1; }
-/* The lens fill sits behind the stroke of whichever frame is showing. */
+/* Lens fill: a wash of the foreground colour, so it reads as a tinted lens
+   without inventing a hue the brand does not use. */
 .psq__frames > g.is-on > rect,
 .psq__frames > g.is-on > circle,
 .psq__frames > g.is-on > ellipse,
 .psq__frames > g.is-on > path:not(:last-child) {
-  fill: color-mix(in srgb, var(--psq-tint) 26%, transparent);
+  fill: rgba(var(--psq-fg-rgb), .12);
 }
 
-.psq__features { color: var(--psq-faint); transition: opacity .5s ease; }
+.psq__features { stroke: rgba(var(--psq-fg-rgb), .3); transition: opacity .45s ease; }
 .psq.is-faceless .psq__features { opacity: 0; }
-
-.psq__glint {
-  opacity: 0;
-  animation: psq-glint 9s ease-in-out infinite;
-}
-.psq__glint--r { animation-delay: .5s; }
 
 .psq__caption {
   position: absolute;
-  left: var(--psq-pad);
-  bottom: 14px;
-  z-index: 2;
+  left: 16px;
+  bottom: 12px;
   margin: 0;
+  font-family: var(--psq-accent-font);
   font-size: 10px;
-  letter-spacing: .18em;
+  letter-spacing: .14em;
+  text-transform: uppercase;
   color: var(--psq-faint);
 }
-.psq__caption b { color: var(--psq-dim); font-weight: 400; }
 
 /* ------------------------------------------------------------------- panel */
 
-.psq__panel {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  padding: clamp(18px, 4vw, 40px) var(--psq-pad) calc(var(--psq-pad) * .8);
-  overflow-y: auto;
-}
+.psq__panel { min-width: 0; }
 
-.psq__rail {
-  display: flex;
-  gap: 5px;
-  margin-bottom: clamp(16px, 3vw, 26px);
-  min-height: 2px;
-}
+.psq__rail { display: flex; gap: 4px; margin-bottom: 20px; }
 .psq__tick {
   flex: 1;
   height: 2px;
-  background: var(--psq-rule);
-  transition: background .35s ease;
+  background: var(--psq-line);
+  transition: background .3s ease;
 }
-.psq__tick.is-done { background: var(--psq-paper); }
-.psq__tick.is-now { background: var(--psq-tint); }
+.psq__tick.is-done, .psq__tick.is-now { background: var(--psq-fg); }
 
-.psq__screens { flex: 1; display: flex; }
-.psq__screen { display: none; width: 100%; max-width: 760px; }
-.psq__screen.is-active { display: block; animation: psq-in .45s cubic-bezier(.2, .7, .2, 1) both; }
+.psq__screen { display: none; }
+.psq__screen.is-active { display: block; animation: psq-in .4s ease both; }
 
 .psq__eyebrow {
-  margin: 0 0 clamp(12px, 2vw, 20px);
-  font-size: 10px;
-  letter-spacing: .22em;
-  color: var(--psq-faint);
+  margin: 0 0 12px;
+  font-family: var(--psq-accent-font);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--psq-muted);
 }
-.psq__eyebrow i { font-style: normal; opacity: .5; margin: 0 .4em; }
+.psq__eyebrow i { font-style: normal; opacity: .55; margin: 0 .35em; }
 
 .psq__title {
-  margin: 0 0 18px;
-  font-family: var(--psq-serif);
-  font-weight: 500;
-  font-size: clamp(30px, 6.2vw, 60px);
-  line-height: 1.03;
-  letter-spacing: -.015em;
+  margin: 0 0 14px;
+  font-family: var(--psq-head-font);
+  font-weight: var(--psq-head-weight);
+  font-size: var(--psq-h1);
+  line-height: 1.12;
+  letter-spacing: var(--font-h1-ls, 0em);
+  text-transform: var(--font-h1-case, none);
 }
 
 .psq__q {
-  margin: 0 0 10px;
-  font-family: var(--psq-serif);
-  font-weight: 500;
-  font-size: clamp(23px, 4.2vw, 38px);
-  line-height: 1.12;
+  margin: 0 0 8px;
+  font-family: var(--psq-head-font);
+  font-weight: var(--psq-head-weight);
+  font-size: var(--psq-h2);
+  line-height: 1.2;
+  letter-spacing: var(--font-h2-ls, 0em);
+  text-transform: var(--psq-h2-case);
   outline: none;
 }
 
 .psq__body, .psq__hint {
-  margin: 0 0 22px;
-  max-width: 54ch;
-  font-size: clamp(13px, 1.5vw, 14px);
-  line-height: 1.65;
-  color: var(--psq-dim);
+  margin: 0 0 20px;
+  max-width: 56ch;
+  color: var(--psq-muted);
 }
-.psq__hint { margin-bottom: clamp(16px, 3vw, 26px); font-size: 12px; }
+.psq__hint { font-size: var(--psq-size-ui); margin-bottom: 18px; }
 
 /* ----------------------------------------------------------------- options */
 
 .psq__options { display: grid; gap: 8px; }
 
+/* Built to read like the theme's own inputs: same border width, same radius,
+   same square corners. */
 .psq__opt {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
   width: 100%;
-  min-height: 56px;
-  padding: 13px 16px;
-  border: 1px solid var(--psq-rule);
-  border-radius: 2px;
-  background: var(--psq-glass);
+  min-height: 52px;
+  padding: 11px 16px;
+  border: var(--psq-input-border) solid var(--psq-line-strong);
+  border-radius: var(--psq-input-radius);
+  background: transparent;
   color: inherit;
-  font: inherit;
+  font-family: inherit;
+  font-size: var(--psq-size);
   text-align: left;
   cursor: pointer;
-  transition: border-color .22s ease, background .22s ease, transform .22s ease;
+  transition: background .18s ease, border-color .18s ease;
 }
-.psq__opt:hover, .psq__opt:focus-visible {
-  border-color: var(--psq-paper);
-  background: rgba(255, 255, 255, .09);
-  transform: translateX(3px);
-  outline: none;
+.psq__opt:hover { background: var(--psq-panel); }
+.psq__opt:focus-visible { outline: 2px solid var(--psq-fg); outline-offset: 2px; }
+.psq__opt[aria-checked="true"] {
+  background: var(--psq-fg);
+  color: var(--psq-bg);
+  border-color: var(--psq-fg);
 }
-.psq__opt:focus-visible { box-shadow: 0 0 0 2px var(--psq-tint); }
-.psq__opt[aria-checked="true"] { border-color: var(--psq-tint); background: rgba(255, 255, 255, .1); }
-.psq__opt-l { font-size: 14px; letter-spacing: .01em; }
-.psq__opt-s { font-size: 11px; line-height: 1.45; color: var(--psq-faint); }
+.psq__opt[aria-checked="true"] .psq__opt-s { color: inherit; opacity: .7; }
+.psq__opt-l { font-weight: 500; }
+.psq__opt-s { font-size: var(--psq-size-ui); line-height: 1.4; color: var(--psq-muted); }
 
 /* -------------------------------------------------------- buttons and nav */
 
+/* Mirrors the theme's button tokens exactly rather than borrowing its
+   .button class, which would collide on specificity inside a section. */
 .psq__cta {
   display: inline-block;
-  min-height: 48px;
-  padding: 0 30px;
-  border: 0;
-  border-radius: 2px;
-  background: var(--psq-paper);
-  color: var(--psq-ink);
-  font: inherit;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .16em;
-  text-transform: uppercase;
+  padding: calc(var(--buttons-padding, 4px) + 12px) var(--buttons-horizontal-padding, 20px);
+  border: var(--psq-btn-border) solid var(--psq-btn-bg);
+  border-radius: var(--psq-btn-radius);
+  background: var(--psq-btn-bg);
+  color: var(--psq-btn-fg);
+  font-family: var(--psq-accent-font);
+  font-size: var(--psq-btn-size);
+  font-weight: var(--psq-btn-weight);
+  letter-spacing: var(--psq-btn-ls);
+  text-transform: var(--psq-btn-case);
+  text-decoration: none;
   cursor: pointer;
-  transition: transform .2s ease, box-shadow .2s ease;
+  transition: opacity .18s ease;
 }
-.psq__cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px color-mix(in srgb, var(--psq-tint) 45%, transparent); }
-.psq__cta:focus-visible { outline: 2px solid var(--psq-tint); outline-offset: 3px; }
+.psq__cta:hover { opacity: .82; }
+.psq__cta:focus-visible { outline: 2px solid var(--psq-fg); outline-offset: 3px; }
 
-.psq__nav { display: flex; gap: 20px; margin-top: 22px; align-items: center; }
-.psq__nav--result { margin-top: 28px; }
+.psq__nav { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin-top: 20px; }
 
 .psq__link {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  padding: 8px 0;
+  padding: 0;
   border: 0;
   background: none;
-  color: var(--psq-dim);
-  font: inherit;
+  color: var(--psq-muted);
+  font-family: var(--psq-accent-font);
   font-size: 11px;
-  letter-spacing: .14em;
+  letter-spacing: .1em;
   text-transform: uppercase;
   text-decoration: underline;
   text-underline-offset: 4px;
   cursor: pointer;
 }
-.psq__link:hover { color: var(--psq-paper); }
-.psq__link:focus-visible { outline: 2px solid var(--psq-tint); outline-offset: 3px; }
+.psq__link:hover { color: var(--psq-fg); }
+.psq__link:focus-visible { outline: 2px solid var(--psq-fg); outline-offset: 2px; }
 .psq__link[hidden] { display: none; }
-.psq__note { margin: 16px 0 0; }
+.psq__note { margin: 14px 0 0; }
 
 /* ---------------------------------------------------------------- result */
 
+.psq__screen--result { grid-column: 1 / -1; }
+.psq.is-result .psq__panel { display: none; }
+
 .psq__alias {
-  margin: 0 0 12px;
-  font-family: var(--psq-mono);
-  font-weight: 700;
-  font-size: clamp(22px, 4.6vw, 40px);
-  letter-spacing: .04em;
+  margin: 0 0 10px;
+  font-family: var(--psq-head-font);
+  font-weight: var(--psq-head-weight);
+  font-size: var(--psq-h1);
+  line-height: 1.1;
+  text-transform: uppercase;
 }
 .psq__verdict {
-  margin: 0 0 20px;
-  max-width: 58ch;
-  font-size: 13px;
-  line-height: 1.65;
-  color: var(--psq-dim);
+  margin: 0 auto 24px;
+  max-width: 62ch;
+  color: var(--psq-muted);
 }
 
+/* 1px gaps over a ruled background, rather than per-cell borders: this draws
+   the dividers correctly however many columns the grid wraps to, which
+   per-cell border-right does not once the row wraps on a phone. */
 .psq__spec {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 1px;
-  margin: 0 0 26px;
-  padding: 0;
+  margin: 0 0 var(--psq-gap-y);
+  padding: 1px;
   list-style: none;
-  background: var(--psq-rule);
-  border: 1px solid var(--psq-rule);
+  background: var(--psq-line);
 }
 .psq__spec li {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  padding: 12px 14px;
-  background: var(--psq-ink);
+  gap: 4px;
+  padding: 14px 16px;
+  background: var(--psq-bg);
 }
-.psq__spec b { font-size: 9px; font-weight: 400; letter-spacing: .2em; color: var(--psq-faint); text-transform: uppercase; }
-.psq__spec span { font-size: 12px; line-height: 1.35; }
-
-.psq__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
-  gap: clamp(10px, 2vw, 18px);
-}
-
-.psq__card {
-  display: flex;
-  flex-direction: column;
-  color: inherit;
-  text-decoration: none;
-  animation: psq-in .5s cubic-bezier(.2, .7, .2, 1) both;
-  animation-delay: calc(var(--i, 0) * 70ms);
-}
-.psq__card:focus-visible { outline: 2px solid var(--psq-tint); outline-offset: 4px; }
-
-.psq__shot {
-  position: relative;
-  margin: 0 0 10px;
-  aspect-ratio: 1 / 1;
-  overflow: hidden;
-  border: 1px solid var(--psq-rule);
-  background: rgba(255, 255, 255, .05);
-}
-.psq__shot img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform .55s cubic-bezier(.2, .7, .2, 1);
-}
-.psq__card:hover .psq__shot img { transform: scale(1.06); }
-.psq__shot.is-blank::after {
-  content: "NO IMAGE";
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-size: 9px;
-  letter-spacing: .2em;
+.psq__spec b {
+  font-family: var(--psq-accent-font);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: .14em;
+  text-transform: uppercase;
   color: var(--psq-faint);
 }
+.psq__spec span { font-size: var(--psq-size-ui); }
 
-.psq__flag, .psq__oos {
+/* The results grid matches the theme's own product grid spacing. */
+.psq__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--psq-gap-y) var(--psq-gap);
+}
+
+/* When the theme's real card-product markup is injected, it brings its own
+   styling from component-card.css and needs nothing from us. */
+.psq__slot { position: relative; min-width: 0; animation: psq-in .45s ease both; animation-delay: calc(var(--i, 0) * 60ms); }
+.psq__slot-body { min-width: 0; }
+
+/* Fallback card, used only if the theme card cannot be fetched. Deliberately
+   built from the same tokens the theme card uses. */
+.psq__card { display: block; color: inherit; text-decoration: none; }
+.psq__shot {
+  position: relative;
+  margin: 0 0 var(--product-card-text-top-padding, 15px);
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--product-card-media-bg-col, var(--psq-panel));
+  border-radius: var(--product-card-image-radius, 0);
+}
+.psq__shot img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.psq__shot.is-blank::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--psq-panel);
+}
+.psq__meta { text-align: var(--product-card-text-alignment, center); }
+.psq__name {
+  margin: 0 0 4px;
+  font-family: var(--psq-head-font);
+  font-weight: var(--psq-head-weight);
+  font-size: var(--psq-h3);
+  text-transform: var(--psq-h3-case);
+}
+.psq__desc { margin: 0 0 6px; font-size: var(--psq-size-ui); color: var(--psq-muted); }
+.psq__price { margin: 0; font-weight: var(--price-font-weight, normal); }
+.psq__price s { color: var(--psq-faint); margin-left: 6px; }
+.psq__ways { margin: 6px 0 0; font-size: 11px; color: var(--psq-faint); }
+
+/* The one flag we add on top of the theme card. Uses the theme's badge tokens. */
+.psq__flag {
   position: absolute;
   top: 8px;
-  left: 8px;
-  padding: 4px 7px;
-  font-size: 8px;
+  right: 8px;
+  z-index: 2;
+  padding: 4px 8px;
+  border-radius: var(--badge-corner-radius, 4px);
+  background: var(--psq-fg);
+  color: var(--psq-bg);
+  font-family: var(--psq-accent-font);
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: .16em;
-  background: var(--psq-tint);
-  color: #fff;
+  letter-spacing: .1em;
+  text-transform: uppercase;
 }
-.psq__oos { top: auto; bottom: 8px; left: 8px; background: rgba(0, 0, 0, .82); color: var(--psq-dim); }
 
-.psq__meta { display: flex; flex-direction: column; gap: 3px; }
-.psq__name { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .05em; }
-.psq__desc { margin: 0; font-size: 10.5px; line-height: 1.4; color: var(--psq-faint); }
-.psq__price { margin: 2px 0 0; font-size: 12px; }
-.psq__price s { color: var(--psq-faint); font-size: 10.5px; }
-.psq__ways { margin: 0; font-size: 9.5px; letter-spacing: .1em; color: var(--psq-faint); }
+.psq__empty { margin: 16px 0 0; color: var(--psq-muted); }
+.psq__empty a, .psq__body a { color: var(--psq-fg); }
 
-.psq__empty { margin: 18px 0 0; font-size: 13px; line-height: 1.6; color: var(--psq-dim); }
-.psq__empty a, .psq__body a { color: var(--psq-paper); }
+/* --------------------------------------------------------------- centring */
+
+/* The intro and the result read as page content, so they centre like the
+   theme's own rich-text sections. Questions stay left-aligned beside the
+   stage, where a centred column would be hard to scan. */
+.psq__screen[data-screen="intro"],
+.psq__screen--result { text-align: center; }
+.psq__screen[data-screen="intro"] .psq__body { margin-left: auto; margin-right: auto; }
+.psq__screen--result .psq__spec li { text-align: left; }
+/* text-align does not reach a flex row, so centre the result actions directly. */
+.psq__nav--result { justify-content: center; }
 
 /* ------------------------------------------------------------------ motion */
 
 @keyframes psq-in {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
 }
-@keyframes psq-breathe {
-  0%, 100% { opacity: .75; }
-  50% { opacity: 1; }
-}
-@keyframes psq-drift {
-  from { transform: scale(1) translateY(0); }
-  to { transform: scale(1.03) translateY(-6px); }
-}
-@keyframes psq-glint {
-  0%, 78%, 100% { opacity: 0; transform: translateX(-90px); }
-  86% { opacity: .85; }
-  94% { opacity: 0; transform: translateX(90px); }
-}
 
-/* ------------------------------------------------------------- wide screens */
+/* ------------------------------------------------------------- breakpoints */
 
-@media (min-width: 900px) {
+@media (max-width: 749px) {
   .psq {
-    grid-template-columns: 1.05fr 1fr;
-    grid-template-rows: 1fr;
+    padding: var(--grid-mobile-vertical-spacing, 28px) var(--page-margin-mobile, 2rem);
+    --psq-size: var(--font-body-base-size-mobile, 14px);
+    --psq-size-ui: var(--font-ui-size-mobile, 12px);
+    --psq-h1: var(--font-h1-size-mobile, 26px);
+    --psq-h2: var(--font-h2-size-mobile, 20px);
+    --psq-h3: var(--font-h3-size-mobile, 18px);
+    --psq-gap: var(--grid-mobile-horizontal-spacing, 12px);
+    --psq-gap-y: var(--grid-mobile-vertical-spacing, 28px);
   }
-  .psq__stage { border-bottom: 0; border-right: 1px solid var(--psq-rule); }
-  .psq__panel { justify-content: center; }
-  .psq__screens { flex: 0 1 auto; }
-  /* Bigger than the mobile track: in a panel this width, 136px produced three
-     columns and left the fourth frame orphaned on its own row. Eyewear also
-     simply sells better large. */
-  .psq__grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+  .psq__stage { aspect-ratio: 3 / 2; padding: 14px; }
+  .psq__rig { max-width: 300px; }
 }
 
-@media (min-width: 1400px) {
-  .psq__rig { width: min(76%, 560px); }
+@media (min-width: 750px) {
+  .psq__layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
+  .psq__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  /* On the result screen the stage steps aside — the products are the payload. */
+  .psq.is-result .psq__layout { grid-template-columns: minmax(0, 1fr); }
+  .psq.is-result .psq__stage { max-width: 320px; margin: 0 auto; aspect-ratio: 4 / 3; }
+}
+
+@media (min-width: 990px) {
+  .psq__layout { gap: calc(var(--psq-gap) * 2.5); }
 }
 
 /* ------------------------------------------------------------ reduced motion */
 
 @media (prefers-reduced-motion: reduce) {
-  .psq *,
-  .psq *::before,
-  .psq *::after {
+  .psq *, .psq *::before, .psq *::after {
     animation: none !important;
     transition-duration: .01ms !important;
   }
-  .psq__grain { display: none; }
-  .psq__glint { opacity: 0; }
-  .psq__screen.is-active, .psq__card { opacity: 1; transform: none; }
-}
-
-/* --------------------------------------------------------------- fallbacks */
-
-/* color-mix is well supported but not universal; these keep the tint visible
-   on older engines rather than dropping to transparent. */
-@supports not (color: color-mix(in srgb, red 50%, blue)) {
-  .psq__frames > g { filter: drop-shadow(0 0 14px rgba(91, 140, 255, .55)); }
-  .psq__frames > g.is-on > rect,
-  .psq__frames > g.is-on > circle,
-  .psq__frames > g.is-on > ellipse,
-  .psq__frames > g.is-on > path:not(:last-child) { fill: rgba(91, 140, 255, .26); }
-  .psq__cta:hover { box-shadow: 0 8px 24px rgba(91, 140, 255, .45); }
-  .psq__stage { background: radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, .07), transparent 62%); }
+  .psq__screen.is-active, .psq__slot { opacity: 1; transform: none; }
 }
