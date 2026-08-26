@@ -124,6 +124,14 @@ If one frame ever dominates more than feels right, the lever is its collection
 memberships rather than the code. A rimless frame sitting in Rectangular is what
 makes it eligible across so many faces.
 
+### The snapshot is not the source
+
+`preview/quiz-products.json` is a point-in-time capture of the catalogue, used
+only so the standalone preview can run without a store. The section itself never
+reads it — on the storefront every trait comes from `product.collections` at
+render time. When collections change in Shopify the live quiz follows
+immediately; only the preview needs re-capturing.
+
 ### When a strong seller doesn't appear
 
 Almost always a collection gap rather than a scoring one, because collections
