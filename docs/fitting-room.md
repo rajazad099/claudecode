@@ -111,18 +111,47 @@ stock and reviews divided four ways, while a line keeping its colours as
 variants presents its full depth in one row. The colourway shown on the shelf is
 then the one actually in depth, not whichever sorts first alphabetically.
 
-### Watch the concentration
+### Fit qualifies, performance orders
 
-Because collection membership is the whole taxonomy, adding one frame to several
-collections at once makes it eligible on many face shapes simultaneously. Putting
-Serendipity 2.0 into Rectangular, Code and Bestsellers took it from absent to
-leading **31%** of all fittings — deserved on the numbers (582 units, 352 orders
-in 90 days), but worth knowing that a single merchandising change can move the
-shelf that far.
+The order of operations matters, and getting it wrong is how one frame ends up
+recommended to everybody:
 
-If one frame ever dominates more than feels right, the lever is its collection
-memberships rather than the code. A rimless frame sitting in Rectangular is what
-makes it eligible across so many faces.
+1. **Fit is a gate.** A frame must *positively* suit the face to be shown at
+   all. Negative fit is excluded, and so is neutral — a frame carrying opposing
+   shape traits that cancel to zero is not a recommendation. Serendipity 2.0 is
+   both rimless and rectangular, which cancels on a square face and on a long
+   one, and it is now correctly absent from both.
+2. **Taste modifies.** Aesthetic and tint are worth roughly what a shape trait
+   is worth, so saying "vintage" genuinely reorders the shelf.
+3. **Performance breaks ties.** Reviews and stock depth are capped at about six
+   points combined. They are face-independent — a deep line earns the same
+   credit against every face — so left unbounded they stop being a tiebreaker
+   and become a thumb on the scale. At thirteen points, one frame led a third of
+   all fittings.
+
+Stock cuts both ways: the curve is centred at ten units, so a line down to its
+last one or two is marked *down*, not merely left unrewarded. Recommending a
+frame that is about to be unavailable wastes the fitting.
+
+Fit is also summed with **diminishing returns**, because the shape traits are
+correlated rather than independent: a frame that is oversized *and* wraparound
+*and* round is one shape described three ways, not three separate merits. The
+strongest trait counts in full, each additional one at half. Straight addition
+produced a long-face winner nothing else could reach — 80% of those fittings,
+from a choice of two frames. Penalties are not discounted; a frame wrong for the
+face should stay wrong.
+
+### Concentration is usually a catalogue signal
+
+Some faces still concentrate, and that is information rather than a bug. Heart
+faces land on Serendipity 2.0 in about seven of ten fittings — it is the
+best-fitting rimless line *and* by far the deepest stocked, and there simply
+are not many well-stocked rimless frames to compete. Long faces are similar.
+
+When one frame dominates a face shape, the fix is usually stock or
+merchandising, not scoring: more depth in that shape, or a collection
+membership that is wrong. A rimless frame sitting in Rectangular is what makes
+it eligible on angular faces at all.
 
 ### The snapshot is not the source
 

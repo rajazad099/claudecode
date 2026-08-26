@@ -29,6 +29,10 @@
      mode a fitting quiz cannot have. */
   var FIT_WEIGHT = 3;
 
+  /* Below this many positively-fitting frames, neutral-fit frames are allowed
+     back in to fill the shelf rather than showing the customer a short one. */
+  var NEUTRAL_FALLBACK_AT = 8;
+
   var FIT = {
     oval:    { rect: 3, round: 3, cate: 3, oval: 3, riml: 2, wrap: 2, avia: 3, ovsz: 1, geo: 2 },
     round:   { rect: 5, cate: 4, wrap: 3, geo: 3, avia: 2, riml: 1, ovsz: 1, oval: -2, round: -4 },
@@ -108,11 +112,11 @@
       q: 'Which of these is closest to how you dress?',
       hint: 'We merchandise by mood as well as by shape.',
       options: [
-        { v: 'vint',  l: 'Archive / vintage',   s: '90s frames, retro rounds, tortoise',   score: { vint: 6, round: 1 } },
-        { v: 'tech',  l: 'Techno / futuristic', s: 'Wraps, visors, Y2K metal',              score: { tech: 6, wrap: 2 } },
-        { v: 'luxe',  l: 'Quiet luxury',        s: 'Clean lines, gold, nothing shouting',   score: { luxe: 6, riml: 2, oval: 1 } },
-        { v: 'code',  l: 'Street / everyday',   s: 'Black, matte, goes with everything',    score: { code: 5, best: 2 } },
-        { v: 'ice',   l: 'Ice / clear',         s: 'Transparent, chrome, cold tones',       score: { ice: 6, riml: 2 } },
+        { v: 'vint',  l: 'Archive / vintage',   s: '90s frames, retro rounds, tortoise',   score: { vint: 8, round: 1 } },
+        { v: 'tech',  l: 'Techno / futuristic', s: 'Wraps, visors, Y2K metal',              score: { tech: 8, wrap: 2 } },
+        { v: 'luxe',  l: 'Quiet luxury',        s: 'Clean lines, gold, nothing shouting',   score: { luxe: 8, riml: 2, oval: 1 } },
+        { v: 'code',  l: 'Street / everyday',   s: 'Black, matte, goes with everything',    score: { code: 7, best: 2 } },
+        { v: 'ice',   l: 'Ice / clear',         s: 'Transparent, chrome, cold tones',       score: { ice: 8, riml: 2 } },
         { v: 'any',   l: 'Depends on the day',  s: 'Show me what fits first',               score: { best: 2, staff: 1 } }
       ],
       apply: function (a, v) { a.vibe = v; }
@@ -138,8 +142,8 @@
       q: 'Which lens do you reach for?',
       hint: 'Tint changes the whole character of a frame, and it is the thing people regret getting wrong.',
       options: [
-        { v: 'dark',   l: 'Dark — black, brown, smoke', s: 'Hides the eyes, holds up in hard sun',   score: { dark: 12, darkish: 2 } },
-        { v: 'light',  l: 'Light — blue, beige, clear', s: 'Softer, shows the eyes, reads modern',   score: { light: 12, lightish: 2 } },
+        { v: 'dark',   l: 'Dark — black, brown, smoke', s: 'Hides the eyes, holds up in hard sun',   score: { dark: 7, darkish: 2 } },
+        { v: 'light',  l: 'Light — blue, beige, clear', s: 'Softer, shows the eyes, reads modern',   score: { light: 7, lightish: 2 } },
         { v: 'either', l: 'Either — surprise me',       s: 'Fit matters more to you than colour',    score: {} }
       ],
       apply: function (a, v) { a.tint = v; }
@@ -260,20 +264,33 @@
      customer mid-fitting, and it is the range the shop stands behind.
      Deliberately bounded so it ranks well-fitting frames against each other
      rather than overruling the fit. */
+  /* Performance is deliberately small, and this is the whole point of it.
+
+     It is face-independent — a deep, well-reviewed line earns the same credit
+     against every face shape — so if it is allowed to grow it stops being a
+     tiebreaker and becomes a thumb on the scale that lifts one product onto
+     faces it does not suit. That is exactly what happened when this was worth
+     up to 13 points: one frame led a third of all fittings.
+
+     Capped at roughly 6 combined, it can reorder frames that already suit the
+     face and can never overturn the fit itself. */
   function performance(line) {
     var s = 0;
 
-    /* Reviews. Credit is scaled by how many people actually said it, saturating
-       at 40, so a single five-star review cannot outrank a proven line with
-       eighty. Below 3.5 stars a frame is pushed down, not merely un-boosted. */
+    /* Reviews. Credit scales with how many people actually said it, saturating
+       at 40, so a single five-star review cannot outrank a line with eighty.
+       Below 3.5 stars a frame is pushed down, not merely un-boosted. */
     if (line.rt) {
       var confidence = Math.min(line.rc || 0, 40) / 40;
-      s += (line.rt - 3.5) * 4 * confidence;
+      s += (line.rt - 3.5) * 2 * confidence;
     }
 
-    /* Stock depth, on a log curve: the step from 10 to 100 units matters far
-       more than the step from 800 to 900. */
-    if (line.iv > 0) s += Math.min(Math.log(line.iv) / Math.LN10 * 2.2, 6.6);
+    /* Stock depth, on a log curve — the step from 10 units to 100 matters far
+       more than 800 to 900 — and centred at ten so it cuts both ways. A line
+       down to its last unit is marked down, not merely left unrewarded: it is
+       about to be unavailable, and recommending it wastes the fitting. */
+    if (line.iv > 0) s += (Math.min(Math.log(line.iv) / Math.LN10, 3) - 1) * 2;
+    else s -= 2;
 
     return s;
   }
@@ -315,7 +332,7 @@
        is the line's depth regardless of which colours are showing today. */
     var lines = linesOf(products);
 
-    var scored = [];
+    var scored = [], neutral = [];
     for (var i = 0; i < products.length; i++) {
       var p = products[i];
       if (opts.hideOOS && !p.a) continue;
@@ -323,24 +340,51 @@
       if (required && !traits[required]) continue;
       var line = lines[parseTitle(p.t).alias.toUpperCase()] || { iv: p.iv || 0, rc: p.rc || 0, rt: p.rt || 0 };
 
-      var score = 0, k;
-      /* 1. fit — how the frame shape reads against this face. Weighted up so
-            it leads; everything below it only ever reorders near-ties. */
-      for (k in fitTable) if (traits[k]) score += fitTable[k] * FIT_WEIGHT;
+      /* 1. fit — how the frame shape reads against this face.
+
+         Summed with diminishing returns, because the shape traits are
+         correlated rather than independent: a frame that is oversized AND
+         wraparound AND round is one shape described three ways, not three
+         separate merits. Straight addition triple-counted it and produced a
+         winner that nothing else could reach — the strongest trait counts in
+         full, each additional one at half. Penalties are not discounted; a
+         frame wrong for the face should stay wrong. */
+      var fitScore = 0, best = 0, penalty = 0, k, v;
+      for (k in fitTable) {
+        if (!traits[k]) continue;
+        v = fitTable[k];
+        if (v < 0) { penalty += v; continue; }
+        fitScore += v;
+        if (v > best) best = v;
+      }
+      fitScore = best + (fitScore - best) * 0.5 + penalty;
+
+      /* A frame must positively suit the face to be recommended at all.
+
+         Excluding only negative fit was not enough: a frame carrying opposing
+         shape traits nets out to zero — Serendipity 2.0 is both rimless and
+         rectangular, which cancels on a square face and on a long one — and a
+         neutral frame still collected taste, performance and curation points
+         and won faces it had no business on. Zero is not a recommendation, so
+         zero is excluded too. */
+      if (fitScore < 0) continue;
+
+      var score = fitScore * FIT_WEIGHT;
       /* 2. taste and use — what they told us they want */
       for (k in wanted) if (traits[k]) score += wanted[k];
-      /* 3. proven performers — what sold, what reviewed well, what is stocked
-            deep enough to push with confidence */
+      /* 3. proven performers — a bounded tiebreaker between frames that
+            already suit the face */
       score += performance(line);
-      /* 4. house curation */
-      if (traits.best) score += 3;
+      /* 4. house curation, smaller still */
+      if (traits.best) score += 1;
       if (traits.staff) score += 1;
       if (p.a) score += 3;
 
-      scored.push({ p: p, score: score, traits: traits, meta: parseTitle(p.t), line: line });
+      var row = { p: p, score: score, traits: traits, meta: parseTitle(p.t), line: line };
+      if (fitScore > 0) scored.push(row); else neutral.push(row);
     }
 
-    scored.sort(function (a, b) {
+    var order = function (a, b) {
       return b.score - a.score
           /* Colourways of one line now tie on score, since performance is
              pooled across them. Break that tie on the colour's own stock depth
@@ -350,18 +394,32 @@
           || (b.p.iv || 0) - (a.p.iv || 0)
           || a.p.p - b.p.p
           || a.p.h.localeCompare(b.p.h);
-    });
-
+    };
     /* Collapse colourways: one row per alias, with a count so the customer
        still learns the other colours exist. */
-    var byAlias = Object.create(null), out = [];
-    for (i = 0; i < scored.length; i++) {
-      var key = scored[i].meta.alias.toUpperCase();
-      if (byAlias[key]) { byAlias[key].ways++; continue; }
-      scored[i].ways = 1;
-      byAlias[key] = scored[i];
-      out.push(scored[i]);
+    var byAlias = Object.create(null);
+    function collapse(rows, into) {
+      rows.sort(order);
+      for (var j = 0; j < rows.length; j++) {
+        var key = rows[j].meta.alias.toUpperCase();
+        if (byAlias[key]) { byAlias[key].ways++; continue; }
+        rows[j].ways = 1;
+        byAlias[key] = rows[j];
+        into.push(rows[j]);
+      }
+      return into;
     }
+
+    var out = collapse(scored, []);
+
+    /* Top up only if the shelf would otherwise come up short — which is judged
+       on distinct frames, after colourways collapse. Counting raw rows was the
+       bug: eight rows of three lines read as a full shelf and the top-up never
+       fired, leaving three frames for anyone wanting sports on a square, heart
+       or diamond face. Neutral-fit frames land after every frame that
+       positively suits the face, never among them. */
+    if (out.length < NEUTRAL_FALLBACK_AT) collapse(neutral, out);
+
     return out;
   }
 
