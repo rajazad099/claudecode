@@ -78,7 +78,8 @@ These collections are wired in already:
 | --- | --- |
 | Frame shape | Rectangular, Oval, Round, Cateye, Rimless, Wraparound, Oversized |
 | Aesthetic | Vintage, Techno, Daily Luxe, Code, Ice Ice Baby |
-| Use case | Prescription Friendly, Polarised Sports |
+| Use case | Polarised Sports |
+| Candidate pool only | Prescription Friendly — no longer a filter, but many of the best-performing frames live there, so it still feeds the shelf |
 | Confidence | Bestsellers, Staff picks, Markdowns, Buy any 3 |
 
 Each is a setting, so if a collection is renamed or replaced, re-point it in the
@@ -86,11 +87,46 @@ theme editor rather than in code.
 
 The product **title** is read too, for the shape words collections don't carry —
 aviator, hexagon, butterfly, slim, chunky, Y2K, retro. Including `Overized`,
-which is a live typo in the catalogue and is matched deliberately.
+which is a live typo in the catalogue and is matched deliberately. A polarised
+sports frame is also treated as a wraparound, because that is what the category
+physically is.
+
+### Proven performers
+
+Two more live signals decide between frames that fit equally well. Both are read
+at render time, so neither can go stale:
+
+- **Reviews**, from the review app's metafields. Credit scales with how many
+  people actually said it, saturating at 40, so one five-star review cannot
+  outrank a line with eighty. Below 3.5 stars a frame is pushed down, not merely
+  un-boosted.
+- **Stock depth**, on a log curve — the step from 10 units to 100 matters far
+  more than 800 to 900. Deep stock is the signal to push: the line was bought
+  into, it won't sell out under the customer mid-fitting, and it's the range the
+  shop stands behind.
+
+Membership of **Bestsellers** and **Staff picks** adds a little on top.
+
+Together these are bounded so they rank well-fitting frames against each other
+rather than overruling the fit — a bestseller in the wrong shape still loses to
+the right shape.
+
+### Tint
+
+Tint has to distinguish *"this frame is dark"* from *"this frame comes in six
+colours, one of which is dark"* — otherwise every deep line matches both
+preferences and the question does nothing. A frame split one product per
+colourway states its tint exactly in its `: Colour` suffix and scores full
+credit; a frame that keeps its colours as variants scores partial credit, so it
+sits below an exact match without being excluded.
 
 ### The fitting table
 
 The rule is contrast, not echo: you give a face the geometry it hasn't got.
+
+The six questions are: face shape, how frames currently sit, aesthetic, where
+they'll be worn, and lens tint — plus a jawline question that only appears if
+the face-shape question is skipped.
 
 | Face | Pushed toward | Pushed away from |
 | --- | --- | --- |
@@ -104,6 +140,12 @@ The rule is contrast, not echo: you give a face the geometry it hasn't got.
 Fit is weighted **3×** above aesthetic and popularity. That matters: without it
 a bestseller in the wrong shape outranks the right shape, which is the one
 failure a fitting quiz cannot afford. Bestsellers now only break near-ties.
+
+### Sport is a constraint, not a taste
+
+Answering *"running, riding, gym"* narrows to the polarised sports range
+outright. A frame that isn't built for sport is the wrong answer however well it
+suits the face, so this is the one hard filter in the quiz.
 
 ### The width question
 
@@ -141,9 +183,6 @@ reads as a fitting.
   previews the consequence — the face morphs, the frame changes.
 - **Out of stock** frames are hidden by default and can be shown instead.
   Availability is scored, not assumed; plenty of active products sit at zero.
-- **Prescription is a hard filter.** Answer yes and only glazable frames appear.
-- **Budget is a soft ceiling.** A perfect fit slightly over still surfaces
-  rather than vanishing, because a near-miss beats an empty result.
 - **The result is remembered** in `localStorage` — returning visitors are
   offered it back. Nothing is transmitted anywhere.
 - **Quick-add is off** on the result cards. These frames come in colourways, so
@@ -173,13 +212,14 @@ data. Change the numbers to change the recommendations.
 Headless Chromium, `preview/quiz.html` against a live 178-frame snapshot of the
 catalogue:
 
-- **All 6,480 answer combinations** (6 faces × 4 fits × 6 aesthetics × 5
-  use-cases × 3 lens answers × 3 budgets) return results. The thinnest returns
-  32 frames; the average is 68. No combination dead-ends.
+- **All 2,160 answer combinations** (6 faces × 4 fits × 6 aesthetics × 5
+  use-cases × 3 tints) return results. The thinnest returns 8 frames — the
+  sports-narrowed path — and no combination dead-ends.
 - **Every face shape returns only on-doctrine frames** in its top four.
-- **35 different frames** take the top slot across those runs, the most frequent
-  at 14.6% — no single product dominates the quiz.
-- Prescription filter: 100% of results glazable. Sold-out filter: no leaks.
+- **36 different frames** take the top slot across those runs, the most frequent
+  at 13.8% — proven lines lead without one product owning the quiz.
+- Each of the three tint answers returns a visibly different shelf.
+- Sports filter: 100% of results are sports frames. Sold-out filter: no leaks.
   Colourway dedupe: no repeated alias in any result.
 - No horizontal overflow at 320 / 360 / 390 / 414 / 430 / 768 / 1024 / 1440 /
   1920 px. No tap target under 44px. No console errors.

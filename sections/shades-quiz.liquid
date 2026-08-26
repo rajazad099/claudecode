@@ -144,7 +144,38 @@
       {%- if is_eyewear -%}
         {%- if n > 0 %},{% endif -%}
         {%- assign n = n | plus: 1 -%}
-        {"h":{{ product.handle | json }},"t":{{ product.title | json }},"u":{{ product.url | json }},"p":{{ product.price }},"pf":{{ product.price | money | strip_html | json }},"a":{{ product.available }},
+        {%- comment -%}
+          Performance signals, all read live so nothing here goes stale:
+          stock depth (what the shop can safely push), and the review rating and
+          count from the review app's metafields (what customers actually said).
+        {%- endcomment -%}
+        {%- assign inv = 0 -%}
+        {%- for v in product.variants -%}
+          {%- if v.inventory_quantity > 0 -%}{%- assign inv = inv | plus: v.inventory_quantity -%}{%- endif -%}
+        {%- endfor -%}
+        {%- comment -%}
+          Colourway words, for the tint preference. The ": Colour" title suffix
+          covers the frames split one product per colour; the Color option covers
+          the ones that keep their colours as variants.
+        {%- endcomment -%}
+        {%- capture cl -%}
+          {%- if product.title contains ' : ' %}{{ product.title | split: ' : ' | last }} {% endif -%}
+          {%- for o in product.options_with_values -%}
+            {%- assign on = o.name | downcase | strip -%}
+            {%- if on == 'color' or on == 'colour' or on == 'colors' or on == 'colours' -%}
+              {%- for v in o.values %}{{ v }} {% endfor -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endcapture -%}
+        {%- assign cl = cl | strip_html | strip | downcase -%}
+        {"h":{{ product.handle | json }},"t":{{ product.title | json }},"u":{{ product.url | json }},"p":{{ product.price }},"pf":{{ product.price | money | strip_html | json }},"a":{{ product.available }},"iv":{{ inv }},
+        {%- if product.metafields.reviews.rating != blank and product.metafields.reviews.rating.value.rating != blank -%}
+          "rt":{{ product.metafields.reviews.rating.value.rating }},
+        {%- endif -%}
+        {%- if product.metafields.reviews.rating_count != blank -%}
+          "rc":{{ product.metafields.reviews.rating_count }},
+        {%- endif -%}
+        {%- if cl != blank %}"cl":{{ cl | json }},{% endif -%}
         {%- if product.compare_at_price > product.price %}"cp":{{ product.compare_at_price | money | strip_html | json }},{% endif -%}
         {%- if product.featured_image -%}
           "i":{{ product.featured_image | image_url: width: 700 | json }},"ia":{{ product.featured_image.alt | default: product.title | json }},

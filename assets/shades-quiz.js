@@ -124,33 +124,25 @@
       options: [
         { v: 'city',   l: 'Everyday, in the city', s: 'Commutes, coffee, going out',   score: { best: 2, code: 2, staff: 1 } },
         { v: 'drive',  l: 'Driving and daylight',  s: 'Glare is the enemy',            score: { sport: 6, wrap: 3, avia: 2 } },
-        { v: 'sport',  l: 'Running, riding, gym',  s: 'They have to stay on',          score: { sport: 7, wrap: 4, ovsz: -2, riml: -2 } },
+        /* Answering this is a functional constraint, not a preference: a frame
+           that is not built for sport is the wrong answer however well it fits,
+           so this narrows to the polarised sports range outright. */
+        { v: 'sport',  l: 'Running, riding, gym',  s: 'They have to stay on',          score: { sport: 7, wrap: 4, ovsz: -2, riml: -2 }, require: 'sport' },
         { v: 'beach',  l: 'Beach and travel',      s: 'Sun, water, long days out',     score: { ovsz: 3, sport: 2, vint: 1 } },
         { v: 'night',  l: 'Out, mostly for looks', s: 'The frame is the outfit',       score: { tech: 3, ovsz: 3, luxe: 2 } }
       ],
       apply: function (a, v) { a.wear = v; }
     },
     {
-      id: 'lens',
-      q: 'Do you need prescription lenses in these?',
-      hint: 'We keep a set of frames our lab can glaze. If you say yes, we only show you those.',
+      id: 'tint',
+      q: 'Which lens do you reach for?',
+      hint: 'Tint changes the whole character of a frame, and it is the thing people regret getting wrong.',
       options: [
-        { v: 'yes',    l: 'Yes — I wear a prescription', s: 'Show me frames you can glaze', score: { rx: 10 }, require: 'rx' },
-        { v: 'maybe',  l: 'Maybe, one day',                   s: 'Prefer them, don’t insist', score: { rx: 3 } },
-        { v: 'no',     l: 'No, just sunglasses',              s: 'Anything on the shelf',        score: {} }
+        { v: 'dark',   l: 'Dark — black, brown, smoke', s: 'Hides the eyes, holds up in hard sun',   score: { dark: 12, darkish: 2 } },
+        { v: 'light',  l: 'Light — blue, beige, clear', s: 'Softer, shows the eyes, reads modern',   score: { light: 12, lightish: 2 } },
+        { v: 'either', l: 'Either — surprise me',       s: 'Fit matters more to you than colour',    score: {} }
       ],
-      apply: function (a, v) { a.lens = v; }
-    },
-    {
-      id: 'budget',
-      q: 'Where should we look?',
-      hint: 'A ceiling, not a target. We’ll still show you the best fit under it.',
-      options: [
-        { v: 'lo',  l: 'Under ₹1,000',   s: 'The multi-buy shelf lives here', score: { deal: 4, sale: 3 }, max: 100000 },
-        { v: 'mid', l: '₹1,000–₹2,000', s: 'The middle of the range',      score: {}, max: 200000 },
-        { v: 'hi',  l: 'No ceiling',          s: 'Show me the best fit, full stop', score: { luxe: 2 } }
-      ],
-      apply: function (a, v) { a.budget = v; }
+      apply: function (a, v) { a.tint = v; }
     }
   ];
 
@@ -168,6 +160,33 @@
 
   /* ------------------------------------------------------ title -> traits */
 
+  var TINT_DARK  = /\b(black|brown|smoke|smoked|tortoise|grey|gray|charcoal|olive|forest|emerald|midnight|ash|dark|espresso|leopard)\b/i;
+  var TINT_LIGHT = /\b(blue|beige|biege|clear|transparent|white|silver|yellow|pink|orange|purple|gold|ice|crystal|sand|rose|cream|lilac)\b/i;
+
+  /* Tint has to distinguish "this frame IS dark" from "this frame is sold in
+     several colours, one of which is dark" — otherwise every deep line matches
+     both preferences and the question does nothing.
+
+     A frame split one product per colourway states its tint exactly in the
+     ": Colour" suffix. A frame that keeps its colours as variants only offers
+     the tint, so it scores the weaker `-ish` trait and sits below an exact
+     match without being excluded. */
+  function tintTraits(p, traits) {
+    var parts = String(p.t).split(/\s+:\s+/);
+    var exact = parts.length > 1 ? parts.pop() : null;
+    if (exact !== null) {
+      if (TINT_DARK.test(exact))  { traits.dark = true;  traits.darkish = true;  return; }
+      if (TINT_LIGHT.test(exact)) { traits.light = true; traits.lightish = true; return; }
+    }
+    var pool = (p.cl || '') + ' ' + p.t;
+    var d = TINT_DARK.test(pool), l = TINT_LIGHT.test(pool);
+    /* Only one tint in the whole range: that is what the frame is. */
+    if (d && !l) { traits.dark = true; traits.darkish = true; return; }
+    if (l && !d) { traits.light = true; traits.lightish = true; return; }
+    if (d) traits.darkish = true;
+    if (l) traits.lightish = true;
+  }
+
   var TITLE_RULES = [
     [/rimless/i, 'riml'], [/cat[\s-]?eye/i, 'cate'], [/wrap/i, 'wrap'],
     [/aviator|pilot/i, 'avia'], [/hexagon|hex\b|octagon|geometric/i, 'geo'],
@@ -179,6 +198,7 @@
     [/y2k|futuristic|techno|tech\b|cyber|3d|alien/i, 'tech'],
     [/retro|vintage|archive|90'?s|classic|heritage/i, 'vint'],
     [/polaris|polariz|sport|shield/i, 'sport'],
+    [/sports?\s+sunglasses|shield|wrap/i, 'wrap'],
     [/metal|chrome|steel|titanium/i, 'metal'],
     [/luxury|luxe|premium|gold/i, 'luxe'],
     [/clear|transparent|ice|crystal/i, 'ice']
@@ -191,7 +211,34 @@
     for (i = 0; i < TITLE_RULES.length; i++) {
       if (TITLE_RULES[i][0].test(p.t)) traits[TITLE_RULES[i][1]] = true;
     }
+    tintTraits(p, traits);
     return traits;
+  }
+
+  /* ------------------------------------------------- proven performers */
+
+  /* What the shop already knows about a frame, from two live sources: what
+     customers said about it, and how deep it is stocked. Deep stock is the
+     signal to push — the line was bought into, it will not sell out under the
+     customer mid-fitting, and it is the range the shop stands behind.
+     Deliberately bounded so it ranks well-fitting frames against each other
+     rather than overruling the fit. */
+  function performance(p) {
+    var s = 0;
+
+    /* Reviews. Credit is scaled by how many people actually said it, saturating
+       at 40, so a single five-star review cannot outrank a proven line with
+       eighty. Below 3.5 stars a frame is pushed down, not merely un-boosted. */
+    if (p.rt) {
+      var confidence = Math.min(p.rc || 0, 40) / 40;
+      s += (p.rt - 3.5) * 4 * confidence;
+    }
+
+    /* Stock depth, on a log curve: the step from 10 to 100 units matters far
+       more than the step from 800 to 900. */
+    if (p.iv > 0) s += Math.min(Math.log(p.iv) / Math.LN10 * 2.2, 6.6);
+
+    return s;
   }
 
   /* `[ Apollo ] Rectangular Unisex Sunglasses : Black` -> parts. The house
@@ -214,8 +261,7 @@
     var face = answers.face || 'oval';
     var fitTable = FIT[face] || FIT.oval;
     var wanted = Object.create(null);   /* trait -> points, from the answers */
-    var required = null;                /* hard filter, e.g. must be glazable */
-    var maxPrice = null;
+    var required = null;                /* hard filter, if an answer sets one */
 
     QUESTIONS.forEach(function (q) {
       var v = answers[q.id];
@@ -224,7 +270,6 @@
       for (var i = 0; i < q.options.length; i++) if (q.options[i].v === v) opt = q.options[i];
       if (!opt) return;
       if (opt.require) required = opt.require;
-      if (opt.max) maxPrice = opt.max;
       var sc = opt.score || {};
       for (var k in sc) wanted[k] = (wanted[k] || 0) + sc[k];
     });
@@ -242,11 +287,11 @@
       for (k in fitTable) if (traits[k]) score += fitTable[k] * FIT_WEIGHT;
       /* 2. taste and use — what they told us they want */
       for (k in wanted) if (traits[k]) score += wanted[k];
-      /* 3. budget — a ceiling softly enforced, so a perfect fit slightly over
-            still surfaces rather than vanishing */
-      if (maxPrice != null) score += (p.p <= maxPrice) ? 3 : -6;
-      /* 4. house confidence — a tiebreaker, deliberately small */
-      if (traits.best) score += 1;
+      /* 3. proven performers — what sold, what reviewed well, what is stocked
+            deep enough to push with confidence */
+      score += performance(p);
+      /* 4. house curation */
+      if (traits.best) score += 3;
       if (traits.staff) score += 1;
       if (p.a) score += 3;
 
@@ -529,7 +574,8 @@
       ['Face', FACE_LABEL[face] + (this.answers.faceInferred ? ' (from your jawline)' : '')],
       ['Fit', { slide: 'Narrower than standard', right: 'Standard width', press: 'Wider than standard', small: 'Statement width' }[this.answers.fit] || 'Standard width'],
       ['Frame', top.length ? (top[0].meta.desc || 'Best available fit') : '—'],
-      ['Lens', this.answers.lens === 'yes' ? 'Prescription-ready only' : (this.answers.wear === 'drive' || this.answers.wear === 'sport' ? 'Polarised preferred' : 'Standard tint')]
+      ['Tint', { dark: 'Dark — black, brown, smoke', light: 'Light — blue, beige, clear' }[this.answers.tint] ||
+                (this.answers.wear === 'drive' || this.answers.wear === 'sport' ? 'Polarised preferred' : 'No preference')]
     ];
     this.el.spec.innerHTML = spec.map(function (r) {
       return '<li><b>' + r[0] + '</b><span></span></li>';
