@@ -49,6 +49,7 @@
   assign c_riml  = s.col_riml  | default: collections['rimless']
   assign c_wrap  = s.col_wrap  | default: collections['wraparound-sunglasses']
   assign c_ovsz  = s.col_ovsz  | default: collections['oversized-sunglasses']
+  assign c_geo   = s.col_geo   | default: collections['geometric']
   assign c_vint  = s.col_vint  | default: collections['vintage']
   assign c_tech  = s.col_tech  | default: collections['techno']
   assign c_luxe  = s.col_luxe  | default: collections['luxe-collection']
@@ -78,6 +79,7 @@
 {%- if c_riml  != blank %}{{ c_riml.handle  }}>riml,{% endif -%}
 {%- if c_wrap  != blank %}{{ c_wrap.handle  }}>wrap,{% endif -%}
 {%- if c_ovsz  != blank %}{{ c_ovsz.handle  }}>ovsz,{% endif -%}
+{%- if c_geo   != blank %}{{ c_geo.handle   }}>geo,{% endif -%}
 {%- if c_vint  != blank %}{{ c_vint.handle  }}>vint,{% endif -%}
 {%- if c_tech  != blank %}{{ c_tech.handle  }}>tech,{% endif -%}
 {%- if c_luxe  != blank %}{{ c_luxe.handle  }}>luxe,{% endif -%}
@@ -95,7 +97,7 @@
 [
 {%- assign seen = ',' -%}
 {%- assign n = 0 -%}
-{%- for pool in (1..18) -%}
+{%- for pool in (1..19) -%}
   {%- liquid
     case forloop.index
       when 1 then assign src = c_rect
@@ -105,17 +107,18 @@
       when 5 then assign src = c_riml
       when 6 then assign src = c_wrap
       when 7 then assign src = c_ovsz
-      when 8 then assign src = c_vint
-      when 9 then assign src = c_tech
-      when 10 then assign src = c_luxe
-      when 11 then assign src = c_code
-      when 12 then assign src = c_ice
-      when 13 then assign src = c_rx
-      when 14 then assign src = c_sport
-      when 15 then assign src = c_deal
-      when 16 then assign src = c_sale
-      when 17 then assign src = c_best
-      when 18 then assign src = c_staff
+      when 8 then assign src = c_geo
+      when 9 then assign src = c_vint
+      when 10 then assign src = c_tech
+      when 11 then assign src = c_luxe
+      when 12 then assign src = c_code
+      when 13 then assign src = c_ice
+      when 14 then assign src = c_rx
+      when 15 then assign src = c_sport
+      when 16 then assign src = c_deal
+      when 17 then assign src = c_sale
+      when 18 then assign src = c_best
+      when 19 then assign src = c_staff
     endcase
   -%}
   {%- if src == blank -%}{%- continue -%}{%- endif -%}
@@ -359,6 +362,7 @@
     { "type": "collection", "id": "col_riml", "label": "Rimless" },
     { "type": "collection", "id": "col_wrap", "label": "Wraparound" },
     { "type": "collection", "id": "col_ovsz", "label": "Oversized" },
+    { "type": "collection", "id": "col_geo", "label": "Geometric" },
 
     { "type": "header", "content": "Aesthetic collections" },
     { "type": "collection", "id": "col_vint", "label": "Vintage" },

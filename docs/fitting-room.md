@@ -76,7 +76,7 @@ These collections are wired in already:
 
 | Signal | Collections |
 | --- | --- |
-| Frame shape | Rectangular, Oval, Round, Cateye, Rimless, Wraparound, Oversized |
+| Frame shape | Rectangular, Oval, Round, Cateye, Rimless, Wraparound, Oversized, Geometric |
 | Aesthetic | Vintage, Techno, Daily Luxe, Code, Ice Ice Baby |
 | Use case | Polarised Sports |
 | Candidate pool only | Prescription Friendly — no longer a filter, but many of the best-performing frames live there, so it still feeds the shelf |
@@ -110,6 +110,19 @@ Without that, a line split one product per colour is structurally punished — i
 stock and reviews divided four ways, while a line keeping its colours as
 variants presents its full depth in one row. The colourway shown on the shelf is
 then the one actually in depth, not whichever sorts first alphabetically.
+
+### Watch the concentration
+
+Because collection membership is the whole taxonomy, adding one frame to several
+collections at once makes it eligible on many face shapes simultaneously. Putting
+Serendipity 2.0 into Rectangular, Code and Bestsellers took it from absent to
+leading **31%** of all fittings — deserved on the numbers (582 units, 352 orders
+in 90 days), but worth knowing that a single merchandising change can move the
+shelf that far.
+
+If one frame ever dominates more than feels right, the lever is its collection
+memberships rather than the code. A rimless frame sitting in Rectangular is what
+makes it eligible across so many faces.
 
 ### When a strong seller doesn't appear
 
