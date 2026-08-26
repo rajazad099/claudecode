@@ -40,6 +40,7 @@ settings, so nothing collapses if a property is missing.
 | `assets/shades-quiz.js` | The fitting logic and the whole interface |
 | `preview/quiz.html` | Static preview — open in a browser, no store needed |
 | `preview/build-preview.py` | Regenerates the preview from the section, so the two cannot drift |
+| `preview/liquid-test.js` | Renders the section through a real Liquid engine and asserts the product index is populated |
 
 ## Install
 
@@ -270,6 +271,23 @@ reads as a fitting.
 The questions and the scoring live in `assets/shades-quiz.js`, in two clearly
 marked blocks at the top of the file — `FIT` and `QUESTIONS`. Both are plain
 data. Change the numbers to change the recommendations.
+
+## Testing
+
+Two harnesses, and they cover different halves:
+
+- `preview/quiz.html` exercises the **scoring and the interface** against a real
+  catalogue snapshot — but the snapshot is built by a Python script that mimics
+  the section, so it never executes a line of Liquid.
+- `preview/liquid-test.js` renders the **actual template** through a Liquid
+  engine with mock Shopify globals and asserts the product index comes out
+  populated, non-eyewear is excluded, traits resolve from collection handles,
+  inventory sums across variants, review metafields are read and colourways are
+  captured.
+
+Run the second one after any change to the `.liquid`. A template can render
+perfectly and still emit an empty index — that failure is silent, reaches the
+storefront, and looks to a customer like a quiz that recommends nothing.
 
 ## Verified
 

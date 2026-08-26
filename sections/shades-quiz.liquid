@@ -100,25 +100,44 @@
 {%- for pool in (1..19) -%}
   {%- liquid
     case forloop.index
-      when 1 then assign src = c_rect
-      when 2 then assign src = c_oval
-      when 3 then assign src = c_round
-      when 4 then assign src = c_cate
-      when 5 then assign src = c_riml
-      when 6 then assign src = c_wrap
-      when 7 then assign src = c_ovsz
-      when 8 then assign src = c_geo
-      when 9 then assign src = c_vint
-      when 10 then assign src = c_tech
-      when 11 then assign src = c_luxe
-      when 12 then assign src = c_code
-      when 13 then assign src = c_ice
-      when 14 then assign src = c_rx
-      when 15 then assign src = c_sport
-      when 16 then assign src = c_deal
-      when 17 then assign src = c_sale
-      when 18 then assign src = c_best
-      when 19 then assign src = c_staff
+      when 1
+        assign src = c_rect
+      when 2
+        assign src = c_oval
+      when 3
+        assign src = c_round
+      when 4
+        assign src = c_cate
+      when 5
+        assign src = c_riml
+      when 6
+        assign src = c_wrap
+      when 7
+        assign src = c_ovsz
+      when 8
+        assign src = c_geo
+      when 9
+        assign src = c_vint
+      when 10
+        assign src = c_tech
+      when 11
+        assign src = c_luxe
+      when 12
+        assign src = c_code
+      when 13
+        assign src = c_ice
+      when 14
+        assign src = c_rx
+      when 15
+        assign src = c_sport
+      when 16
+        assign src = c_deal
+      when 17
+        assign src = c_sale
+      when 18
+        assign src = c_best
+      when 19
+        assign src = c_staff
     endcase
   -%}
   {%- if src == blank -%}{%- continue -%}{%- endif -%}
