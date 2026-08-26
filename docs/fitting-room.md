@@ -105,6 +105,20 @@ at render time, so neither can go stale:
   into, it won't sell out under the customer mid-fitting, and it's the range the
   shop stands behind.
 
+Both are **pooled across every colourway of a line** before anything is scored.
+Without that, a line split one product per colour is structurally punished — its
+stock and reviews divided four ways, while a line keeping its colours as
+variants presents its full depth in one row. The colourway shown on the shelf is
+then the one actually in depth, not whichever sorts first alphabetically.
+
+### When a strong seller doesn't appear
+
+Almost always a collection gap rather than a scoring one, because collections
+are the only taxonomy the quiz has. A frame in no shape collection scores zero
+on fit and can never place, however well it sells. A frame outside
+**Bestsellers** gives up its curation bonus. Both are one-click fixes in
+Shopify, and they take effect immediately — nothing needs redeploying.
+
 Membership of **Bestsellers** and **Staff picks** adds a little on top.
 
 Together these are bounded so they rank well-fitting frames against each other

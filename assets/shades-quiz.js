@@ -217,26 +217,63 @@
 
   /* ------------------------------------------------- proven performers */
 
+  /* Pool the performance signals across every colourway of a line before
+     scoring any of them.
+
+     Without this a line split one product per colour is structurally punished:
+     its stock and its reviews are divided four ways, and whichever colour wins
+     the dedupe then represents the whole line carrying only its own share —
+     while a line that keeps its colours as variants presents its full depth in
+     a single row. Serendipity 2.0 (four colourways, 582 units between them)
+     ranked below Serendipity 1.0 (one row, 23 units) for exactly this reason,
+     despite outselling it four to one.
+
+     Depth is summed, review counts are summed, and the rating is the
+     count-weighted mean — so a line reads as what it actually is. */
+  function poolLines(products) {
+    var pool = Object.create(null), i, k;
+    for (i = 0; i < products.length; i++) {
+      var p = products[i];
+      var key = parseTitle(p.t).alias.toUpperCase();
+      var g = pool[key] || (pool[key] = { iv: 0, rc: 0, weighted: 0, rt: 0 });
+      g.iv += p.iv || 0;
+      g.rc += p.rc || 0;
+      g.weighted += (p.rt || 0) * (p.rc || 0);
+    }
+    for (k in pool) if (pool[k].rc) pool[k].rt = pool[k].weighted / pool[k].rc;
+    return pool;
+  }
+
+  /* rank() runs on every hover preview, so pooling is memoised against the
+     product array it was built from. */
+  var poolCacheKey = null, poolCacheValue = null;
+  function linesOf(products) {
+    if (poolCacheKey === products && poolCacheValue) return poolCacheValue;
+    poolCacheKey = products;
+    poolCacheValue = poolLines(products);
+    return poolCacheValue;
+  }
+
   /* What the shop already knows about a frame, from two live sources: what
      customers said about it, and how deep it is stocked. Deep stock is the
      signal to push — the line was bought into, it will not sell out under the
      customer mid-fitting, and it is the range the shop stands behind.
      Deliberately bounded so it ranks well-fitting frames against each other
      rather than overruling the fit. */
-  function performance(p) {
+  function performance(line) {
     var s = 0;
 
     /* Reviews. Credit is scaled by how many people actually said it, saturating
        at 40, so a single five-star review cannot outrank a proven line with
        eighty. Below 3.5 stars a frame is pushed down, not merely un-boosted. */
-    if (p.rt) {
-      var confidence = Math.min(p.rc || 0, 40) / 40;
-      s += (p.rt - 3.5) * 4 * confidence;
+    if (line.rt) {
+      var confidence = Math.min(line.rc || 0, 40) / 40;
+      s += (line.rt - 3.5) * 4 * confidence;
     }
 
     /* Stock depth, on a log curve: the step from 10 to 100 units matters far
        more than the step from 800 to 900. */
-    if (p.iv > 0) s += Math.min(Math.log(p.iv) / Math.LN10 * 2.2, 6.6);
+    if (line.iv > 0) s += Math.min(Math.log(line.iv) / Math.LN10 * 2.2, 6.6);
 
     return s;
   }
@@ -274,12 +311,17 @@
       for (var k in sc) wanted[k] = (wanted[k] || 0) + sc[k];
     });
 
+    /* Pooled over every product, including sold-out colourways: a line's depth
+       is the line's depth regardless of which colours are showing today. */
+    var lines = linesOf(products);
+
     var scored = [];
     for (var i = 0; i < products.length; i++) {
       var p = products[i];
       if (opts.hideOOS && !p.a) continue;
       var traits = read(p);
       if (required && !traits[required]) continue;
+      var line = lines[parseTitle(p.t).alias.toUpperCase()] || { iv: p.iv || 0, rc: p.rc || 0, rt: p.rt || 0 };
 
       var score = 0, k;
       /* 1. fit — how the frame shape reads against this face. Weighted up so
@@ -289,17 +331,25 @@
       for (k in wanted) if (traits[k]) score += wanted[k];
       /* 3. proven performers — what sold, what reviewed well, what is stocked
             deep enough to push with confidence */
-      score += performance(p);
+      score += performance(line);
       /* 4. house curation */
       if (traits.best) score += 3;
       if (traits.staff) score += 1;
       if (p.a) score += 3;
 
-      scored.push({ p: p, score: score, traits: traits, meta: parseTitle(p.t) });
+      scored.push({ p: p, score: score, traits: traits, meta: parseTitle(p.t), line: line });
     }
 
     scored.sort(function (a, b) {
-      return b.score - a.score || a.p.p - b.p.p || a.p.h.localeCompare(b.p.h);
+      return b.score - a.score
+          /* Colourways of one line now tie on score, since performance is
+             pooled across them. Break that tie on the colour's own stock depth
+             so the shelf shows the one actually in depth — otherwise the
+             representative fell to alphabetical order and Serendipity 2.0 was
+             fronted by its 8-unit Black instead of its 308-unit Clear. */
+          || (b.p.iv || 0) - (a.p.iv || 0)
+          || a.p.p - b.p.p
+          || a.p.h.localeCompare(b.p.h);
     });
 
     /* Collapse colourways: one row per alias, with a count so the customer
