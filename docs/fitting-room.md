@@ -189,9 +189,44 @@ sits below an exact match without being excluded.
 
 The rule is contrast, not echo: you give a face the geometry it hasn't got.
 
-The six questions are: face shape, how frames currently sit, aesthetic, where
-they'll be worn, and lens tint — plus a jawline question that only appears if
-the face-shape question is skipped.
+The six questions are: who we're fitting, face shape, how frames currently sit,
+aesthetic, where they'll be worn, and lens tint — plus a jawline question that
+only appears if the face-shape question is skipped.
+
+**Who we're fitting** is a light steer toward how each range is styled, not a
+filter — almost the whole catalogue is unisex and nothing is hidden from anyone.
+Across identical fittings it changes about one frame in four, and diverges
+sharply where doctrine does: a diamond face reading women's gets cat-eye first,
+reading men's does not.
+
+**Face shape** shows six diagrams rather than six descriptions. People cannot
+reliably name their own face shape, and picking the closest of six outlines is a
+much easier judgement than deciding whether "cheekbones widest, brow and jaw
+narrower" describes them. The shapes are drawn as plain primitives — a circle
+for round, a rhombus for diamond — with exaggerated proportions; an earlier
+version drew all six as similar tapered paths and they were indistinguishable.
+
+There is no driving option. The only polarised frames in the catalogue are the
+sports range, so a driving answer pushed sports wraps at everyone who picked it.
+
+## Capturing a WhatsApp number
+
+Asked after the fitting is scored and before the shelf is shown — the only
+moment the number is worth anything to the customer, because the result is what
+is being offered in return.
+
+It is never a wall. The answers are already scored, so a refused, failed or
+slow submission still shows the frames; the request is fired and not awaited.
+Skipping is allowed by default, and **Require it** is off on purpose: forcing it
+costs completions, and a number given willingly is worth more than one extracted.
+Consent is a ticked box, not an implication, and anyone who has already given a
+number is not asked again.
+
+Leads post to the store's own `/contact` form by default, which emails the
+number together with the full fitting — face shape, fit, styling, aesthetic,
+tint and the frames matched — so the lead arrives with the context to act on it.
+Point **Where to send leads** at a webhook instead (Bitespeed, Zapier, Klaviyo)
+to send it there.
 
 | Face | Pushed toward | Pushed away from |
 | --- | --- | --- |

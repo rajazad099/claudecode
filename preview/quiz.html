@@ -108,6 +108,10 @@
   data-hide-oos="true"
   data-persist="true"
   data-theme-cards="false"
+  data-collect-phone="true"
+  data-phone-required="false"
+  data-dial-code="+91"
+  
   data-card-section="shades-quiz-card"
   data-fallback="https://www.projectshades.com/collections/all"
 >
@@ -202,6 +206,37 @@
           </article>
         </div>
       </div>
+
+      <article class="psq__screen psq__screen--lead" data-screen="lead" hidden>
+        <p class="psq__eyebrow">Your fitting is ready</p>
+        <h2 class="psq__q">Where should we send it?</h2>
+        <p class="psq__hint">Drop your WhatsApp number and we’ll send your match, so you still have it when you’re ready to buy.</p>
+
+        <div class="psq__field">
+          <span class="psq__dial">+91</span>
+          <input
+            class="psq__input"
+            type="tel"
+            inputmode="numeric"
+            autocomplete="tel-national"
+            data-psq-phone
+            placeholder="98765 43210"
+            aria-label="Your WhatsApp number"
+          >
+        </div>
+
+        <label class="psq__consent">
+          <input type="checkbox" data-psq-consent>
+          <span>Yes, send my match and occasional offers to this number on WhatsApp.</span>
+        </label>
+
+        <p class="psq__error" data-psq-phone-error hidden></p>
+
+        <button type="button" class="psq__cta" data-psq-phone-send>Show my match</button>
+        <div class="psq__nav">
+          <button type="button" class="psq__link" data-psq-phone-skip>Skip — just show me</button>
+        </div>
+      </article>
 
       <article class="psq__screen psq__screen--result" data-screen="result" hidden>
         <p class="psq__eyebrow">Your fitting</p>

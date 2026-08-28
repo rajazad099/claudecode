@@ -60,20 +60,55 @@
   /* Which drawn frame to show on the stage for a given winning trait. */
   var FRAME_FOR = ['ovsz', 'wrap', 'cate', 'riml', 'rect', 'round', 'oval'];
 
+  /* Small diagrams for the face-shape options. Most people cannot name their
+     own face shape from a written description — being shown six outlines and
+     picking the closest is a far easier judgement than reading "cheekbones
+     widest, brow and jaw narrow" and deciding whether that is you. */
+  /* Each glyph is inner SVG rather than a single path, so the six shapes can be
+     drawn with whatever primitive states them most plainly — a circle really is
+     the clearest way to say "round". An earlier version drew all six as similar
+     tapered paths and they were indistinguishable at this size, which defeats
+     the point: the reason to show a diagram at all is that people cannot name
+     their own face shape from a sentence. Proportions are exaggerated on
+     purpose. */
+  var FACE_GLYPH = {
+    oval:    '<ellipse cx="24" cy="30" rx="14" ry="21"/>',
+    round:   '<circle cx="24" cy="30" r="19"/>',
+    square:  '<rect x="7" y="9" width="34" height="42" rx="6"/>',
+    heart:   '<path d="M7 11h34v11c0 13-7 21-17 33C14 43 7 35 7 22V11Z"/>',
+    long:    '<ellipse cx="24" cy="30" rx="9" ry="27"/>',
+    diamond: '<path d="M24 4 41 30 24 56 7 30Z"/>'
+  };
+
   /* --------------------------------------------------------------- questions */
 
   var QUESTIONS = [
     {
-      id: 'face',
-      q: 'What shape is your face?',
-      hint: 'Pull your hair back and look straight on. Go with your gut — you can skip this and we’ll work it out from your jaw instead.',
+      /* Asked first because it frames everything after it. The weighting is a
+         light steer toward how each range is styled and worn, not a filter:
+         almost the whole catalogue is unisex, and nothing is hidden from
+         anyone. "Everything" is a real answer, not a fallback. */
+      id: 'gender',
+      q: 'Who are we fitting?',
+      hint: 'This nudges the styling. Every frame stays available whichever you pick.',
       options: [
-        { v: 'oval',    l: 'Oval',    s: 'Longer than wide, softly tapered' },
-        { v: 'round',   l: 'Round',   s: 'Full cheeks, soft chin, width ≈ length' },
-        { v: 'square',  l: 'Square',  s: 'Strong jaw, broad forehead' },
-        { v: 'heart',   l: 'Heart',   s: 'Wide brow, narrow pointed chin' },
-        { v: 'long',    l: 'Long',    s: 'Noticeably longer than it is wide' },
-        { v: 'diamond', l: 'Diamond', s: 'Cheekbones widest, brow and jaw narrow' }
+        { v: 'women', l: 'Women’s styling',  s: 'Leans cat-eye, oversized, softer curves', score: { cate: 5, ovsz: 3, oval: 2, riml: 1 } },
+        { v: 'men',   l: 'Men’s styling',    s: 'Leans aviator, rectangular, wrapped',     score: { avia: 5, rect: 3, wrap: 3, geo: 2 } },
+        { v: 'any',   l: 'Show me everything', s: 'No steer — fit and taste only',         score: { uni: 2 } }
+      ],
+      apply: function (a, v) { a.gender = v; }
+    },
+    {
+      id: 'face',
+      q: 'Which of these is closest to your face?',
+      hint: 'Pull your hair back, look straight on, and pick the outline that matches. Most people are between two — go with the closer one, or skip and we’ll work it out from your jaw.',
+      options: [
+        { v: 'oval',    l: 'Oval',    s: 'Longer than wide, tapering gently to the chin' },
+        { v: 'round',   l: 'Round',   s: 'Full cheeks, soft chin, about as wide as it is long' },
+        { v: 'square',  l: 'Square',  s: 'Jaw and forehead near the same width, corners defined' },
+        { v: 'heart',   l: 'Heart',   s: 'Widest at the brow, narrowing to a pointed chin' },
+        { v: 'long',    l: 'Long',    s: 'Clearly longer than it is wide, forehead to chin' },
+        { v: 'diamond', l: 'Diamond', s: 'Cheekbones the widest part, brow and jaw narrower' }
       ],
       apply: function (a, v) { a.face = v; }
     },
@@ -127,7 +162,6 @@
       hint: 'Be honest. The answer changes the lens as much as the frame.',
       options: [
         { v: 'city',   l: 'Everyday, in the city', s: 'Commutes, coffee, going out',   score: { best: 2, code: 2, staff: 1 } },
-        { v: 'drive',  l: 'Driving and daylight',  s: 'Glare is the enemy',            score: { sport: 6, wrap: 3, avia: 2 } },
         /* Answering this is a functional constraint, not a preference: a frame
            that is not built for sport is the wrong answer however well it fits,
            so this narrows to the polarised sports range outright. */
@@ -204,6 +238,7 @@
     [/polaris|polariz|sport|shield/i, 'sport'],
     [/sports?\s+sunglasses|shield|wrap/i, 'wrap'],
     [/metal|chrome|steel|titanium/i, 'metal'],
+    [/unisex/i, 'uni'],
     [/luxury|luxe|premium|gold/i, 'luxe'],
     [/clear|transparent|ice|crystal/i, 'ice']
   ];
@@ -457,6 +492,10 @@
     this.hideOOS = root.dataset.hideOos === 'true';
     this.persist = root.dataset.persist === 'true';
     this.themeCards = root.dataset.themeCards === 'true';
+    this.collectPhone = root.dataset.collectPhone === 'true';
+    this.phoneRequired = root.dataset.phoneRequired === 'true';
+    this.leadEndpoint = root.dataset.leadEndpoint || '/contact';
+    this.dialCode = root.dataset.dialCode || '+91';
     this.cardSection = root.dataset.cardSection || 'shades-quiz-card';
     this.key = 'psq:' + (root.dataset.uid || 'x');
     this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -480,6 +519,10 @@
       grid: root.querySelector('[data-psq-grid]'),
       empty: root.querySelector('[data-psq-empty]'),
       resume: root.querySelector('[data-psq-resume]'),
+      phone: root.querySelector('[data-psq-phone]'),
+      consent: root.querySelector('[data-psq-consent]'),
+      phoneErr: root.querySelector('[data-psq-phone-error]'),
+      phoneSkip: root.querySelector('[data-psq-phone-skip]'),
       caption: root.querySelector('[data-psq-caption]')
     };
 
@@ -495,6 +538,13 @@
     if (start) start.addEventListener('click', function () { self.start(); });
     if (this.el.back) this.el.back.addEventListener('click', function () { self.back(); });
     if (this.el.skip) this.el.skip.addEventListener('click', function () { self.answer(null); });
+
+    var send = this.root.querySelector('[data-psq-phone-send]');
+    if (send) send.addEventListener('click', function () { self.submitPhone(); });
+    if (this.el.phoneSkip) this.el.phoneSkip.addEventListener('click', function () { self.finish(); });
+    if (this.el.phone) this.el.phone.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); self.submitPhone(); }
+    });
 
     var retake = this.root.querySelector('[data-psq-retake]');
     if (retake) retake.addEventListener('click', function () { self.reset(); });
@@ -540,9 +590,10 @@
   Quiz.prototype.start = function () {
     this.answers = {};
     this.asked = [];
+    this.phoneDone = false;
     this.at = 0;
     this.plan();
-    this.root.classList.remove('is-result');
+    this.root.classList.remove('is-result', 'is-lead');
     this.emit('start', {});
     this.show('question');
     this.render();
@@ -559,7 +610,7 @@
   Quiz.prototype.render = function () {
     var self = this;
     this.plan();
-    if (this.at >= this.order.length) return this.finish();
+    if (this.at >= this.order.length) return this.askPhone();
 
     var q = this.order[this.at];
     if (this.asked.indexOf(q.id) === -1) this.asked.push(q.id);
@@ -579,7 +630,13 @@
       b.setAttribute('role', 'radio');
       b.setAttribute('aria-checked', self.answers[q.id] === opt.v ? 'true' : 'false');
       b.tabIndex = i === 0 ? 0 : -1;
-      b.innerHTML = '<span class="psq__opt-l"></span><span class="psq__opt-s"></span>';
+      var glyph = q.id === 'face' ? FACE_GLYPH[opt.v] : null;
+      b.innerHTML =
+        (glyph
+          ? '<svg class="psq__opt-fig" viewBox="0 0 48 60" aria-hidden="true">' + glyph + '</svg>'
+          : '') +
+        '<span class="psq__opt-txt"><span class="psq__opt-l"></span>' +
+        '<span class="psq__opt-s"></span></span>';
       b.querySelector('.psq__opt-l').textContent = opt.l;
       b.querySelector('.psq__opt-s').textContent = opt.s || '';
       b.addEventListener('click', function () { self.answer(opt.v); });
@@ -664,6 +721,85 @@
     });
   };
 
+  /* The number is asked for after the fitting is done and before the shelf is
+     shown, which is the only moment it is worth anything to the customer: the
+     result is the thing being offered. It is never a wall — the answers are
+     already scored, so a failed or refused submission still shows the frames.
+     Anyone who has already given a number is not asked twice. */
+  Quiz.prototype.askPhone = function () {
+    if (!this.collectPhone || this.phoneDone || this.loadPhone()) return this.finish();
+    this.show('lead');
+    this.root.classList.remove('is-result');
+    this.root.classList.add('is-lead');
+    if (this.el.phoneErr) { this.el.phoneErr.hidden = true; this.el.phoneErr.textContent = ''; }
+    if (this.el.phoneSkip) this.el.phoneSkip.hidden = this.phoneRequired;
+    if (this.el.phone) this.el.phone.focus();
+    if (this.el.caption) this.el.caption.textContent = 'Your fit is ready';
+    this.emit('lead_shown', {});
+  };
+
+  /* Digits only, 8 to 15 of them — enough to accept an Indian mobile typed with
+     or without its country code, and any international number, without
+     rejecting people over formatting they cannot see. */
+  Quiz.prototype.cleanPhone = function (raw) {
+    var digits = String(raw || '').replace(/\D+/g, '');
+    if (digits.length < 8 || digits.length > 15) return null;
+    return digits;
+  };
+
+  Quiz.prototype.submitPhone = function () {
+    var self = this;
+    var fail = function (msg) {
+      if (!self.el.phoneErr) return;
+      self.el.phoneErr.textContent = msg;
+      self.el.phoneErr.hidden = false;
+    };
+
+    var digits = this.cleanPhone(this.el.phone && this.el.phone.value);
+    if (!digits) return fail('That doesn’t look like a complete number — check the digits and try again.');
+    if (this.el.consent && !this.el.consent.checked) {
+      return fail('Please tick the box so we know it’s alright to message you.');
+    }
+
+    var number = (this.dialCode || '') + digits;
+    this.savePhone(number);
+    this.emit('lead', { phone: number });
+
+    /* Sent, not awaited. A slow or misconfigured endpoint must never stand
+       between the customer and the frames they just answered six questions for. */
+    try {
+      var results = rank(this.products, this.answers, { hideOOS: this.hideOOS })
+        .slice(0, this.count).map(function (r) { return r.meta.alias; }).join(', ');
+      var body = 'Fitting Room result — ' +
+        'phone: ' + number +
+        ' | face: ' + (this.answers.face || 'not given') +
+        ' | fit: ' + (this.answers.fit || '-') +
+        ' | styling: ' + (this.answers.gender || '-') +
+        ' | aesthetic: ' + (this.answers.vibe || '-') +
+        ' | wear: ' + (this.answers.wear || '-') +
+        ' | tint: ' + (this.answers.tint || '-') +
+        ' | matched: ' + results;
+
+      var fd = new FormData();
+      fd.append('form_type', 'contact');
+      fd.append('utf8', '✓');
+      fd.append('contact[phone]', number);
+      fd.append('contact[body]', body);
+      fetch(this.leadEndpoint, { method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .catch(function () { /* the shelf is shown regardless */ });
+    } catch (e) { /* same */ }
+
+    this.phoneDone = true;
+    this.finish();
+  };
+
+  Quiz.prototype.savePhone = function (n) {
+    try { localStorage.setItem(this.key + ':phone', n); } catch (e) {}
+  };
+  Quiz.prototype.loadPhone = function () {
+    try { return localStorage.getItem(this.key + ':phone'); } catch (e) { return null; }
+  };
+
   Quiz.prototype.finish = function (restored) {
     var self = this;
     var results = rank(this.products, this.answers, { hideOOS: this.hideOOS });
@@ -704,6 +840,7 @@
     }
 
     this.show('result');
+    this.root.classList.remove('is-lead');
     this.root.classList.add('is-result');
     if (this.el.caption) this.el.caption.textContent = 'Your fit';
     if (this.persist && !restored) this.save();
@@ -858,7 +995,7 @@
   Quiz.prototype.reset = function () {
     try { localStorage.removeItem(this.key); } catch (e) {}
     this.setFace(null);
-    this.root.classList.remove('is-result');
+    this.root.classList.remove('is-result', 'is-lead');
     this.show('intro');
     if (this.el.resume) this.el.resume.hidden = true;
     if (this.el.caption) this.el.caption.textContent = 'Your fit, so far';

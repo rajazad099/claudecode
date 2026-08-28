@@ -236,6 +236,28 @@
   border-color: var(--psq-fg);
 }
 .psq__opt[aria-checked="true"] .psq__opt-s { color: inherit; opacity: .7; }
+/* Options carrying a diagram lay out as a row; the rest are unaffected. */
+.psq__opt:has(.psq__opt-fig) { flex-direction: row; align-items: center; gap: 14px; }
+.psq__opt-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.psq__opt-fig {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 45px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  opacity: .6;
+}
+.psq__opt:hover .psq__opt-fig,
+.psq__opt[aria-checked="true"] .psq__opt-fig { opacity: 1; }
+
+/* :has() is well supported but not universal; without it the diagram simply
+   stacks above the label, which still reads correctly. */
+@supports not selector(.psq:has(.psq__opt-fig)) {
+  .psq__opt-fig { width: 30px; height: 38px; }
+}
+
 .psq__opt-l { font-weight: 500; }
 .psq__opt-s { font-size: var(--psq-size-ui); line-height: 1.4; color: var(--psq-muted); }
 
@@ -287,8 +309,19 @@
 
 /* ---------------------------------------------------------------- result */
 
-.psq__screen--result { grid-column: 1 / -1; }
-.psq.is-result .psq__panel { display: none; }
+/* Once the questions are answered the question panel is spent, and both the
+   lead step and the result want the full width with the drawing above them. */
+.psq__screen--result,
+.psq__screen--lead { grid-column: 1 / -1; }
+.psq.is-result .psq__panel,
+.psq.is-lead .psq__panel { display: none; }
+
+.psq__screen--lead { text-align: center; }
+.psq__screen--lead .psq__hint { margin-left: auto; margin-right: auto; }
+.psq__screen--lead .psq__field { margin-left: auto; margin-right: auto; }
+.psq__screen--lead .psq__consent { margin-left: auto; margin-right: auto; text-align: left; }
+.psq__screen--lead .psq__error { margin-left: auto; margin-right: auto; }
+.psq__screen--lead .psq__nav { justify-content: center; }
 
 .psq__alias {
   margin: 0 0 10px;
@@ -393,6 +426,67 @@
   text-transform: uppercase;
 }
 
+/* ------------------------------------------------------- WhatsApp capture */
+
+.psq__field {
+  display: flex;
+  align-items: stretch;
+  max-width: 340px;
+  margin: 0 0 14px;
+  border: var(--psq-input-border) solid var(--psq-line-strong);
+  border-radius: var(--psq-input-radius);
+}
+.psq__dial {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-right: var(--psq-input-border) solid var(--psq-line);
+  background: var(--psq-panel);
+  font-size: var(--psq-size-ui);
+  white-space: nowrap;
+}
+.psq__input {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: var(--psq-size);
+  letter-spacing: .04em;
+}
+.psq__input:focus { outline: none; }
+.psq__field:focus-within { border-color: var(--psq-fg); box-shadow: 0 0 0 1px var(--psq-fg); }
+
+.psq__consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 46ch;
+  margin: 0 0 16px;
+  font-size: var(--psq-size-ui);
+  line-height: 1.5;
+  color: var(--psq-muted);
+  cursor: pointer;
+}
+.psq__consent input {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  margin: 2px 0 0;
+  accent-color: var(--psq-fg);
+}
+
+.psq__error {
+  margin: 0 0 14px;
+  max-width: 46ch;
+  font-size: var(--psq-size-ui);
+  color: var(--psq-sale);
+}
+.psq__error[hidden] { display: none; }
+
 .psq__empty { margin: 16px 0 0; color: var(--psq-muted); }
 .psq__empty a, .psq__body a { color: var(--psq-fg); }
 
@@ -436,8 +530,10 @@
   .psq__layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
   .psq__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   /* On the result screen the stage steps aside — the products are the payload. */
-  .psq.is-result .psq__layout { grid-template-columns: minmax(0, 1fr); }
-  .psq.is-result .psq__stage { max-width: 320px; margin: 0 auto; aspect-ratio: 4 / 3; }
+  .psq.is-result .psq__layout,
+  .psq.is-lead .psq__layout { grid-template-columns: minmax(0, 1fr); }
+  .psq.is-result .psq__stage,
+  .psq.is-lead .psq__stage { max-width: 320px; margin: 0 auto; aspect-ratio: 4 / 3; }
 }
 
 @media (min-width: 990px) {

@@ -229,6 +229,10 @@
   data-hide-oos="{{ s.hide_sold_out }}"
   data-persist="{{ s.remember_result }}"
   data-theme-cards="{{ s.use_theme_cards }}"
+  data-collect-phone="{{ s.collect_phone }}"
+  data-phone-required="{{ s.phone_required }}"
+  data-dial-code="{{ s.dial_code | default: '+91' }}"
+  {% if s.lead_endpoint != blank %}data-lead-endpoint="{{ s.lead_endpoint }}"{% endif %}
   data-card-section="{{ s.card_section | default: 'shades-quiz-card' }}"
   {% if s.fallback_collection != blank %}data-fallback="{{ s.fallback_collection.url }}"{% endif %}
 >
@@ -324,6 +328,37 @@
         </div>
       </div>
 
+      <article class="psq__screen psq__screen--lead" data-screen="lead" hidden>
+        <p class="psq__eyebrow">{{ s.lead_eyebrow | default: 'Your fitting is ready' }}</p>
+        <h2 class="psq__q">{{ s.lead_heading | default: 'Where should we send it?' }}</h2>
+        <p class="psq__hint">{{ s.lead_body | default: 'Drop your WhatsApp number and we’ll send your match, so you still have it when you’re ready to buy.' }}</p>
+
+        <div class="psq__field">
+          <span class="psq__dial">{{ s.dial_code | default: '+91' }}</span>
+          <input
+            class="psq__input"
+            type="tel"
+            inputmode="numeric"
+            autocomplete="tel-national"
+            data-psq-phone
+            placeholder="{{ s.lead_placeholder | default: '98765 43210' }}"
+            aria-label="{{ s.lead_heading | default: 'Your WhatsApp number' | escape }}"
+          >
+        </div>
+
+        <label class="psq__consent">
+          <input type="checkbox" data-psq-consent>
+          <span>{{ s.lead_consent | default: 'Yes, send my match and occasional offers to this number on WhatsApp.' }}</span>
+        </label>
+
+        <p class="psq__error" data-psq-phone-error hidden></p>
+
+        <button type="button" class="psq__cta" data-psq-phone-send>{{ s.lead_cta | default: 'Show my match' }}</button>
+        <div class="psq__nav">
+          <button type="button" class="psq__link" data-psq-phone-skip>{{ s.lead_skip | default: 'Skip — just show me' }}</button>
+        </div>
+      </article>
+
       <article class="psq__screen psq__screen--result" data-screen="result" hidden>
         <p class="psq__eyebrow">{{ s.result_eyebrow | default: 'Your fitting' }}</p>
         <h2 class="psq__alias" data-psq-alias></h2>
@@ -363,6 +398,19 @@
     { "type": "text", "id": "share_label", "label": "Share button", "default": "Copy my result" },
     { "type": "text", "id": "resume_label", "label": "Resume link", "default": "Show my last result" },
     { "type": "text", "id": "stage_caption", "label": "Caption under the drawing", "default": "Your fit, so far" },
+
+    { "type": "header", "content": "WhatsApp capture" },
+    { "type": "checkbox", "id": "collect_phone", "label": "Ask for a WhatsApp number before the result", "default": true },
+    { "type": "checkbox", "id": "phone_required", "label": "Require it", "default": false, "info": "Off by default. Forcing it before anyone sees a result costs completions, and the number is worth more from someone who wanted to give it." },
+    { "type": "text", "id": "dial_code", "label": "Country code", "default": "+91" },
+    { "type": "text", "id": "lead_eyebrow", "label": "Eyebrow", "default": "Your fitting is ready" },
+    { "type": "text", "id": "lead_heading", "label": "Heading", "default": "Where should we send it?" },
+    { "type": "textarea", "id": "lead_body", "label": "Body", "default": "Drop your WhatsApp number and we’ll send your match, so you still have it when you’re ready to buy." },
+    { "type": "text", "id": "lead_placeholder", "label": "Placeholder", "default": "98765 43210" },
+    { "type": "textarea", "id": "lead_consent", "label": "Consent line", "default": "Yes, send my match and occasional offers to this number on WhatsApp.", "info": "Shown beside a checkbox that must be ticked before the number is sent." },
+    { "type": "text", "id": "lead_cta", "label": "Submit button", "default": "Show my match" },
+    { "type": "text", "id": "lead_skip", "label": "Skip link", "default": "Skip — just show me" },
+    { "type": "text", "id": "lead_endpoint", "label": "Where to send leads", "info": "Blank posts to this store's own /contact form, which emails you the number and the fitting. Paste a webhook URL (Bitespeed, Zapier, Klaviyo) to send it there instead." },
 
     { "type": "header", "content": "Results" },
     { "type": "checkbox", "id": "use_theme_cards", "label": "Use the theme's own product cards", "default": true, "info": "Fetches the same card markup your collection pages use, so results match the rest of the store. Falls back to a simple built-in card if unavailable." },

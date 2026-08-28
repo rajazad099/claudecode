@@ -28,6 +28,8 @@ SETTINGS = {
     "remember_result": "true",
     "use_theme_cards": "false",
     "card_section": "shades-quiz-card",
+    "collect_phone": "true",
+    "phone_required": "false",
 }
 
 # The live theme's tokens, from config/settings_data.json of GokwikOnly.
@@ -102,15 +104,24 @@ def resolve(markup: str) -> str:
     """Resolve the Liquid the section would resolve on the storefront."""
     markup = re.sub(r"\{%-?\s*comment\s*-?%\}.*?\{%-?\s*endcomment\s*-?%\}", "", markup, flags=re.S)
 
-    # {% if s.fallback_collection != blank %}...{% endif %} -> keep the body,
-    # standing in a real collection URL.
-    markup = re.sub(r"\{%\s*if s\.fallback_collection != blank\s*%\}(.*?)\{%\s*endif\s*%\}",
-                    lambda m: m.group(1), markup, flags=re.S)
+    # {% if s.KEY != blank %}...{% endif %}
+    # Settings with a stand-in value keep their body; settings that are blank by
+    # default (an optional webhook, say) drop theirs, exactly as the storefront
+    # would render them out of the box.
+    KEEP_IF_SET = {"fallback_collection"}
+
+    def blank_guard(m):
+        return m.group(2) if m.group(1) in KEEP_IF_SET else ""
+
+    markup = re.sub(r"\{%\s*if s\.(\w+) != blank\s*%\}(.*?)\{%\s*endif\s*%\}",
+                    blank_guard, markup, flags=re.S)
     markup = markup.replace("{{ s.fallback_collection.url }}",
                             "https://www.projectshades.com/collections/all")
 
-    # {{ s.key | default: 'value' }} -> value
-    markup = re.sub(r"\{\{\s*s\.\w+\s*\|\s*default:\s*'([^']*)'\s*\}\}", lambda m: m.group(1), markup)
+    # {{ s.key | default: 'value' }}, with any further filters (| escape and the
+    # like) applied to the default and then discarded.
+    markup = re.sub(r"\{\{\s*s\.\w+\s*\|\s*default:\s*'([^']*)'\s*(?:\|[^}]*?)?\}\}",
+                    lambda m: m.group(1), markup)
     markup = re.sub(r"\{\{\s*s\.(\w+)\s*\|\s*default:\s*(\d+)\s*\}\}",
                     lambda m: SETTINGS.get(m.group(1), m.group(2)), markup)
     # bare {{ s.key }}
