@@ -117,6 +117,15 @@ reviews alone, and starts learning the moment traffic arrives.
 
 ## Automation
 
-A monthly Routine fires this refresh on the 1st. It runs the four steps above
-against the live store and reports what it changed. It can be listed, paused or
-deleted at any time; nothing else depends on it.
+A monthly Routine fires this refresh on the **1st at 11:35 IST**
+(`0 6 1 * *` UTC), in a fresh session, with push and email notification on
+completion. It can be listed, paused or deleted at any time; nothing else
+depends on it.
+
+**One thing to do before the first real run.** A Routine created from inside a
+session cannot carry a connector across on this account, so the scheduled
+session starts without the Shopify tools and cannot reach the store. Open the
+Routine in the claude.ai Routines UI and attach the **Shopify** connector to it.
+Until that is done the Routine will fire, notice it has no Shopify access, and
+say so in one line rather than half-running. Failing that, the refresh works
+perfectly well asked for by hand in any session that has Shopify connected.
