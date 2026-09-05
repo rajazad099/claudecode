@@ -373,6 +373,36 @@
   gap: var(--psq-gap-y) var(--psq-gap);
 }
 
+/* The line between the four that answer the question and the six offered as an
+   alternative. It spans the whole grid at every breakpoint, so the shelf reads
+   as two shelves rather than one long list. Built from the same tokens as the
+   spec read-out above it — an eyebrow in the accent face, a sentence in body
+   copy — so it looks like part of the page and not like a banner. */
+.psq__divider {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: calc(var(--psq-gap-y) * 0.25) 0 calc(var(--psq-gap-y) * 0.1);
+  padding-top: calc(var(--psq-gap-y) * 0.45);
+  border-top: 1px solid var(--psq-line);
+  /* Stated, not inherited: the result panel centres its cards, and a centred
+     eyebrow over a max-width sentence lands the two lines on different axes. */
+  text-align: left;
+}
+.psq__divider-h {
+  font-family: var(--psq-accent-font);
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--psq-fg);
+}
+.psq__divider-p {
+  font-size: var(--psq-size-ui);
+  color: var(--psq-faint);
+  max-width: 62ch;
+}
+
 /* When the theme's real card-product markup is injected, it brings its own
    styling from component-card.css and needs nothing from us. */
 .psq__slot { position: relative; min-width: 0; animation: psq-in .45s ease both; animation-delay: calc(var(--i, 0) * 60ms); }

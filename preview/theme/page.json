@@ -4,10 +4,13 @@
       "type": "shades-quiz",
       "settings": {
         "use_theme_cards": true,
-        "result_count": 4,
+        "result_count": 10,
         "hide_sold_out": true,
         "remember_result": true,
-        "per_collection": 40
+        "use_learned_rank": true,
+        "collect_phone": true,
+        "phone_required": false,
+        "per_collection": 50
       }
     },
     "main": {

@@ -266,6 +266,38 @@ Fit is weighted **3×** above aesthetic and popularity. That matters: without it
 a bestseller in the wrong shape outranks the right shape, which is the one
 failure a fitting quiz cannot afford. Bestsellers now only break near-ties.
 
+### The shelf comes in two halves
+
+Ten frames ranked in one column read as ten answers to the same question, and
+they are not. Past the first few the named aesthetic runs out and the list
+starts filling with frames that fit the face but are nothing like what was asked
+for — a round luxe frame turning up fourth on a futuristic fitting looks like
+the quiz misheard.
+
+So the result is split, and labelled:
+
+- **The first four** are the answer. They fit the face *and* carry the aesthetic
+  that was asked for.
+- **The six below the line** are offered as what they are: frames that fit this
+  face just as well, in a different mood, in case the mood is negotiable. The
+  divider says so in as many words — *"Same face, different mood — not techno,
+  but they fit you just as well."*
+
+The second half is deliberately **not** the named shelf, even when that shelf
+has more to give. Four techno frames answer a techno question; the fifth through
+tenth techno frame is a longer list of the same idea. And it is spread one frame
+per aesthetic before any aesthetic gets a second, so the six read as a tour of
+the range rather than six of whatever ranked next.
+
+When no aesthetic was named there is nothing to differ from, so the second half
+is simply spread across the shelves — *"A wider look: one from each corner of
+the range, all of them cut for your face."*
+
+If the named shelf is too thin to fill four — it never is on this catalogue, but
+it could be — the first half tops up from the best of the rest and the divider
+copy softens to match, because the line promises a change of aesthetic and must
+not promise one it did not deliver.
+
 ### The shelf you name outranks the fit
 
 Sport used to narrow outright. There are ten polarised frames in stock, most of
@@ -380,6 +412,10 @@ against `preview/quiz.html`:
 - **98 different frames** appear across those runs and **60 different frames**
   take the top slot, the most frequent at 11% — proven lines lead without one
   product owning the quiz.
+- The split holds everywhere: **all 1,296** produce four on-shelf frames above
+  the line and six off-shelf below it, with **no duplicates**, **no shelf short
+  of ten**, and **no on-shelf frame leaking into a block that promises a
+  different aesthetic**.
 - **Every face shape returns only on-doctrine frames**, with the single
   deliberate exception above: a shelf the customer named by hand.
 - Two full end-to-end passes in Chromium — gender → face → size → vibe → tint →

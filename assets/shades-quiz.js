@@ -574,6 +574,88 @@
     return out;
   }
 
+  /* How the shelf reads back to the customer, per shelf they could have named. */
+  var SHELF_LABEL = {
+    luxe: 'everyday luxe', summer: 'beach', tech: 'techno',
+    vint: 'vintage', sport: 'sports'
+  };
+
+  /* THE SHELF, IN TWO HALVES.
+
+     A ranked list of ten reads as ten answers to the same question, and it is
+     not: past the first few, the aesthetic runs out and the list starts filling
+     with frames that fit the face but are nothing like what was asked for. A
+     round luxe frame appearing fourth on a futuristic fitting looks like the
+     quiz misheard.
+
+     So the shelf is split. The first four are the answer: they fit the face AND
+     carry the aesthetic that was asked for. The rest are offered as what they
+     are — frames that fit this face just as well, in a different mood, in case
+     the mood is negotiable. Nothing is hidden; it is labelled.
+
+     When the customer named no aesthetic there is nothing to differ from, so
+     the second half is spread across the shelves instead — one per aesthetic
+     before any shelf gets a second — which turns it into a tour of the range. */
+  function splitShelf(results, count, vibe) {
+    var primaryCount = Math.min(4, count);
+    var shelf = SHELF_LABEL[vibe] ? vibe : null;
+    var i, j;
+
+    /* First half: the answer to the question they asked. */
+    var primary = [], rest = [];
+    if (shelf) {
+      for (i = 0; i < results.length; i++) {
+        if (results[i].traits[shelf] && primary.length < primaryCount) primary.push(results[i]);
+        else rest.push(results[i]);
+      }
+      /* Not enough on the named shelf — Techno has twenty frames and some face
+         shapes rule half of them out. Top up from the best of the rest rather
+         than showing a short one, and let the divider copy soften to match. */
+      while (primary.length < primaryCount && rest.length) primary.push(rest.shift());
+    } else {
+      primary = results.slice(0, primaryCount);
+      rest = results.slice(primaryCount);
+    }
+
+    /* Second half: deliberately NOT the shelf they named, even when that shelf
+       has more to give. Four techno frames answer a techno question; the fifth
+       through tenth techno frame is just a longer list of the same idea. The
+       six that follow are there to catch the customer whose mind is not quite
+       made up, so they have to be something else — and spread one per aesthetic
+       before any aesthetic gets a second, so the six are a tour of the range
+       rather than six of whatever ranked next. */
+    var wantAlt = count - primary.length;
+    var offShelf = [], onShelf = [];
+    for (i = 0; i < rest.length; i++) {
+      if (shelf && rest[i].traits[shelf]) onShelf.push(rest[i]);
+      else offShelf.push(rest[i]);
+    }
+
+    var used = Object.create(null), spread = [], spare = [], tag;
+    for (i = 0; i < offShelf.length; i++) {
+      tag = null;
+      for (j = 0; j < SHELVES.length; j++) if (offShelf[i].traits[SHELVES[j]]) { tag = SHELVES[j]; break; }
+      if (tag && !used[tag]) { used[tag] = true; spread.push(offShelf[i]); }
+      else spare.push(offShelf[i]);
+    }
+    var alternates = spread.concat(spare).slice(0, wantAlt);
+
+    /* Only if the catalogue genuinely cannot fill six other aesthetics. */
+    var mixed = false;
+    if (alternates.length < wantAlt && onShelf.length) {
+      mixed = true;
+      alternates = alternates.concat(onShelf.slice(0, wantAlt - alternates.length));
+    }
+
+    /* The divider promises a change of aesthetic, so it may only say so when
+       the first half really is all on the named shelf and the second half
+       really is all off it. */
+    var pure = !!shelf && !mixed;
+    if (shelf) for (i = 0; i < primary.length; i++) if (!primary[i].traits[shelf]) pure = false;
+
+    return { primary: primary, alternates: alternates, shelf: shelf, pure: pure };
+  }
+
   function archetypeFor(answers, top) {
     var key = answers.vibe;
     for (var i = 0; i < ARCHETYPES.length; i++) if (ARCHETYPES[i].k === key) return ARCHETYPES[i];
@@ -921,7 +1003,8 @@
   Quiz.prototype.finish = function (restored) {
     var self = this;
     var results = rank(this.products, this.answers, { hideOOS: this.hideOOS, useLearned: this.useLearned, results: this.count });
-    var top = results.slice(0, this.count);
+    var shelf = splitShelf(results, this.count, this.answers.vibe);
+    var top = shelf.primary.concat(shelf.alternates);
     var face = this.answers.face || 'oval';
     var arch = archetypeFor(this.answers, top);
 
@@ -934,10 +1017,11 @@
     /* The read-out. Shows the customer we used their answers, and on what. */
     var spec = [
       ['Face', FACE_LABEL[face] + (this.answers.faceInferred ? ' (from your jawline)' : '')],
-      ['Fit', { slide: 'Narrower than standard', right: 'Standard width', press: 'Wider than standard', small: 'Statement width' }[this.answers.fit] || 'Standard width'],
+      ['Width', { small: 'Narrower than standard', medium: 'Standard width',
+                  large: 'Wider than standard', statement: 'Statement width' }[this.answers.size] || 'Standard width'],
       ['Frame', top.length ? (top[0].meta.desc || 'Best available fit') : '—'],
       ['Tint', { dark: 'Dark — black, brown, smoke', light: 'Light — blue, beige, clear' }[this.answers.tint] ||
-                (this.answers.wear === 'drive' || this.answers.wear === 'sport' ? 'Polarised preferred' : 'No preference')]
+                (this.answers.vibe === 'sport' ? 'Polarised preferred' : 'No preference')]
     ];
     this.el.spec.innerHTML = spec.map(function (r) {
       return '<li><b>' + r[0] + '</b><span></span></li>';
@@ -946,7 +1030,7 @@
       s.textContent = spec[i][1];
     });
 
-    this.renderCards(top);
+    this.renderCards(shelf);
 
     var fb = this.root.dataset.fallback;
     if (!top.length) {
@@ -986,10 +1070,39 @@
     return url + (url.indexOf('?') > -1 ? '&' : '?') + q;
   };
 
-  Quiz.prototype.renderCards = function (top) {
+  /* The line between the two halves of the shelf. It has to say plainly what
+     changed, because the whole point of the split is that the second half is
+     not pretending to be the first. */
+  Quiz.prototype.divider = function (shelf) {
+    var el = document.createElement('div');
+    el.className = 'psq__divider';
+    var h = document.createElement('span');
+    h.className = 'psq__divider-h';
+    var p = document.createElement('span');
+    p.className = 'psq__divider-p';
+
+    if (shelf.pure) {
+      h.textContent = 'Same face, different mood';
+      p.textContent = 'Not ' + SHELF_LABEL[shelf.shelf] + ' — but they fit you just as well, if you are open to it.';
+    } else if (shelf.shelf) {
+      h.textContent = 'Also worth trying';
+      p.textContent = 'The ' + SHELF_LABEL[shelf.shelf] + ' shelf is short in your fit, so these are the next best on shape.';
+    } else {
+      h.textContent = 'A wider look';
+      p.textContent = 'One from each corner of the range — all of them cut for your face.';
+    }
+    el.appendChild(h);
+    el.appendChild(p);
+    return el;
+  };
+
+  Quiz.prototype.renderCards = function (shelf) {
     var self = this;
+    var top = shelf.primary.concat(shelf.alternates);
+    var breakAt = shelf.alternates.length ? shelf.primary.length : -1;
     this.el.grid.innerHTML = '';
     top.forEach(function (r, i) {
+      if (i === breakAt) self.el.grid.appendChild(self.divider(shelf));
       var slot = document.createElement('div');
       slot.className = 'psq__slot';
       slot.style.setProperty('--i', i);
@@ -1163,6 +1276,7 @@
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = { FIT: FIT, QUESTIONS: QUESTIONS, WHY: WHY, ARCHETYPES: ARCHETYPES,
                        read: read, parseTitle: parseTitle, rank: rank,
+                       splitShelf: splitShelf, SHELF_LABEL: SHELF_LABEL,
                        archetypeFor: archetypeFor, frameFor: frameFor };
   }
 })();
