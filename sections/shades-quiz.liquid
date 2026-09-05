@@ -1,0 +1,734 @@
+{%- comment -%}
+  PROJECT SHADES — THE FITTING ROOM
+  PS-003 // a frame-finder quiz that answers in the storefront's own voice.
+
+  The customer answers six questions. A face silhouette and a pair of lenses,
+  drawn in SVG, morph as they answer — the face becomes their face shape, the
+  lenses become the frame being recommended. The results are the theme's own
+  product cards.
+
+  LOOKS LIKE THE REST OF THE SITE, BY CONSTRUCTION
+  -----------------------------------------------
+  This section declares no colours, typefaces or spacing of its own. Everything
+  is read from the theme's custom properties (see assets/shades-quiz.css), so
+  changing a colour or a font in the theme editor moves the quiz with it.
+
+  The recommendations are rendered by the theme's own `card-product` snippet,
+  fetched per product through the Section Rendering API (see
+  sections/shades-quiz-card.liquid). They are not a lookalike — they are the
+  same cards the collection pages use.
+
+  HOW IT KNOWS WHAT TO RECOMMEND
+  ------------------------------
+  The catalogue is essentially untagged, so nothing here reads tags. Traits
+  come from COLLECTION MEMBERSHIP via `product.collections`, which means the
+  quiz re-merchandises itself: put a frame in `techno` and it starts being
+  offered to people who pick the techno aesthetic.
+
+  The scoring table that consumes those traits lives in assets/shades-quiz.js.
+{%- endcomment -%}
+
+{{ 'shades-quiz.css' | asset_url | stylesheet_tag }}
+{%- comment -%} The stylesheets the theme's own product card depends on. {%- endcomment -%}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'shades-quiz.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign s = section.settings
+  assign uid = section.id
+
+  comment
+    Collection -> trait token. Each row falls back to the handle this store
+    already uses, so the section works with zero configuration.
+  endcomment
+  assign c_rect  = s.col_rect  | default: collections['rectangular-sunglasses']
+  assign c_oval  = s.col_oval  | default: collections['oval-sunglasses']
+  assign c_round = s.col_round | default: collections['round-sunglasses']
+  assign c_cate  = s.col_cate  | default: collections['cat-eye-glasses']
+  assign c_riml  = s.col_riml  | default: collections['rimless']
+  assign c_wrap  = s.col_wrap  | default: collections['wraparound-sunglasses']
+  assign c_ovsz  = s.col_ovsz  | default: collections['oversized-sunglasses']
+  assign c_geo   = s.col_geo   | default: collections['geometric']
+
+  assign c_men   = s.col_men   | default: collections['men']
+  assign c_women = s.col_women | default: collections['women']
+
+  assign c_small = s.col_small | default: collections['small-face-types']
+  assign c_med   = s.col_med   | default: collections['medium-face-type']
+  assign c_large = s.col_large | default: collections['large-face-types']
+
+  assign c_luxe   = s.col_luxe   | default: collections['luxe-collection']
+  assign c_summer = s.col_summer | default: collections['summer-is-coming']
+  assign c_tech   = s.col_tech   | default: collections['techno']
+  assign c_vint   = s.col_vint   | default: collections['vintage']
+
+  assign c_sport = s.col_sport | default: collections['sports-sunglasses']
+  assign c_sale  = s.col_sale  | default: collections['sale']
+
+  assign cap = s.per_collection | default: 50
+-%}
+
+{%- comment -%}
+  Handle>token lookup, built as ",handle>token,handle>token," so a
+  `contains ',handle>'` probe is exact and can never match a handle that merely
+  shares a prefix with another.
+{%- endcomment -%}
+
+{%- capture lookup -%},
+{%- if c_rect != blank %}{{ c_rect.handle }}>rect,{% endif -%}
+{%- if c_oval != blank %}{{ c_oval.handle }}>oval,{% endif -%}
+{%- if c_round != blank %}{{ c_round.handle }}>round,{% endif -%}
+{%- if c_cate != blank %}{{ c_cate.handle }}>cate,{% endif -%}
+{%- if c_riml != blank %}{{ c_riml.handle }}>riml,{% endif -%}
+{%- if c_wrap != blank %}{{ c_wrap.handle }}>wrap,{% endif -%}
+{%- if c_ovsz != blank %}{{ c_ovsz.handle }}>ovsz,{% endif -%}
+{%- if c_geo != blank %}{{ c_geo.handle }}>geo,{% endif -%}
+{%- if c_men != blank %}{{ c_men.handle }}>men,{% endif -%}
+{%- if c_women != blank %}{{ c_women.handle }}>women,{% endif -%}
+{%- if c_small != blank %}{{ c_small.handle }}>small,{% endif -%}
+{%- if c_med != blank %}{{ c_med.handle }}>medium,{% endif -%}
+{%- if c_large != blank %}{{ c_large.handle }}>large,{% endif -%}
+{%- if c_luxe != blank %}{{ c_luxe.handle }}>luxe,{% endif -%}
+{%- if c_summer != blank %}{{ c_summer.handle }}>summer,{% endif -%}
+{%- if c_tech != blank %}{{ c_tech.handle }}>tech,{% endif -%}
+{%- if c_vint != blank %}{{ c_vint.handle }}>vint,{% endif -%}
+{%- if c_sport != blank %}{{ c_sport.handle }}>sport,{% endif -%}
+{%- if c_sale != blank %}{{ c_sale.handle }}>sale,{% endif -%}
+{%- endcapture -%}
+
+{%- capture products_json -%}
+[
+{%- assign seen = ',' -%}
+{%- assign n = 0 -%}
+{%- for pool in (1..19) -%}
+  {%- liquid
+    case forloop.index
+      when 1
+        assign src = c_rect
+      when 2
+        assign src = c_oval
+      when 3
+        assign src = c_round
+      when 4
+        assign src = c_cate
+      when 5
+        assign src = c_riml
+      when 6
+        assign src = c_wrap
+      when 7
+        assign src = c_ovsz
+      when 8
+        assign src = c_geo
+      when 9
+        assign src = c_men
+      when 10
+        assign src = c_women
+      when 11
+        assign src = c_small
+      when 12
+        assign src = c_med
+      when 13
+        assign src = c_large
+      when 14
+        assign src = c_luxe
+      when 15
+        assign src = c_summer
+      when 16
+        assign src = c_tech
+      when 17
+        assign src = c_vint
+      when 18
+        assign src = c_sport
+      when 19
+        assign src = c_sale
+    endcase
+  -%}
+  {%- if src == blank -%}{%- continue -%}{%- endif -%}
+  {%- for product in src.products limit: cap -%}
+    {%- assign key = product.handle | prepend: ',' | append: ',' -%}
+    {%- unless seen contains key -%}
+      {%- assign seen = seen | append: product.handle | append: ',' -%}
+      {%- comment -%}
+        The catalogue also holds jewellery, tees and lens add-ons, and they must
+        not reach a frame-fitting quiz. Two tiers on purpose: a title that says
+        "sunglasses" IS sunglasses and is never second-guessed, because the
+        exclusions are substring matches and a frame called Sterling or Ring
+        would otherwise be thrown away. Only the vaguer words — "glasses",
+        "frames" — get screened against the exclusion list.
+      {%- endcomment -%}
+      {%- assign tl = product.title | downcase -%}
+      {%- assign is_eyewear = false -%}
+      {%- if tl contains 'sunglass' or tl contains 'shades' or tl contains 'eyewear' -%}
+        {%- assign is_eyewear = true -%}
+      {%- elsif tl contains 'glasses' or tl contains 'frame' -%}
+        {%- assign is_eyewear = true -%}
+        {%- if tl contains 'lens' or tl contains 'necklace' or tl contains 'bracelet' or tl contains 'earclip' or tl contains 'earpiece' or tl contains 'earring' or tl contains 'ring' or tl contains 't-shirt' or tl contains 'chain' or tl contains 'pendant' -%}
+          {%- assign is_eyewear = false -%}
+        {%- endif -%}
+      {%- endif -%}
+      {%- if is_eyewear -%}
+        {%- if n > 0 %},{% endif -%}
+        {%- assign n = n | plus: 1 -%}
+        {%- comment -%}
+          Performance signals, all read live so nothing here goes stale:
+          stock depth (what the shop can safely push), and the review rating and
+          count from the review app's metafields (what customers actually said).
+        {%- endcomment -%}
+        {%- assign inv = 0 -%}
+        {%- for v in product.variants -%}
+          {%- if v.inventory_quantity > 0 -%}{%- assign inv = inv | plus: v.inventory_quantity -%}{%- endif -%}
+        {%- endfor -%}
+        {%- comment -%}
+          Colourway words, for the tint preference. The ": Colour" title suffix
+          covers the frames split one product per colour; the Color option covers
+          the ones that keep their colours as variants.
+        {%- endcomment -%}
+        {%- capture cl -%}
+          {%- if product.title contains ' : ' %}{{ product.title | split: ' : ' | last }} {% endif -%}
+          {%- for o in product.options_with_values -%}
+            {%- assign on = o.name | downcase | strip -%}
+            {%- if on == 'color' or on == 'colour' or on == 'colors' or on == 'colours' -%}
+              {%- for v in o.values %}{{ v }} {% endfor -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endcapture -%}
+        {%- assign cl = cl | strip_html | strip | downcase -%}
+        {"h":{{ product.handle | json }},"t":{{ product.title | json }},"u":{{ product.url | json }},"p":{{ product.price }},"pf":{{ product.price | money | strip_html | json }},"a":{{ product.available }},"iv":{{ inv }},
+        {%- if product.metafields.reviews.rating != blank and product.metafields.reviews.rating.value.rating != blank -%}
+          "rt":{{ product.metafields.reviews.rating.value.rating }},
+        {%- endif -%}
+        {%- if product.metafields.reviews.rating_count != blank -%}
+          "rc":{{ product.metafields.reviews.rating_count }},
+        {%- endif -%}
+        {%- comment -%}
+          What the quiz has learned about this frame: a score written back from
+          Shopify's own analytics, counting the clicks and the orders the quiz
+          itself produced. Absent until the first refresh and absent for anything
+          new, which is the right starting point — an unproven frame should be
+          un-boosted, never penalised.
+        {%- endcomment -%}
+        {%- if product.metafields.custom.quiz_rank != blank -%}
+          "qr":{{ product.metafields.custom.quiz_rank | times: 1.0 }},
+        {%- endif -%}
+        {%- if cl != blank %}"cl":{{ cl | json }},{% endif -%}
+        {%- if product.compare_at_price > product.price %}"cp":{{ product.compare_at_price | money | strip_html | json }},{% endif -%}
+        {%- if product.featured_image -%}
+          "i":{{ product.featured_image | image_url: width: 700 | json }},"ia":{{ product.featured_image.alt | default: product.title | json }},
+        {%- endif -%}
+        "c":[
+        {%- assign tn = 0 -%}
+        {%- for coll in product.collections -%}
+          {%- assign probe = coll.handle | prepend: ',' | append: '>' -%}
+          {%- if lookup contains probe -%}
+            {%- assign tok = lookup | split: probe | last | split: ',' | first -%}
+            {%- if tn > 0 %},{% endif %}{{ tok | json }}
+            {%- assign tn = tn | plus: 1 -%}
+          {%- endif -%}
+        {%- endfor -%}
+        ]}
+      {%- endif -%}
+    {%- endunless -%}
+  {%- endfor -%}
+{%- endfor -%}
+]
+{%- endcapture -%}
+
+<section
+  id="ShadesQuiz--{{ uid }}"
+  class="psq"
+  data-psq
+  data-uid="{{ uid }}"
+  data-results="{{ s.result_count | default: 10 }}"
+  data-hide-oos="{{ s.hide_sold_out }}"
+  data-persist="{{ s.remember_result }}"
+  data-theme-cards="{{ s.use_theme_cards }}"
+  data-use-learned="{{ s.use_learned_rank }}"
+  data-utm-campaign="{{ s.utm_campaign | default: 'fitting-room' }}"
+  data-collect-phone="{{ s.collect_phone }}"
+  data-phone-required="{{ s.phone_required }}"
+  data-dial-code="{{ s.dial_code | default: '+91' }}"
+  {% if s.lead_endpoint != blank %}data-lead-endpoint="{{ s.lead_endpoint }}"{% endif %}
+  data-card-section="{{ s.card_section | default: 'shades-quiz-card' }}"
+  {% if s.fallback_collection != blank %}data-fallback="{{ s.fallback_collection.url }}"{% endif %}
+>
+  <div class="psq__inner">
+    <div class="psq__layout">
+
+      {%- comment -%} ---------- THE STAGE: face + lenses, drawn, never photographed ---------- {%- endcomment -%}
+      <div class="psq__stage" aria-hidden="true">
+        <svg class="psq__rig" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g class="psq__faces" stroke-width="1.5" fill="none">
+            <path data-face="oval"    d="M200 36c40 0 66 30 66 74 0 52-28 106-66 106s-66-54-66-106c0-44 26-74 66-74Z"/>
+            <path data-face="round"   d="M200 34c46 0 74 34 74 84 0 50-30 98-74 98s-74-48-74-98c0-50 28-84 74-84Z"/>
+            <path data-face="square"  d="M136 52c0-10 8-16 18-16h92c10 0 18 6 18 16v92c0 44-26 76-64 76s-64-32-64-76V52Z"/>
+            <path data-face="heart"   d="M132 56c0-12 10-20 24-20h88c14 0 24 8 24 20v52c0 62-34 108-68 108s-68-46-68-108V56Z"/>
+            <path data-face="long"    d="M200 24c38 0 62 26 62 66 0 74-28 134-62 134s-62-60-62-134c0-40 24-66 62-66Z"/>
+            <path data-face="diamond" d="M200 28c30 0 50 24 56 62 6 40-18 126-56 126s-62-86-56-126c6-38 26-62 56-62Z"/>
+          </g>
+
+          <g class="psq__features" stroke-width="1.25" fill="none">
+            <path d="M170 112c8-5 18-5 26-1"/>
+            <path d="M204 112c8-4 18-4 26 1"/>
+            <path d="M200 128v34c0 5-4 8-9 9"/>
+            <path d="M182 198c11 6 25 6 36 0"/>
+          </g>
+
+          <g class="psq__frames">
+            <g data-frame="rect">
+              <rect x="120" y="118" width="72" height="44" rx="7"/>
+              <rect x="208" y="118" width="72" height="44" rx="7"/>
+              <path d="M192 136h16M120 132l-24-8M280 132l24-8"/>
+            </g>
+            <g data-frame="round">
+              <circle cx="156" cy="140" r="27"/>
+              <circle cx="244" cy="140" r="27"/>
+              <path d="M183 140h34M129 130l-33-9M271 130l33-9"/>
+            </g>
+            <g data-frame="oval">
+              <ellipse cx="156" cy="140" rx="32" ry="23"/>
+              <ellipse cx="244" cy="140" rx="32" ry="23"/>
+              <path d="M188 140h24M124 132l-28-9M276 132l28-9"/>
+            </g>
+            <g data-frame="cate">
+              <path d="M122 146c2-18 16-28 38-28 16 0 30 6 32 18 2 12-12 24-34 24-22 0-38-4-36-14Z"/>
+              <path d="M278 146c-2-18-16-28-38-28-16 0-30 6-32 18-2 12 12 24 34 24 22 0 38-4 36-14Z"/>
+              <path d="M192 136h16M122 130l-26-8M278 130l26-8"/>
+            </g>
+            <g data-frame="riml">
+              <path d="M124 128h64v26a6 6 0 0 1-6 6h-52a6 6 0 0 1-6-6v-26Z"/>
+              <path d="M212 128h64v26a6 6 0 0 1-6 6h-52a6 6 0 0 1-6-6v-26Z"/>
+              <path d="M188 132h24M124 128l-28-6M276 128l28-6" stroke-width="1"/>
+            </g>
+            <g data-frame="wrap">
+              <path d="M112 126c26-10 56-12 86-12s60 2 86 12c4 20-8 38-30 42-20 4-40-4-56-4s-36 8-56 4c-22-4-34-22-30-42Z"/>
+              <path d="M196 118v12"/>
+            </g>
+            <g data-frame="ovsz">
+              <rect x="108" y="110" width="88" height="58" rx="12"/>
+              <rect x="204" y="110" width="88" height="58" rx="12"/>
+              <path d="M196 132h8M108 126l-16-6M292 126l16-6"/>
+            </g>
+          </g>
+        </svg>
+
+        <p class="psq__caption" data-psq-caption>{{ s.stage_caption | default: 'Your fit, so far' }}</p>
+      </div>
+
+      {%- comment -%} ---------- THE PANEL: intro, questions, result ---------- {%- endcomment -%}
+      <div class="psq__panel">
+        <div class="psq__rail" data-psq-rail aria-hidden="true"></div>
+
+        <div class="psq__screens" data-psq-screens>
+          <article class="psq__screen is-active" data-screen="intro">
+            <p class="psq__eyebrow">{{ s.eyebrow | default: 'The fitting room' }}</p>
+            <h2 class="psq__title">{{ s.heading | default: 'Find the frame that fits your face.' }}</h2>
+            <p class="psq__body">{{ s.intro | default: 'Six questions. About a minute. We read your face shape, how frames sit on you and what you actually wear — then pull the frames that match.' }}</p>
+            <button type="button" class="psq__cta" data-psq-start>{{ s.start_label | default: 'Begin the fitting' }}</button>
+            <p class="psq__note" data-psq-resume hidden>
+              <button type="button" class="psq__link" data-psq-restore>{{ s.resume_label | default: 'Show my last result' }}</button>
+            </p>
+          </article>
+
+          {%- comment -%} Question screens are rendered by JS from the config in shades-quiz.js {%- endcomment -%}
+          <article class="psq__screen" data-screen="question" hidden>
+            <p class="psq__eyebrow"><span data-psq-step>01</span> <i>/</i> <span data-psq-total>06</span></p>
+            <h2 class="psq__q" data-psq-question tabindex="-1"></h2>
+            <p class="psq__hint" data-psq-hint></p>
+            <div class="psq__options" role="radiogroup" data-psq-options></div>
+            <div class="psq__nav">
+              <button type="button" class="psq__link" data-psq-back>Back</button>
+              <button type="button" class="psq__link" data-psq-skip>Not sure — skip</button>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <article class="psq__screen psq__screen--lead" data-screen="lead" hidden>
+        <p class="psq__eyebrow">{{ s.lead_eyebrow | default: 'Your fitting is ready' }}</p>
+        <h2 class="psq__q">{{ s.lead_heading | default: 'Where should we send it?' }}</h2>
+        <p class="psq__hint">{{ s.lead_body | default: 'Drop your WhatsApp number and we’ll send your match, so you still have it when you’re ready to buy.' }}</p>
+
+        <div class="psq__field">
+          <span class="psq__dial">{{ s.dial_code | default: '+91' }}</span>
+          <input
+            class="psq__input"
+            type="tel"
+            inputmode="numeric"
+            autocomplete="tel-national"
+            data-psq-phone
+            placeholder="{{ s.lead_placeholder | default: '98765 43210' }}"
+            aria-label="{{ s.lead_heading | default: 'Your WhatsApp number' | escape }}"
+          >
+        </div>
+
+        <label class="psq__consent">
+          <input type="checkbox" data-psq-consent>
+          <span>{{ s.lead_consent | default: 'Yes, send my match and occasional offers to this number on WhatsApp.' }}</span>
+        </label>
+
+        <p class="psq__error" data-psq-phone-error hidden></p>
+
+        <button type="button" class="psq__cta" data-psq-phone-send>{{ s.lead_cta | default: 'Show my match' }}</button>
+        <div class="psq__nav">
+          <button type="button" class="psq__link" data-psq-phone-skip>{{ s.lead_skip | default: 'Skip — just show me' }}</button>
+        </div>
+      </article>
+
+      <article class="psq__screen psq__screen--result" data-screen="result" hidden>
+        <p class="psq__eyebrow">{{ s.result_eyebrow | default: 'Your fitting' }}</p>
+        <h2 class="psq__alias" data-psq-alias></h2>
+        <p class="psq__verdict" data-psq-verdict></p>
+        <ul class="psq__spec" data-psq-spec></ul>
+        <div class="psq__grid" data-psq-grid></div>
+        <p class="psq__empty" data-psq-empty hidden></p>
+        <div class="psq__nav psq__nav--result">
+          <button type="button" class="psq__link" data-psq-retake>{{ s.retake_label | default: 'Retake the fitting' }}</button>
+          <button type="button" class="psq__link" data-psq-share>{{ s.share_label | default: 'Copy my result' }}</button>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <noscript>
+    <p class="psq__body">The fitting room needs JavaScript.{% if s.fallback_collection != blank %} You can <a href="{{ s.fallback_collection.url }}">browse every frame here</a> instead.{% endif %}</p>
+  </noscript>
+
+  <script type="application/json" data-psq-products>{{ products_json }}</script>
+</section>
+
+{% schema %}
+{
+  "name": "Shades fitting quiz",
+  "tag": "section",
+  "class": "shades-quiz-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Copy"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The fitting room"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Find the frame that fits your face."
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Intro",
+      "default": "Six questions. About a minute. We read your face shape, how frames sit on you and what you actually wear — then pull the frames that match."
+    },
+    {
+      "type": "text",
+      "id": "start_label",
+      "label": "Start button",
+      "default": "Begin the fitting"
+    },
+    {
+      "type": "text",
+      "id": "result_eyebrow",
+      "label": "Result eyebrow",
+      "default": "Your fitting"
+    },
+    {
+      "type": "text",
+      "id": "retake_label",
+      "label": "Retake button",
+      "default": "Retake the fitting"
+    },
+    {
+      "type": "text",
+      "id": "share_label",
+      "label": "Share button",
+      "default": "Copy my result"
+    },
+    {
+      "type": "text",
+      "id": "resume_label",
+      "label": "Resume link",
+      "default": "Show my last result"
+    },
+    {
+      "type": "text",
+      "id": "stage_caption",
+      "label": "Caption under the drawing",
+      "default": "Your fit, so far"
+    },
+    {
+      "type": "header",
+      "content": "WhatsApp capture"
+    },
+    {
+      "type": "checkbox",
+      "id": "collect_phone",
+      "label": "Ask for a WhatsApp number before the result",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "phone_required",
+      "label": "Require it",
+      "default": false,
+      "info": "Off by default. Forcing it before anyone sees a result costs completions, and the number is worth more from someone who wanted to give it."
+    },
+    {
+      "type": "text",
+      "id": "dial_code",
+      "label": "Country code",
+      "default": "+91"
+    },
+    {
+      "type": "text",
+      "id": "lead_eyebrow",
+      "label": "Eyebrow",
+      "default": "Your fitting is ready"
+    },
+    {
+      "type": "text",
+      "id": "lead_heading",
+      "label": "Heading",
+      "default": "Where should we send it?"
+    },
+    {
+      "type": "textarea",
+      "id": "lead_body",
+      "label": "Body",
+      "default": "Drop your WhatsApp number and we’ll send your match, so you still have it when you’re ready to buy."
+    },
+    {
+      "type": "text",
+      "id": "lead_placeholder",
+      "label": "Placeholder",
+      "default": "98765 43210"
+    },
+    {
+      "type": "textarea",
+      "id": "lead_consent",
+      "label": "Consent line",
+      "default": "Yes, send my match and occasional offers to this number on WhatsApp.",
+      "info": "Shown beside a checkbox that must be ticked before the number is sent."
+    },
+    {
+      "type": "text",
+      "id": "lead_cta",
+      "label": "Submit button",
+      "default": "Show my match"
+    },
+    {
+      "type": "text",
+      "id": "lead_skip",
+      "label": "Skip link",
+      "default": "Skip — just show me"
+    },
+    {
+      "type": "text",
+      "id": "lead_endpoint",
+      "label": "Where to send leads",
+      "info": "Blank posts to this store's own /contact form, which emails you the number and the fitting. Paste a webhook URL (Bitespeed, Zapier, Klaviyo) to send it there instead."
+    },
+    {
+      "type": "header",
+      "content": "Results"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_theme_cards",
+      "label": "Use the theme's own product cards",
+      "default": true,
+      "info": "Fetches the same card markup your collection pages use, so results match the rest of the store. Falls back to a simple built-in card if unavailable."
+    },
+    {
+      "type": "text",
+      "id": "card_section",
+      "label": "Card section name",
+      "default": "shades-quiz-card",
+      "info": "The companion section file, without the .liquid extension."
+    },
+    {
+      "type": "range",
+      "id": "result_count",
+      "min": 4,
+      "max": 16,
+      "step": 1,
+      "label": "Frames to recommend",
+      "default": 10
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_sold_out",
+      "label": "Hide sold-out frames",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "remember_result",
+      "label": "Remember the visitor's result",
+      "default": true,
+      "info": "Stored in the browser only. Nothing is sent anywhere."
+    },
+    {
+      "type": "range",
+      "id": "per_collection",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "label": "Frames read per collection",
+      "default": 50,
+      "info": "Liquid reads at most 50 products per collection in one pass, so 50 is the ceiling and the right value."
+    },
+    {
+      "type": "collection",
+      "id": "fallback_collection",
+      "label": "Fallback collection",
+      "info": "Linked when a fitting returns too few matches, and from the no-JavaScript message."
+    },
+    {
+      "type": "header",
+      "content": "Frame shape",
+      "info": "The eight shape collections. Leave blank to use the handles this store already uses."
+    },
+    {
+      "type": "collection",
+      "id": "col_rect",
+      "label": "Rectangular"
+    },
+    {
+      "type": "collection",
+      "id": "col_oval",
+      "label": "Oval"
+    },
+    {
+      "type": "collection",
+      "id": "col_round",
+      "label": "Round"
+    },
+    {
+      "type": "collection",
+      "id": "col_cate",
+      "label": "Cat-eye"
+    },
+    {
+      "type": "collection",
+      "id": "col_riml",
+      "label": "Rimless"
+    },
+    {
+      "type": "collection",
+      "id": "col_wrap",
+      "label": "Wraparound"
+    },
+    {
+      "type": "collection",
+      "id": "col_ovsz",
+      "label": "Oversized"
+    },
+    {
+      "type": "collection",
+      "id": "col_geo",
+      "label": "Geometric"
+    },
+    {
+      "type": "header",
+      "content": "Who it's for",
+      "info": "Used as a strong preference, never a hard filter — a frame in neither collection is still reachable."
+    },
+    {
+      "type": "collection",
+      "id": "col_men",
+      "label": "Men"
+    },
+    {
+      "type": "collection",
+      "id": "col_women",
+      "label": "Women"
+    },
+    {
+      "type": "header",
+      "content": "Face size"
+    },
+    {
+      "type": "collection",
+      "id": "col_small",
+      "label": "Small face types"
+    },
+    {
+      "type": "collection",
+      "id": "col_med",
+      "label": "Medium face type"
+    },
+    {
+      "type": "collection",
+      "id": "col_large",
+      "label": "Large face types"
+    },
+    {
+      "type": "header",
+      "content": "Aesthetic"
+    },
+    {
+      "type": "collection",
+      "id": "col_luxe",
+      "label": "Daily Luxe"
+    },
+    {
+      "type": "collection",
+      "id": "col_summer",
+      "label": "Summer is coming"
+    },
+    {
+      "type": "collection",
+      "id": "col_tech",
+      "label": "Techno"
+    },
+    {
+      "type": "collection",
+      "id": "col_vint",
+      "label": "Vintage"
+    },
+    {
+      "type": "header",
+      "content": "Use case and merchandising"
+    },
+    {
+      "type": "collection",
+      "id": "col_sport",
+      "label": "Polarised sports"
+    },
+    {
+      "type": "collection",
+      "id": "col_sale",
+      "label": "Markdowns"
+    },
+    {
+      "type": "header",
+      "content": "Learning",
+      "info": "Result links carry UTM tags, so Shopify attributes the clicks and orders the quiz produces. A periodic refresh writes that back to each product's custom.quiz_rank metafield, which the ranking reads."
+    },
+    {
+      "type": "checkbox",
+      "id": "use_learned_rank",
+      "label": "Use what the quiz has learned",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "utm_campaign",
+      "label": "UTM campaign",
+      "default": "fitting-room"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shades fitting quiz"
+    }
+  ]
+}
+{% endschema %}

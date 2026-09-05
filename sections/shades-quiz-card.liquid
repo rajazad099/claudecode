@@ -1,0 +1,34 @@
+{%- comment -%}
+  PROJECT SHADES — one result card.
+
+  This section exists only to be fetched by the Section Rendering API:
+
+      /products/<handle>?section_id=shades-quiz-card
+
+  Requesting it against a product URL puts that product in scope, so it can
+  hand back the theme's own `card-product` markup. That is how the fitting
+  room's recommendations end up identical to the cards on every collection
+  page — same badges, same price formatting, same sale highlighting — instead
+  of being a lookalike maintained separately in JavaScript.
+
+  Quick-add is off on purpose: these frames come in colourways, so the customer
+  should land on the product page and choose one.
+{%- endcomment -%}
+
+{%- render 'card-product',
+  card_product: product,
+  media_aspect_ratio: settings.card_img_aspect_ratio,
+  show_price: true,
+  show_sale_badges: settings.badges_show_sale,
+  show_vendor: settings.show_vendor,
+  show_quick_add: false,
+  lazy_load: false,
+  section_id: section.id
+-%}
+
+{% schema %}
+{
+  "name": "Fitting quiz result card",
+  "settings": []
+}
+{% endschema %}

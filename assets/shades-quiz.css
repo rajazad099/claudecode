@@ -1,0 +1,581 @@
+/* PROJECT SHADES — THE FITTING ROOM (PS-003)
+ *
+ * This stylesheet declares almost no colours, fonts or spacing of its own.
+ * Everything is read from the theme's own custom properties so the quiz
+ * inherits the storefront: change a colour or a typeface in the theme editor
+ * and the quiz follows without anyone touching this file.
+ *
+ * Every var() carries a fallback matching the current theme settings, so the
+ * standalone preview (which has no theme) still renders correctly.
+ *
+ * Note on formats — the theme is not consistent, and neither can we be:
+ *   --color-background      hex        -> use directly
+ *   --color-foreground-rgb  "0, 0, 0"  -> use inside rgba()
+ *   --color-button-background "r, g, b" -> use inside rgb()
+ *   --color-price-sale      "r g b"    -> use inside rgb() unquoted
+ */
+
+.psq {
+  /* ---- inherited from the theme ---- */
+  --psq-bg: var(--color-background, #ffffff);
+  --psq-fg: var(--color-foreground, #000000);
+  --psq-fg-rgb: var(--color-foreground-rgb, 0, 0, 0);
+  --psq-muted: var(--color-accent-two, #666666);
+  --psq-faint: var(--color-accent-three, #999999);
+  --psq-panel: var(--color-bg-one, #eeeeee);
+  --psq-sale: rgb(var(--color-price-sale, 247 0 0));
+
+  --psq-line: rgba(var(--psq-fg-rgb), 0.14);
+  --psq-line-strong: rgba(var(--psq-fg-rgb), 0.6);
+
+  --psq-body-font: var(--font-body-family, "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
+  --psq-body-weight: var(--font-body-weight, 400);
+  --psq-head-font: var(--font-heading-family, "Basic Commercial", Helvetica, Arial, sans-serif);
+  --psq-head-weight: var(--font-heading-weight, 700);
+  --psq-accent-font: var(--font-accent-family, Montserrat, sans-serif);
+
+  --psq-size: var(--font-body-base-size-desktop, 15px);
+  --psq-size-ui: var(--font-ui-size-desktop, 13px);
+  --psq-lh: var(--base-line-height, 1.5);
+
+  --psq-h1: var(--font-h1-size-desktop, 34px);
+  --psq-h2: var(--font-h2-size-desktop, 22px);
+  --psq-h3: var(--font-h3-size-desktop, 18px);
+  --psq-h2-case: var(--font-h2-case, none);
+  --psq-h3-case: var(--font-h3-case, uppercase);
+
+  --psq-pad: var(--page-margin-desktop, 4rem);
+  --psq-gap: var(--grid-desktop-horizontal-spacing, 20px);
+  --psq-gap-y: var(--grid-desktop-vertical-spacing, 40px);
+
+  --psq-radius: var(--media-radius, 0px);
+  --psq-btn-radius: var(--buttons-radius, 0px);
+  --psq-btn-border: var(--buttons-border-width, 1px);
+  --psq-btn-case: var(--buttons-text-case, uppercase);
+  --psq-btn-weight: var(--buttons-font-weight, bold);
+  --psq-btn-size: var(--buttons-font-size-desktop, 13px);
+  --psq-btn-ls: var(--buttons-letter-spacing, 0em);
+  --psq-btn-fg: rgb(var(--color-button-foreground, 255, 255, 255));
+  --psq-btn-bg: rgb(var(--color-button-background, 0, 0, 0));
+  --psq-input-radius: var(--inputs-radius, 0px);
+  --psq-input-border: var(--inputs-border-width, 1px);
+
+  display: block;
+  padding: var(--psq-gap-y) var(--psq-pad);
+  background: var(--psq-bg);
+  color: var(--psq-fg);
+  font-family: var(--psq-body-font);
+  font-weight: var(--psq-body-weight);
+  font-size: var(--psq-size);
+  line-height: var(--psq-lh);
+}
+
+.psq *, .psq *::before, .psq *::after { box-sizing: border-box; }
+
+.psq__inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* ------------------------------------------------------------------ layout */
+
+.psq__layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--psq-gap-y) var(--psq-gap);
+  align-items: start;
+}
+
+/* ------------------------------------------------------------------- stage */
+
+/* The drawing. Black line on the theme's own light panel colour — no new
+   colours are introduced anywhere in this section. */
+.psq__stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  padding: 24px;
+  background: var(--psq-panel);
+  border-radius: var(--psq-radius);
+  overflow: hidden;
+}
+
+.psq__rig {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  color: var(--psq-fg);
+  overflow: visible;
+}
+
+.psq__faces path,
+.psq__frames > g {
+  opacity: 0;
+  transition: opacity .45s cubic-bezier(.2, .7, .2, 1);
+}
+.psq__faces path {
+  stroke: rgba(var(--psq-fg-rgb), .3);
+  fill: none;
+}
+.psq__faces path.is-on { opacity: 1; }
+
+.psq__frames > g {
+  fill: none;
+  stroke: var(--psq-fg);
+  stroke-width: 2.25;
+  stroke-linejoin: round;
+}
+.psq__frames > g.is-on { opacity: 1; }
+/* Lens fill: a wash of the foreground colour, so it reads as a tinted lens
+   without inventing a hue the brand does not use. */
+.psq__frames > g.is-on > rect,
+.psq__frames > g.is-on > circle,
+.psq__frames > g.is-on > ellipse,
+.psq__frames > g.is-on > path:not(:last-child) {
+  fill: rgba(var(--psq-fg-rgb), .12);
+}
+
+.psq__features { stroke: rgba(var(--psq-fg-rgb), .3); transition: opacity .45s ease; }
+.psq.is-faceless .psq__features { opacity: 0; }
+
+.psq__caption {
+  position: absolute;
+  left: 16px;
+  bottom: 12px;
+  margin: 0;
+  font-family: var(--psq-accent-font);
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--psq-faint);
+}
+
+/* ------------------------------------------------------------------- panel */
+
+.psq__panel { min-width: 0; }
+
+.psq__rail { display: flex; gap: 4px; margin-bottom: 20px; }
+.psq__tick {
+  flex: 1;
+  height: 2px;
+  background: var(--psq-line);
+  transition: background .3s ease;
+}
+.psq__tick.is-done, .psq__tick.is-now { background: var(--psq-fg); }
+
+.psq__screen { display: none; }
+.psq__screen.is-active { display: block; animation: psq-in .4s ease both; }
+
+.psq__eyebrow {
+  margin: 0 0 12px;
+  font-family: var(--psq-accent-font);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--psq-muted);
+}
+.psq__eyebrow i { font-style: normal; opacity: .55; margin: 0 .35em; }
+
+.psq__title {
+  margin: 0 0 14px;
+  font-family: var(--psq-head-font);
+  font-weight: var(--psq-head-weight);
+  font-size: var(--psq-h1);
+  line-height: 1.12;
+  letter-spacing: var(--font-h1-ls, 0em);
+  text-transform: var(--font-h1-case, none);
+}
+
+.psq__q {
+  margin: 0 0 8px;
+  font-family: var(--psq-head-font);
+  font-weight: var(--psq-head-weight);
+  font-size: var(--psq-h2);
+  line-height: 1.2;
+  letter-spacing: var(--font-h2-ls, 0em);
+  text-transform: var(--psq-h2-case);
+  outline: none;
+}
+
+.psq__body, .psq__hint {
+  margin: 0 0 20px;
+  max-width: 56ch;
+  color: var(--psq-muted);
+}
+.psq__hint { font-size: var(--psq-size-ui); margin-bottom: 18px; }
+
+/* ----------------------------------------------------------------- options */
+
+.psq__options { display: grid; gap: 8px; }
+
+/* Built to read like the theme's own inputs: same border width, same radius,
+   same square corners. */
+.psq__opt {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  min-height: 52px;
+  padding: 11px 16px;
+  border: var(--psq-input-border) solid var(--psq-line-strong);
+  border-radius: var(--psq-input-radius);
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: var(--psq-size);
+  text-align: left;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease;
+}
+.psq__opt:hover { background: var(--psq-panel); }
+.psq__opt:focus-visible { outline: 2px solid var(--psq-fg); outline-offset: 2px; }
+.psq__opt[aria-checked="true"] {
+  background: var(--psq-fg);
+  color: var(--psq-bg);
+  border-color: var(--psq-fg);
+}
+.psq__opt[aria-checked="true"] .psq__opt-s { color: inherit; opacity: .7; }
+/* Options carrying a diagram lay out as a row; the rest are unaffected. */
+.psq__opt:has(.psq__opt-fig) { flex-direction: row; align-items: center; gap: 14px; }
+.psq__opt-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.psq__opt-fig {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 45px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  opacity: .6;
+}
+.psq__opt:hover .psq__opt-fig,
+.psq__opt[aria-checked="true"] .psq__opt-fig { opacity: 1; }
+
+/* :has() is well supported but not universal; without it the diagram simply
+   stacks above the label, which still reads correctly. */
+@supports not selector(.psq:has(.psq__opt-fig)) {
+  .psq__opt-fig { width: 30px; height: 38px; }
+}
+
+.psq__opt-l { font-weight: 500; }
+.psq__opt-s { font-size: var(--psq-size-ui); line-height: 1.4; color: var(--psq-muted); }
+
+/* -------------------------------------------------------- buttons and nav */
+
+/* Mirrors the theme's button tokens exactly rather than borrowing its
+   .button class, which would collide on specificity inside a section. */
+.psq__cta {
+  display: inline-block;
+  padding: calc(var(--buttons-padding, 4px) + 12px) var(--buttons-horizontal-padding, 20px);
+  border: var(--psq-btn-border) solid var(--psq-btn-bg);
+  border-radius: var(--psq-btn-radius);
+  background: var(--psq-btn-bg);
+  color: var(--psq-btn-fg);
+  font-family: var(--psq-accent-font);
+  font-size: var(--psq-btn-size);
+  font-weight: var(--psq-btn-weight);
+  letter-spacing: var(--psq-btn-ls);
+  text-transform: var(--psq-btn-case);
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity .18s ease;
+}
+.psq__cta:hover { opacity: .82; }
+.psq__cta:focus-visible { outline: 2px solid var(--psq-fg); outline-offset: 3px; }
+
+.psq__nav { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin-top: 20px; }
+
+.psq__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--psq-muted);
+  font-family: var(--psq-accent-font);
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+.psq__link:hover { color: var(--psq-fg); }
+.psq__link:focus-visible { outline: 2px solid var(--psq-fg); outline-offset: 2px; }
+.psq__link[hidden] { display: none; }
+.psq__note { margin: 14px 0 0; }
+
+/* ---------------------------------------------------------------- result */
+
+/* Once the questions are answered the question panel is spent, and both the
+   lead step and the result want the full width with the drawing above them. */
+.psq__screen--result,
+.psq__screen--lead { grid-column: 1 / -1; }
+.psq.is-result .psq__panel,
+.psq.is-lead .psq__panel { display: none; }
+
+.psq__screen--lead { text-align: center; }
+.psq__screen--lead .psq__hint { margin-left: auto; margin-right: auto; }
+.psq__screen--lead .psq__field { margin-left: auto; margin-right: auto; }
+.psq__screen--lead .psq__consent { margin-left: auto; margin-right: auto; text-align: left; }
+.psq__screen--lead .psq__error { margin-left: auto; margin-right: auto; }
+.psq__screen--lead .psq__nav { justify-content: center; }
+
+.psq__alias {
+  margin: 0 0 10px;
+  font-family: var(--psq-head-font);
+  font-weight: var(--psq-head-weight);
+  font-size: var(--psq-h1);
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+.psq__verdict {
+  margin: 0 auto 24px;
+  max-width: 62ch;
+  color: var(--psq-muted);
+}
+
+/* 1px gaps over a ruled background, rather than per-cell borders: this draws
+   the dividers correctly however many columns the grid wraps to, which
+   per-cell border-right does not once the row wraps on a phone. */
+.psq__spec {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1px;
+  margin: 0 0 var(--psq-gap-y);
+  padding: 1px;
+  list-style: none;
+  background: var(--psq-line);
+}
+.psq__spec li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  background: var(--psq-bg);
+}
+.psq__spec b {
+  font-family: var(--psq-accent-font);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--psq-faint);
+}
+.psq__spec span { font-size: var(--psq-size-ui); }
+
+/* The results grid matches the theme's own product grid spacing. */
+.psq__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--psq-gap-y) var(--psq-gap);
+}
+
+/* The line between the four that answer the question and the six offered as an
+   alternative. It spans the whole grid at every breakpoint, so the shelf reads
+   as two shelves rather than one long list. Built from the same tokens as the
+   spec read-out above it — an eyebrow in the accent face, a sentence in body
+   copy — so it looks like part of the page and not like a banner. */
+.psq__divider {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: calc(var(--psq-gap-y) * 0.25) 0 calc(var(--psq-gap-y) * 0.1);
+  padding-top: calc(var(--psq-gap-y) * 0.45);
+  border-top: 1px solid var(--psq-line);
+  /* Stated, not inherited: the result panel centres its cards, and a centred
+     eyebrow over a max-width sentence lands the two lines on different axes. */
+  text-align: left;
+}
+.psq__divider-h {
+  font-family: var(--psq-accent-font);
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--psq-fg);
+}
+.psq__divider-p {
+  font-size: var(--psq-size-ui);
+  color: var(--psq-faint);
+  max-width: 62ch;
+}
+
+/* When the theme's real card-product markup is injected, it brings its own
+   styling from component-card.css and needs nothing from us. */
+.psq__slot { position: relative; min-width: 0; animation: psq-in .45s ease both; animation-delay: calc(var(--i, 0) * 60ms); }
+.psq__slot-body { min-width: 0; }
+
+/* Fallback card, used only if the theme card cannot be fetched. Deliberately
+   built from the same tokens the theme card uses. */
+.psq__card { display: block; color: inherit; text-decoration: none; }
+.psq__shot {
+  position: relative;
+  margin: 0 0 var(--product-card-text-top-padding, 15px);
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--product-card-media-bg-col, var(--psq-panel));
+  border-radius: var(--product-card-image-radius, 0);
+}
+.psq__shot img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.psq__shot.is-blank::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--psq-panel);
+}
+.psq__meta { text-align: var(--product-card-text-alignment, center); }
+.psq__name {
+  margin: 0 0 4px;
+  font-family: var(--psq-head-font);
+  font-weight: var(--psq-head-weight);
+  font-size: var(--psq-h3);
+  text-transform: var(--psq-h3-case);
+}
+.psq__desc { margin: 0 0 6px; font-size: var(--psq-size-ui); color: var(--psq-muted); }
+.psq__price { margin: 0; font-weight: var(--price-font-weight, normal); }
+.psq__price s { color: var(--psq-faint); margin-left: 6px; }
+.psq__ways { margin: 6px 0 0; font-size: 11px; color: var(--psq-faint); }
+
+/* The one flag we add on top of the theme card. Uses the theme's badge tokens. */
+.psq__flag {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  padding: 4px 8px;
+  border-radius: var(--badge-corner-radius, 4px);
+  background: var(--psq-fg);
+  color: var(--psq-bg);
+  font-family: var(--psq-accent-font);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------- WhatsApp capture */
+
+.psq__field {
+  display: flex;
+  align-items: stretch;
+  max-width: 340px;
+  margin: 0 0 14px;
+  border: var(--psq-input-border) solid var(--psq-line-strong);
+  border-radius: var(--psq-input-radius);
+}
+.psq__dial {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-right: var(--psq-input-border) solid var(--psq-line);
+  background: var(--psq-panel);
+  font-size: var(--psq-size-ui);
+  white-space: nowrap;
+}
+.psq__input {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: var(--psq-size);
+  letter-spacing: .04em;
+}
+.psq__input:focus { outline: none; }
+.psq__field:focus-within { border-color: var(--psq-fg); box-shadow: 0 0 0 1px var(--psq-fg); }
+
+.psq__consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 46ch;
+  margin: 0 0 16px;
+  font-size: var(--psq-size-ui);
+  line-height: 1.5;
+  color: var(--psq-muted);
+  cursor: pointer;
+}
+.psq__consent input {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  margin: 2px 0 0;
+  accent-color: var(--psq-fg);
+}
+
+.psq__error {
+  margin: 0 0 14px;
+  max-width: 46ch;
+  font-size: var(--psq-size-ui);
+  color: var(--psq-sale);
+}
+.psq__error[hidden] { display: none; }
+
+.psq__empty { margin: 16px 0 0; color: var(--psq-muted); }
+.psq__empty a, .psq__body a { color: var(--psq-fg); }
+
+/* --------------------------------------------------------------- centring */
+
+/* The intro and the result read as page content, so they centre like the
+   theme's own rich-text sections. Questions stay left-aligned beside the
+   stage, where a centred column would be hard to scan. */
+.psq__screen[data-screen="intro"],
+.psq__screen--result { text-align: center; }
+.psq__screen[data-screen="intro"] .psq__body { margin-left: auto; margin-right: auto; }
+.psq__screen--result .psq__spec li { text-align: left; }
+/* text-align does not reach a flex row, so centre the result actions directly. */
+.psq__nav--result { justify-content: center; }
+
+/* ------------------------------------------------------------------ motion */
+
+@keyframes psq-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ------------------------------------------------------------- breakpoints */
+
+@media (max-width: 749px) {
+  .psq {
+    padding: var(--grid-mobile-vertical-spacing, 28px) var(--page-margin-mobile, 2rem);
+    --psq-size: var(--font-body-base-size-mobile, 14px);
+    --psq-size-ui: var(--font-ui-size-mobile, 12px);
+    --psq-h1: var(--font-h1-size-mobile, 26px);
+    --psq-h2: var(--font-h2-size-mobile, 20px);
+    --psq-h3: var(--font-h3-size-mobile, 18px);
+    --psq-gap: var(--grid-mobile-horizontal-spacing, 12px);
+    --psq-gap-y: var(--grid-mobile-vertical-spacing, 28px);
+  }
+  .psq__stage { aspect-ratio: 3 / 2; padding: 14px; }
+  .psq__rig { max-width: 300px; }
+}
+
+@media (min-width: 750px) {
+  .psq__layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
+  .psq__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  /* On the result screen the stage steps aside — the products are the payload. */
+  .psq.is-result .psq__layout,
+  .psq.is-lead .psq__layout { grid-template-columns: minmax(0, 1fr); }
+  .psq.is-result .psq__stage,
+  .psq.is-lead .psq__stage { max-width: 320px; margin: 0 auto; aspect-ratio: 4 / 3; }
+}
+
+@media (min-width: 990px) {
+  .psq__layout { gap: calc(var(--psq-gap) * 2.5); }
+}
+
+/* ------------------------------------------------------------ reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .psq *, .psq *::before, .psq *::after {
+    animation: none !important;
+    transition-duration: .01ms !important;
+  }
+  .psq__screen.is-active, .psq__slot { opacity: 1; transform: none; }
+}
