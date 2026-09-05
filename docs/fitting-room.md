@@ -112,7 +112,9 @@ is the right starting point for anything new.
 Pooled as the **mean** across a line's colourways, not the sum — a line split
 six ways should not out-earn one sold as a single product.
 
-Turn it off with the *Use learned ranking* setting if the numbers ever look
+Refreshed **monthly** — the queries, the scoring formula and the write-back are
+in [`quiz-rank-refresh.md`](quiz-rank-refresh.md), and a Routine runs it on the
+1st. Turn it off with the *Use learned ranking* setting if the numbers ever look
 wrong; nothing else changes.
 
 ### Proven performers
@@ -291,6 +293,14 @@ how sunglasses *currently sit*:
 Each option reads straight onto the shop's own size collections, so re-filing a
 frame in Shopify moves it in the quiz on the next page load.
 
+**Size is a gate.** A frame in none of the three size collections has no stated
+width, and is not recommended at all — the shop's instruction, and the right
+one: a fitting quiz that guesses at width is not fitting anything. Sixteen live
+frames are currently excluded by this, Aurora (146 units) and Spectre (86) among
+them; filing them puts them back in play immediately. The size *preference*
+stays soft on top of the gate, because plenty of frames sit in two or three of
+the collections at once.
+
 ### Colourways
 
 `[ Apollo ] Rectangular Unisex Sunglasses : Black` — the house naming
@@ -367,8 +377,8 @@ against `preview/quiz.html`:
 
 - **All 1,296 answer combinations** (3 genders × 6 faces × 4 fits × 6 vibes ×
   3 tints) return a **full shelf of ten**. None comes up short.
-- **105 different frames** appear across those runs and **58 different frames**
-  take the top slot, the most frequent at 12% — proven lines lead without one
+- **98 different frames** appear across those runs and **60 different frames**
+  take the top slot, the most frequent at 11% — proven lines lead without one
   product owning the quiz.
 - **Every face shape returns only on-doctrine frames**, with the single
   deliberate exception above: a shelf the customer named by hand.
@@ -377,25 +387,49 @@ against `preview/quiz.html`:
 - `preview/liquid-test.js` renders the real template and finds the index
   populated.
 
-## Known catalogue gaps
+## The judgement calls
 
-The quiz can only steer on what the collections say. As of the last sweep, of
-178 live frames:
+Fifteen live frames sit in no shape collection and have no shape word in their
+title, and the shop's own view is that they are genuinely hard to categorise —
+Contour and Tresor are neither rectangular nor round nor anything else with a
+name. A frame with no shape cannot be fitted to a face, so left alone they would
+never be recommended at all, which is the wrong answer for three of the deepest
+lines in the catalogue.
 
-- **20 carry no shape collection**, including the three deepest-stocked new
-  lines — Contour (213 units across three colourways), Tresor (113) and the
-  Limited Edition techno frame (97). A frame with no shape cannot be fitted to a
-  face, so these only ever appear as top-up. Filing them into Rectangular, Oval,
-  Round, Cateye, Rimless, Wraparound, Oversized or Geometric puts them straight
-  into rotation.
-- **16 carry no size collection** — Aurora (146u), Spectre (86u), Monarch,
-  Fluff, Luna, Quantum, Cosmopolitan, Tara 2.0, Opium, Akita, both Festive SZN
-  frames, Pharrell, Liberty, Orlando, Credence.
-- **7 carry no gender** — Quebec (59u), Luna, Quantum, NOIR 140, Titan, Orlando,
-  Credence.
+So `JUDGED`, in `assets/shades-quiz.js`, makes the call. Each row is read off
+the product's own copy — lens and frame dimensions where the description gives
+them, the silhouette where it describes one — and the reasoning sits in a
+comment next to it, so it can be argued with:
 
-Also worth a look: the **Rectangular** collection currently holds seven rimless
-frames (Aphrodite, Roma, Athena, Credence, Woddy, Popsicle and all four
-Serendipity 2.0 colourways). They score as both shapes at once, which is part of
-why Serendipity kept surfacing on faces it doesn't suit. Nothing in the code
-needs to change if they come out of Rectangular.
+| Frame | Read as | From |
+| --- | --- | --- |
+| Contour | slim rectangle | lens 53 × 38 on a 145 frame, 32 g, "sleek cutline" |
+| Isla | slim oval | "a sleek metal frame carved into a bold, elongated silhouette" |
+| Limited Edition | oversized | "the oversized silhouette and tinted lenses" |
+| Fluff | oversized | frame 144, lens 68 — the lens is most of the frame |
+| Vogue | oversized round | lens 53 × 53, and the name is Inflated |
+| Venom | cat-eye wrap | "futuristic sculpted cat-eye silhouette … sleek wrap design" |
+| Marina | oversized rectangle | "a chunky frame with tinted lenses" |
+| Amber | oversized wrap | lens 71 wide × 39 high — wide and shallow is a wrap |
+| Mongul | oversized wrap | "full-coverage visor silhouette", lens 68 × 45 |
+| Tresor | slim wrap | **low confidence** — no copy, no dimensions |
+| Grace | cat-eye | **low confidence** — one line of ad copy |
+| Katana | wrap | **low confidence** — no geometry given |
+
+Two safeguards. The fit an inferred shape earns is **discounted 20%**, so a
+frame whose shape the shop actually stated outranks a guess at equal everything
+else. And the table is a **fallback, not an override**: file the frame into a
+shape collection and the collection wins, and the row stops doing anything.
+
+The three marked low confidence are guesses from the name and the category
+alone. The product photography would settle them; correcting a row is one line.
+
+## Sold-out styles
+
+Roughly half the catalogue is in draft — sold-out styles going back four years.
+That is deliberate, and the quiz handles it without being told: Liquid's
+`collection.products` never returns a draft product, so they are not in the
+index at all. Of 315 products across the nineteen collections, 178 reach the
+quiz. Sold-out *active* frames are filtered again at rank time by the
+**Hide sold-out frames** setting, and a line running low is marked down by the
+scarcity ramp before it ever runs out.

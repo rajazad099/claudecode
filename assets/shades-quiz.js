@@ -223,6 +223,57 @@
     if (l) traits.lightish = true;
   }
 
+  /* The shapes that can be fitted to a face. `slim`, `metal`, `uni` and the
+     rest describe a frame without saying what shape it is. */
+  var FITTABLE = ['rect', 'oval', 'round', 'cate', 'riml', 'wrap', 'ovsz', 'geo', 'avia'];
+
+  /* THE JUDGEMENT CALLS.
+
+     Fifteen frames sit in no shape collection and have no shape word in their
+     title, and the shop's own view is that they are genuinely hard to
+     categorise. A frame with no shape cannot be fitted to a face, so without
+     this table they would never be recommended at all — which is the wrong
+     answer for the three deepest-stocked lines in the catalogue.
+
+     Each call below is read off the product's own copy: lens and frame
+     dimensions where the description gives them, the silhouette where it
+     describes one. The reasoning is written next to each so it can be argued
+     with. Three are marked LOW CONFIDENCE — no dimensions, no descriptive copy,
+     and the product photography is not reachable from here.
+
+     This is a fallback, not an override: file the frame into a shape
+     collection in Shopify and the collection wins, and the row here stops
+     doing anything. Keyed on the alias, so it covers every colourway. */
+  var JUDGED = {
+    /* lens 53 x 38 on a 145 frame, 32 g, "sleek cutline" — a slim soft
+       rectangle with a cut brow line, not a big frame. */
+    'CONTOUR':          ['rect', 'slim'],
+    /* LOW CONFIDENCE. No description and no dimensions. Techno, and in the
+       small and medium face types but not large, so: a narrow wrap. */
+    'TRESOR':           ['wrap', 'slim'],
+    /* "a sleek metal frame carved into a bold, elongated silhouette", 59 mm. */
+    'ISLA':             ['oval', 'slim'],
+    /* "the oversized silhouette and tinted lenses", built for raves. */
+    'LIMITED EDITION':  ['ovsz'],
+    /* frame 144, lens 68 — the lens is most of the frame. */
+    'FLUFF':            ['ovsz'],
+    /* lens 53 x 53, and the name is Inflated. Square-round and large. */
+    'VOGUE':            ['ovsz', 'round'],
+    /* "futuristic sculpted cat-eye silhouette ... sleek wrap design", 156 mm. */
+    'VENOM':            ['cate', 'wrap'],
+    /* "a chunky frame with tinted lenses". */
+    'MARINA':           ['ovsz', 'rect'],
+    /* LOW CONFIDENCE. Copy is one line of ad. 80s, vintage, women's. */
+    'GRACE':            ['cate'],
+    /* lens 71 wide x 39 high — wide and shallow is a wrap, and it is Y2K. */
+    'AMBER':            ['wrap', 'ovsz'],
+    /* "full-coverage visor silhouette", lens 68 x 45. The title's misspelt
+       "Polarsied" is why no title rule catches this one. */
+    'MONGUL':           ['wrap', 'ovsz'],
+    /* LOW CONFIDENCE. Futuristic / techno / rave, no geometry given. */
+    'KATANA':           ['wrap']
+  };
+
   var TITLE_RULES = [
     [/rimless/i, 'riml'], [/cat[\s-]?eye/i, 'cate'], [/wrap/i, 'wrap'],
     [/aviator|pilot/i, 'avia'], [/hexagon|hex\b|octagon|geometric/i, 'geo'],
@@ -247,6 +298,19 @@
     for (i = 0; i < c.length; i++) traits[c[i]] = true;
     for (i = 0; i < TITLE_RULES.length; i++) {
       if (TITLE_RULES[i][0].test(p.t)) traits[TITLE_RULES[i][1]] = true;
+    }
+    /* Only when neither the collections nor the title said what shape it is. */
+    var shaped = false;
+    for (i = 0; i < FITTABLE.length; i++) if (traits[FITTABLE[i]]) shaped = true;
+    if (!shaped) {
+      var judged = JUDGED[parseTitle(p.t).alias.toUpperCase()];
+      if (judged) {
+        for (i = 0; i < judged.length; i++) traits[judged[i]] = true;
+        /* Flagged, so the fit it earns from an inferred shape can be discounted
+           against a frame whose shape the shop actually stated. Nothing scores
+           this trait directly. */
+        traits.judged = true;
+      }
     }
     tintTraits(p, traits);
     return traits;
@@ -345,10 +409,14 @@
        about to be unavailable, and recommending it wastes the fitting. */
     if (line.iv > 0) {
       s += (Math.min(Math.log(line.iv) / Math.LN10, 3) - 1) * 2;
-      /* Below a handful of units the log curve is too gentle to matter, and a
-         line with three pairs left was leading whole shelves on the strength of
-         an exact tint match. It will be gone before the customer comes back. */
-      if (line.iv < 5) s -= 3;
+      /* Under a dozen units the log curve is far too gentle to matter — a line
+         with nine pairs left scored the same as one with fifty — so scarcity
+         gets its own ramp, steepening as the line runs out. Deliberately
+         one-sided: the credit for deep stock stays capped at +4 so it can never
+         lift a frame onto a face it does not suit, while the penalty for a line
+         about to disappear is allowed to bite. Recommending the last three
+         pairs of something wastes the fitting. */
+      if (line.iv < 12) s -= (12 - line.iv) * 0.35;
     } else s -= 2;
 
     return s;
@@ -405,6 +473,11 @@
       if (opts.hideOOS && !p.a) continue;
       var traits = read(p);
       if (required && !traits[required]) continue;
+      /* A frame that is in none of the three face-size collections has no
+         stated width, and the shop's instruction is not to recommend it. The
+         soft penalties below still decide between a large frame and a small
+         one; this only excludes the frames that claim no size at all. */
+      if (!traits.small && !traits.medium && !traits.large) continue;
       var onShelf = shelf !== null && traits[shelf] === true;
       var line = lines[parseTitle(p.t).alias.toUpperCase()] || { iv: p.iv || 0, rc: p.rc || 0, rt: p.rt || 0 };
 
@@ -426,6 +499,12 @@
         if (v > best) best = v;
       }
       fitScore = best + (fitScore - best) * 0.5 + penalty;
+
+      /* A shape read off a product description is a good guess, not a fact.
+         Discounting it keeps these frames reachable — which is the whole point
+         of the table — while letting any frame whose shape the shop stated
+         outrank them at equal everything else. */
+      if (traits.judged) fitScore *= 0.8;
 
       /* A frame must positively suit the face to be recommended at all.
 
