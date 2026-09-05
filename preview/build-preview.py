@@ -23,7 +23,7 @@ products = (ROOT / "preview" / "quiz-products.json").read_text()
 # use_theme_cards: a file:// preview has no storefront to fetch cards from, so
 # it exercises the built-in fallback card instead.
 SETTINGS = {
-    "result_count": "4",
+    "result_count": "10",
     "hide_sold_out": "true",
     "remember_result": "true",
     "use_theme_cards": "false",

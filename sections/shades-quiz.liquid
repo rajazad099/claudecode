@@ -50,19 +50,23 @@
   assign c_wrap  = s.col_wrap  | default: collections['wraparound-sunglasses']
   assign c_ovsz  = s.col_ovsz  | default: collections['oversized-sunglasses']
   assign c_geo   = s.col_geo   | default: collections['geometric']
-  assign c_vint  = s.col_vint  | default: collections['vintage']
-  assign c_tech  = s.col_tech  | default: collections['techno']
-  assign c_luxe  = s.col_luxe  | default: collections['luxe-collection']
-  assign c_code  = s.col_code  | default: collections['code']
-  assign c_ice   = s.col_ice   | default: collections['ice-ice-baby']
-  assign c_rx    = s.col_rx    | default: collections['prescription-friendly-sunglasses']
-  assign c_sport = s.col_sport | default: collections['sports-sunglasses']
-  assign c_deal  = s.col_deal  | default: collections['30']
-  assign c_sale  = s.col_sale  | default: collections['sale']
-  assign c_best  = s.col_best  | default: collections['bestsellers']
-  assign c_staff = s.col_staff | default: collections['staff-picks']
 
-  assign cap = s.per_collection | default: 40
+  assign c_men   = s.col_men   | default: collections['men']
+  assign c_women = s.col_women | default: collections['women']
+
+  assign c_small = s.col_small | default: collections['small-face-types']
+  assign c_med   = s.col_med   | default: collections['medium-face-type']
+  assign c_large = s.col_large | default: collections['large-face-types']
+
+  assign c_luxe   = s.col_luxe   | default: collections['luxe-collection']
+  assign c_summer = s.col_summer | default: collections['summer-is-coming']
+  assign c_tech   = s.col_tech   | default: collections['techno']
+  assign c_vint   = s.col_vint   | default: collections['vintage']
+
+  assign c_sport = s.col_sport | default: collections['sports-sunglasses']
+  assign c_sale  = s.col_sale  | default: collections['sale']
+
+  assign cap = s.per_collection | default: 50
 -%}
 
 {%- comment -%}
@@ -72,25 +76,25 @@
 {%- endcomment -%}
 
 {%- capture lookup -%},
-{%- if c_rect  != blank %}{{ c_rect.handle  }}>rect,{% endif -%}
-{%- if c_oval  != blank %}{{ c_oval.handle  }}>oval,{% endif -%}
+{%- if c_rect != blank %}{{ c_rect.handle }}>rect,{% endif -%}
+{%- if c_oval != blank %}{{ c_oval.handle }}>oval,{% endif -%}
 {%- if c_round != blank %}{{ c_round.handle }}>round,{% endif -%}
-{%- if c_cate  != blank %}{{ c_cate.handle  }}>cate,{% endif -%}
-{%- if c_riml  != blank %}{{ c_riml.handle  }}>riml,{% endif -%}
-{%- if c_wrap  != blank %}{{ c_wrap.handle  }}>wrap,{% endif -%}
-{%- if c_ovsz  != blank %}{{ c_ovsz.handle  }}>ovsz,{% endif -%}
-{%- if c_geo   != blank %}{{ c_geo.handle   }}>geo,{% endif -%}
-{%- if c_vint  != blank %}{{ c_vint.handle  }}>vint,{% endif -%}
-{%- if c_tech  != blank %}{{ c_tech.handle  }}>tech,{% endif -%}
-{%- if c_luxe  != blank %}{{ c_luxe.handle  }}>luxe,{% endif -%}
-{%- if c_code  != blank %}{{ c_code.handle  }}>code,{% endif -%}
-{%- if c_ice   != blank %}{{ c_ice.handle   }}>ice,{% endif -%}
-{%- if c_rx    != blank %}{{ c_rx.handle    }}>rx,{% endif -%}
+{%- if c_cate != blank %}{{ c_cate.handle }}>cate,{% endif -%}
+{%- if c_riml != blank %}{{ c_riml.handle }}>riml,{% endif -%}
+{%- if c_wrap != blank %}{{ c_wrap.handle }}>wrap,{% endif -%}
+{%- if c_ovsz != blank %}{{ c_ovsz.handle }}>ovsz,{% endif -%}
+{%- if c_geo != blank %}{{ c_geo.handle }}>geo,{% endif -%}
+{%- if c_men != blank %}{{ c_men.handle }}>men,{% endif -%}
+{%- if c_women != blank %}{{ c_women.handle }}>women,{% endif -%}
+{%- if c_small != blank %}{{ c_small.handle }}>small,{% endif -%}
+{%- if c_med != blank %}{{ c_med.handle }}>medium,{% endif -%}
+{%- if c_large != blank %}{{ c_large.handle }}>large,{% endif -%}
+{%- if c_luxe != blank %}{{ c_luxe.handle }}>luxe,{% endif -%}
+{%- if c_summer != blank %}{{ c_summer.handle }}>summer,{% endif -%}
+{%- if c_tech != blank %}{{ c_tech.handle }}>tech,{% endif -%}
+{%- if c_vint != blank %}{{ c_vint.handle }}>vint,{% endif -%}
 {%- if c_sport != blank %}{{ c_sport.handle }}>sport,{% endif -%}
-{%- if c_deal  != blank %}{{ c_deal.handle  }}>deal,{% endif -%}
-{%- if c_sale  != blank %}{{ c_sale.handle  }}>sale,{% endif -%}
-{%- if c_best  != blank %}{{ c_best.handle  }}>best,{% endif -%}
-{%- if c_staff != blank %}{{ c_staff.handle }}>staff,{% endif -%}
+{%- if c_sale != blank %}{{ c_sale.handle }}>sale,{% endif -%}
 {%- endcapture -%}
 
 {%- capture products_json -%}
@@ -117,27 +121,27 @@
       when 8
         assign src = c_geo
       when 9
-        assign src = c_vint
+        assign src = c_men
       when 10
-        assign src = c_tech
+        assign src = c_women
       when 11
-        assign src = c_luxe
+        assign src = c_small
       when 12
-        assign src = c_code
+        assign src = c_med
       when 13
-        assign src = c_ice
+        assign src = c_large
       when 14
-        assign src = c_rx
+        assign src = c_luxe
       when 15
-        assign src = c_sport
+        assign src = c_summer
       when 16
-        assign src = c_deal
+        assign src = c_tech
       when 17
-        assign src = c_sale
+        assign src = c_vint
       when 18
-        assign src = c_best
+        assign src = c_sport
       when 19
-        assign src = c_staff
+        assign src = c_sale
     endcase
   -%}
   {%- if src == blank -%}{%- continue -%}{%- endif -%}
@@ -197,6 +201,16 @@
         {%- if product.metafields.reviews.rating_count != blank -%}
           "rc":{{ product.metafields.reviews.rating_count }},
         {%- endif -%}
+        {%- comment -%}
+          What the quiz has learned about this frame: a score written back from
+          Shopify's own analytics, counting the clicks and the orders the quiz
+          itself produced. Absent until the first refresh and absent for anything
+          new, which is the right starting point — an unproven frame should be
+          un-boosted, never penalised.
+        {%- endcomment -%}
+        {%- if product.metafields.custom.quiz_rank != blank -%}
+          "qr":{{ product.metafields.custom.quiz_rank | times: 1.0 }},
+        {%- endif -%}
         {%- if cl != blank %}"cl":{{ cl | json }},{% endif -%}
         {%- if product.compare_at_price > product.price %}"cp":{{ product.compare_at_price | money | strip_html | json }},{% endif -%}
         {%- if product.featured_image -%}
@@ -225,10 +239,12 @@
   class="psq"
   data-psq
   data-uid="{{ uid }}"
-  data-results="{{ s.result_count | default: 4 }}"
+  data-results="{{ s.result_count | default: 10 }}"
   data-hide-oos="{{ s.hide_sold_out }}"
   data-persist="{{ s.remember_result }}"
   data-theme-cards="{{ s.use_theme_cards }}"
+  data-use-learned="{{ s.use_learned_rank }}"
+  data-utm-campaign="{{ s.utm_campaign | default: 'fitting-room' }}"
   data-collect-phone="{{ s.collect_phone }}"
   data-phone-required="{{ s.phone_required }}"
   data-dial-code="{{ s.dial_code | default: '+91' }}"
@@ -388,64 +404,331 @@
   "tag": "section",
   "class": "shades-quiz-section",
   "settings": [
-    { "type": "header", "content": "Copy" },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The fitting room" },
-    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Find the frame that fits your face." },
-    { "type": "textarea", "id": "intro", "label": "Intro", "default": "Six questions. About a minute. We read your face shape, how frames sit on you and what you actually wear — then pull the frames that match." },
-    { "type": "text", "id": "start_label", "label": "Start button", "default": "Begin the fitting" },
-    { "type": "text", "id": "result_eyebrow", "label": "Result eyebrow", "default": "Your fitting" },
-    { "type": "text", "id": "retake_label", "label": "Retake button", "default": "Retake the fitting" },
-    { "type": "text", "id": "share_label", "label": "Share button", "default": "Copy my result" },
-    { "type": "text", "id": "resume_label", "label": "Resume link", "default": "Show my last result" },
-    { "type": "text", "id": "stage_caption", "label": "Caption under the drawing", "default": "Your fit, so far" },
-
-    { "type": "header", "content": "WhatsApp capture" },
-    { "type": "checkbox", "id": "collect_phone", "label": "Ask for a WhatsApp number before the result", "default": true },
-    { "type": "checkbox", "id": "phone_required", "label": "Require it", "default": false, "info": "Off by default. Forcing it before anyone sees a result costs completions, and the number is worth more from someone who wanted to give it." },
-    { "type": "text", "id": "dial_code", "label": "Country code", "default": "+91" },
-    { "type": "text", "id": "lead_eyebrow", "label": "Eyebrow", "default": "Your fitting is ready" },
-    { "type": "text", "id": "lead_heading", "label": "Heading", "default": "Where should we send it?" },
-    { "type": "textarea", "id": "lead_body", "label": "Body", "default": "Drop your WhatsApp number and we’ll send your match, so you still have it when you’re ready to buy." },
-    { "type": "text", "id": "lead_placeholder", "label": "Placeholder", "default": "98765 43210" },
-    { "type": "textarea", "id": "lead_consent", "label": "Consent line", "default": "Yes, send my match and occasional offers to this number on WhatsApp.", "info": "Shown beside a checkbox that must be ticked before the number is sent." },
-    { "type": "text", "id": "lead_cta", "label": "Submit button", "default": "Show my match" },
-    { "type": "text", "id": "lead_skip", "label": "Skip link", "default": "Skip — just show me" },
-    { "type": "text", "id": "lead_endpoint", "label": "Where to send leads", "info": "Blank posts to this store's own /contact form, which emails you the number and the fitting. Paste a webhook URL (Bitespeed, Zapier, Klaviyo) to send it there instead." },
-
-    { "type": "header", "content": "Results" },
-    { "type": "checkbox", "id": "use_theme_cards", "label": "Use the theme's own product cards", "default": true, "info": "Fetches the same card markup your collection pages use, so results match the rest of the store. Falls back to a simple built-in card if unavailable." },
-    { "type": "text", "id": "card_section", "label": "Card section name", "default": "shades-quiz-card", "info": "The companion section file, without the .liquid extension." },
-    { "type": "range", "id": "result_count", "min": 2, "max": 8, "step": 1, "label": "Frames to recommend", "default": 4 },
-    { "type": "checkbox", "id": "hide_sold_out", "label": "Hide sold-out frames", "default": true },
-    { "type": "checkbox", "id": "remember_result", "label": "Remember the visitor's result", "default": true, "info": "Stored in the browser only. Nothing is sent anywhere." },
-    { "type": "range", "id": "per_collection", "min": 10, "max": 50, "step": 5, "label": "Frames read per collection", "default": 40, "info": "Higher = better matches, heavier page. 40 covers this catalogue." },
-    { "type": "collection", "id": "fallback_collection", "label": "Fallback collection", "info": "Linked when a fitting returns too few matches, and from the no-JavaScript message." },
-
-    { "type": "header", "content": "Frame shape collections", "info": "These drive the fit logic. Leave blank to use this store's existing handles." },
-    { "type": "collection", "id": "col_rect", "label": "Rectangular" },
-    { "type": "collection", "id": "col_oval", "label": "Oval" },
-    { "type": "collection", "id": "col_round", "label": "Round" },
-    { "type": "collection", "id": "col_cate", "label": "Cat-eye" },
-    { "type": "collection", "id": "col_riml", "label": "Rimless" },
-    { "type": "collection", "id": "col_wrap", "label": "Wraparound" },
-    { "type": "collection", "id": "col_ovsz", "label": "Oversized" },
-    { "type": "collection", "id": "col_geo", "label": "Geometric" },
-
-    { "type": "header", "content": "Aesthetic collections" },
-    { "type": "collection", "id": "col_vint", "label": "Vintage" },
-    { "type": "collection", "id": "col_tech", "label": "Techno" },
-    { "type": "collection", "id": "col_luxe", "label": "Daily Luxe" },
-    { "type": "collection", "id": "col_code", "label": "Code" },
-    { "type": "collection", "id": "col_ice", "label": "Ice Ice Baby" },
-
-    { "type": "header", "content": "Use-case + merchandising collections" },
-    { "type": "collection", "id": "col_rx", "label": "Prescription friendly" },
-    { "type": "collection", "id": "col_sport", "label": "Polarised sports" },
-    { "type": "collection", "id": "col_deal", "label": "Multi-buy offer" },
-    { "type": "collection", "id": "col_sale", "label": "Markdowns" },
-    { "type": "collection", "id": "col_best", "label": "Bestsellers" },
-    { "type": "collection", "id": "col_staff", "label": "Staff picks" }
+    {
+      "type": "header",
+      "content": "Copy"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The fitting room"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Find the frame that fits your face."
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Intro",
+      "default": "Six questions. About a minute. We read your face shape, how frames sit on you and what you actually wear — then pull the frames that match."
+    },
+    {
+      "type": "text",
+      "id": "start_label",
+      "label": "Start button",
+      "default": "Begin the fitting"
+    },
+    {
+      "type": "text",
+      "id": "result_eyebrow",
+      "label": "Result eyebrow",
+      "default": "Your fitting"
+    },
+    {
+      "type": "text",
+      "id": "retake_label",
+      "label": "Retake button",
+      "default": "Retake the fitting"
+    },
+    {
+      "type": "text",
+      "id": "share_label",
+      "label": "Share button",
+      "default": "Copy my result"
+    },
+    {
+      "type": "text",
+      "id": "resume_label",
+      "label": "Resume link",
+      "default": "Show my last result"
+    },
+    {
+      "type": "text",
+      "id": "stage_caption",
+      "label": "Caption under the drawing",
+      "default": "Your fit, so far"
+    },
+    {
+      "type": "header",
+      "content": "WhatsApp capture"
+    },
+    {
+      "type": "checkbox",
+      "id": "collect_phone",
+      "label": "Ask for a WhatsApp number before the result",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "phone_required",
+      "label": "Require it",
+      "default": false,
+      "info": "Off by default. Forcing it before anyone sees a result costs completions, and the number is worth more from someone who wanted to give it."
+    },
+    {
+      "type": "text",
+      "id": "dial_code",
+      "label": "Country code",
+      "default": "+91"
+    },
+    {
+      "type": "text",
+      "id": "lead_eyebrow",
+      "label": "Eyebrow",
+      "default": "Your fitting is ready"
+    },
+    {
+      "type": "text",
+      "id": "lead_heading",
+      "label": "Heading",
+      "default": "Where should we send it?"
+    },
+    {
+      "type": "textarea",
+      "id": "lead_body",
+      "label": "Body",
+      "default": "Drop your WhatsApp number and we’ll send your match, so you still have it when you’re ready to buy."
+    },
+    {
+      "type": "text",
+      "id": "lead_placeholder",
+      "label": "Placeholder",
+      "default": "98765 43210"
+    },
+    {
+      "type": "textarea",
+      "id": "lead_consent",
+      "label": "Consent line",
+      "default": "Yes, send my match and occasional offers to this number on WhatsApp.",
+      "info": "Shown beside a checkbox that must be ticked before the number is sent."
+    },
+    {
+      "type": "text",
+      "id": "lead_cta",
+      "label": "Submit button",
+      "default": "Show my match"
+    },
+    {
+      "type": "text",
+      "id": "lead_skip",
+      "label": "Skip link",
+      "default": "Skip — just show me"
+    },
+    {
+      "type": "text",
+      "id": "lead_endpoint",
+      "label": "Where to send leads",
+      "info": "Blank posts to this store's own /contact form, which emails you the number and the fitting. Paste a webhook URL (Bitespeed, Zapier, Klaviyo) to send it there instead."
+    },
+    {
+      "type": "header",
+      "content": "Results"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_theme_cards",
+      "label": "Use the theme's own product cards",
+      "default": true,
+      "info": "Fetches the same card markup your collection pages use, so results match the rest of the store. Falls back to a simple built-in card if unavailable."
+    },
+    {
+      "type": "text",
+      "id": "card_section",
+      "label": "Card section name",
+      "default": "shades-quiz-card",
+      "info": "The companion section file, without the .liquid extension."
+    },
+    {
+      "type": "range",
+      "id": "result_count",
+      "min": 4,
+      "max": 16,
+      "step": 1,
+      "label": "Frames to recommend",
+      "default": 10
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_sold_out",
+      "label": "Hide sold-out frames",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "remember_result",
+      "label": "Remember the visitor's result",
+      "default": true,
+      "info": "Stored in the browser only. Nothing is sent anywhere."
+    },
+    {
+      "type": "range",
+      "id": "per_collection",
+      "min": 10,
+      "max": 50,
+      "step": 5,
+      "label": "Frames read per collection",
+      "default": 50,
+      "info": "Liquid reads at most 50 products per collection in one pass, so 50 is the ceiling and the right value."
+    },
+    {
+      "type": "collection",
+      "id": "fallback_collection",
+      "label": "Fallback collection",
+      "info": "Linked when a fitting returns too few matches, and from the no-JavaScript message."
+    },
+    {
+      "type": "header",
+      "content": "Frame shape",
+      "info": "The eight shape collections. Leave blank to use the handles this store already uses."
+    },
+    {
+      "type": "collection",
+      "id": "col_rect",
+      "label": "Rectangular"
+    },
+    {
+      "type": "collection",
+      "id": "col_oval",
+      "label": "Oval"
+    },
+    {
+      "type": "collection",
+      "id": "col_round",
+      "label": "Round"
+    },
+    {
+      "type": "collection",
+      "id": "col_cate",
+      "label": "Cat-eye"
+    },
+    {
+      "type": "collection",
+      "id": "col_riml",
+      "label": "Rimless"
+    },
+    {
+      "type": "collection",
+      "id": "col_wrap",
+      "label": "Wraparound"
+    },
+    {
+      "type": "collection",
+      "id": "col_ovsz",
+      "label": "Oversized"
+    },
+    {
+      "type": "collection",
+      "id": "col_geo",
+      "label": "Geometric"
+    },
+    {
+      "type": "header",
+      "content": "Who it's for",
+      "info": "Used as a strong preference, never a hard filter — a frame in neither collection is still reachable."
+    },
+    {
+      "type": "collection",
+      "id": "col_men",
+      "label": "Men"
+    },
+    {
+      "type": "collection",
+      "id": "col_women",
+      "label": "Women"
+    },
+    {
+      "type": "header",
+      "content": "Face size"
+    },
+    {
+      "type": "collection",
+      "id": "col_small",
+      "label": "Small face types"
+    },
+    {
+      "type": "collection",
+      "id": "col_med",
+      "label": "Medium face type"
+    },
+    {
+      "type": "collection",
+      "id": "col_large",
+      "label": "Large face types"
+    },
+    {
+      "type": "header",
+      "content": "Aesthetic"
+    },
+    {
+      "type": "collection",
+      "id": "col_luxe",
+      "label": "Daily Luxe"
+    },
+    {
+      "type": "collection",
+      "id": "col_summer",
+      "label": "Summer is coming"
+    },
+    {
+      "type": "collection",
+      "id": "col_tech",
+      "label": "Techno"
+    },
+    {
+      "type": "collection",
+      "id": "col_vint",
+      "label": "Vintage"
+    },
+    {
+      "type": "header",
+      "content": "Use case and merchandising"
+    },
+    {
+      "type": "collection",
+      "id": "col_sport",
+      "label": "Polarised sports"
+    },
+    {
+      "type": "collection",
+      "id": "col_sale",
+      "label": "Markdowns"
+    },
+    {
+      "type": "header",
+      "content": "Learning",
+      "info": "Result links carry UTM tags, so Shopify attributes the clicks and orders the quiz produces. A periodic refresh writes that back to each product's custom.quiz_rank metafield, which the ranking reads."
+    },
+    {
+      "type": "checkbox",
+      "id": "use_learned_rank",
+      "label": "Use what the quiz has learned",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "utm_campaign",
+      "label": "UTM campaign",
+      "default": "fitting-room"
+    }
   ],
-  "presets": [ { "name": "Shades fitting quiz" } ]
+  "presets": [
+    {
+      "name": "Shades fitting quiz"
+    }
+  ]
 }
 {% endschema %}

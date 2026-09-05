@@ -29,17 +29,22 @@
      mode a fitting quiz cannot have. */
   var FIT_WEIGHT = 3;
 
-  /* Below this many positively-fitting frames, neutral-fit frames are allowed
-     back in to fill the shelf rather than showing the customer a short one. */
-  var NEUTRAL_FALLBACK_AT = 8;
+  /* The vibe question's shelves, in collection-trait form. */
+  var SHELVES = ['luxe', 'summer', 'tech', 'vint', 'sport'];
+
+  /* If the shelf would come up short, neutral-fit frames are allowed back in
+     to fill it rather than showing the customer a half-empty result. The
+     threshold is the shelf size itself: asking for ten and topping up at eight
+     left two gaps on every fitting that needed the top-up at all. */
+  var NEUTRAL_FALLBACK_AT = 10;
 
   var FIT = {
-    oval:    { rect: 3, round: 3, cate: 3, oval: 3, riml: 2, wrap: 2, avia: 3, ovsz: 1, geo: 2 },
-    round:   { rect: 5, cate: 4, wrap: 3, geo: 3, avia: 2, riml: 1, ovsz: 1, oval: -2, round: -4 },
+    oval:    { rect: 3, round: 3, cate: 3, oval: 3, riml: 2, wrap: 2, avia: 3, ovsz: 1, geo: 3 },
+    round:   { rect: 5, cate: 4, geo: 4, wrap: 3, avia: 2, riml: 1, ovsz: 1, oval: -2, round: -4 },
     square:  { round: 5, oval: 4, riml: 3, cate: 3, avia: 3, ovsz: 1, geo: -1, rect: -3, wrap: -2 },
-    heart:   { riml: 5, round: 3, oval: 3, avia: 3, cate: 1, rect: 1, ovsz: -3, wrap: -1 },
-    long:    { ovsz: 5, wrap: 4, round: 3, geo: 2, rect: 2, cate: 1, slim: -3, riml: -2 },
-    diamond: { cate: 5, oval: 4, riml: 3, round: 3, ovsz: 1, rect: -1, wrap: -1 }
+    heart:   { riml: 5, round: 3, oval: 3, avia: 3, cate: 1, rect: 1, geo: 1, ovsz: -3, wrap: -1 },
+    long:    { ovsz: 5, wrap: 4, round: 3, geo: 3, rect: 2, cate: 1, slim: -3, riml: -2 },
+    diamond: { cate: 5, oval: 4, riml: 3, round: 3, geo: 2, ovsz: 1, rect: -1, wrap: -1 }
   };
 
   /* Why each pairing works — shown on the result so the advice is legible,
@@ -84,17 +89,16 @@
 
   var QUESTIONS = [
     {
-      /* Asked first because it frames everything after it. The weighting is a
-         light steer toward how each range is styled and worn, not a filter:
-         almost the whole catalogue is unisex, and nothing is hidden from
-         anyone. "Everything" is a real answer, not a fallback. */
+      /* Straight to the shop's own men/women collections. A strong preference
+         rather than a filter: plenty of frames sit in both, and some sit in
+         neither, and none of those should become unreachable. */
       id: 'gender',
       q: 'Who are we fitting?',
-      hint: 'This nudges the styling. Every frame stays available whichever you pick.',
+      hint: 'Everything stays available whichever you pick — this decides what leads.',
       options: [
-        { v: 'women', l: 'Women’s styling',  s: 'Leans cat-eye, oversized, softer curves', score: { cate: 5, ovsz: 3, oval: 2, riml: 1 } },
-        { v: 'men',   l: 'Men’s styling',    s: 'Leans aviator, rectangular, wrapped',     score: { avia: 5, rect: 3, wrap: 3, geo: 2 } },
-        { v: 'any',   l: 'Show me everything', s: 'No steer — fit and taste only',         score: { uni: 2 } }
+        { v: 'women', l: 'Women’s',            s: 'The women’s range leads',        score: { women: 9, men: -3 } },
+        { v: 'men',   l: 'Men’s',              s: 'The men’s range leads',          score: { men: 9, women: -3 } },
+        { v: 'any',   l: 'Show me everything', s: 'No steer — fit and taste only',  score: {} }
       ],
       apply: function (a, v) { a.gender = v; }
     },
@@ -113,16 +117,14 @@
       apply: function (a, v) { a.face = v; }
     },
     {
-      /* Only asked if they skipped the shape question. Infers it from one
-         easier judgement — most people can describe a jaw but not a face. */
       id: 'jaw',
       q: 'Your jawline, honestly?',
       hint: 'This tells us the same thing, from an easier angle.',
       when: function (a) { return !a.face && a.skippedFace === true; },
       options: [
-        { v: 'soft',    l: 'Soft and curved',   s: 'No hard corners anywhere' },
-        { v: 'sharp',   l: 'Sharp and angular', s: 'A jaw you could set a ruler against' },
-        { v: 'pointed', l: 'Narrow and pointed', s: 'Comes to a point at the chin' },
+        { v: 'soft',    l: 'Soft and curved',     s: 'No hard corners anywhere' },
+        { v: 'sharp',   l: 'Sharp and angular',   s: 'A jaw you could set a ruler against' },
+        { v: 'pointed', l: 'Narrow and pointed',  s: 'Comes to a point at the chin' },
         { v: 'even',    l: 'Even, in proportion', s: 'Nothing especially wide or narrow' }
       ],
       apply: function (a, v) {
@@ -131,54 +133,49 @@
       }
     },
     {
-      id: 'fit',
+      /* Reads straight onto the small / medium / large face-type collections.
+         Nobody knows their frame width in millimetres, but everyone knows how
+         their last pair sat. */
+      id: 'size',
       q: 'How do sunglasses usually sit on you?',
       hint: 'This is the measurement that actually matters, and nobody owns a pupillometer.',
       options: [
-        { v: 'slide',  l: 'They slide down my nose', s: 'The frame is too wide for your face',  score: { slim: 4, riml: 2, ovsz: -4, wrap: -2 } },
-        { v: 'right',  l: 'They sit about right',    s: 'Standard width suits you',              score: {} },
-        { v: 'press',  l: 'They press on my temples', s: 'You need width you’re not getting', score: { ovsz: 5, wrap: 3, slim: -4 } },
-        { v: 'small',  l: 'They look small on me',   s: 'You have the face for a statement frame', score: { ovsz: 4, geo: 1, slim: -3 } }
+        { v: 'small',  l: 'They slide down my nose',  s: 'Most frames are too wide for you', score: { small: 10, medium: 2, large: -6 } },
+        { v: 'medium', l: 'They sit about right',     s: 'Standard width suits you',         score: { medium: 10, small: 2, large: 2 } },
+        { v: 'large',  l: 'They press on my temples', s: 'You need width you’re not getting', score: { large: 10, medium: 2, small: -6 } },
+        { v: 'statement', l: 'They look small on me', s: 'You have the face for a big frame', score: { large: 9, ovsz: 5, medium: 1, small: -5 } }
       ],
-      apply: function (a, v) { a.fit = v; }
+      apply: function (a, v) { a.size = v; }
     },
     {
+      /* One question per real collection, described the way the shop describes
+         them. Sport is a use case rather than a taste, so it narrows outright. */
       id: 'vibe',
-      q: 'Which of these is closest to how you dress?',
-      hint: 'We merchandise by mood as well as by shape.',
+      q: 'What are you buying them for?',
+      hint: 'Pick the closest — it decides which shelf we pull from.',
       options: [
-        { v: 'vint',  l: 'Archive / vintage',   s: '90s frames, retro rounds, tortoise',   score: { vint: 8, round: 1 } },
-        { v: 'tech',  l: 'Techno / futuristic', s: 'Wraps, visors, Y2K metal',              score: { tech: 8, wrap: 2 } },
-        { v: 'luxe',  l: 'Quiet luxury',        s: 'Clean lines, gold, nothing shouting',   score: { luxe: 8, riml: 2, oval: 1 } },
-        { v: 'code',  l: 'Street / everyday',   s: 'Black, matte, goes with everything',    score: { code: 7, best: 2 } },
-        { v: 'ice',   l: 'Ice / clear',         s: 'Transparent, chrome, cold tones',       score: { ice: 8, riml: 2 } },
-        { v: 'any',   l: 'Depends on the day',  s: 'Show me what fits first',               score: { best: 2, staff: 1 } }
+        { v: 'luxe',   l: 'Everyday quality',   s: 'Daily Luxe — the essentials you wear constantly', score: { luxe: 10 } },
+        { v: 'summer', l: 'Beach and vacation', s: 'Summer Is Coming — sun, water, long days out',    score: { summer: 10 } },
+        { v: 'tech',   l: 'Party and rave',     s: 'Techno — futuristic, loud, after dark',           score: { tech: 10 } },
+        { v: 'vint',   l: 'Retro and archive',  s: 'Vintage — 90s frames, tortoise, classic metal',   score: { vint: 10 } },
+        /* Sport used to narrow outright. There are ten polarised frames in
+           stock and four of the six face shapes rule some of them out, so the
+           filter left 216 of the 1,296 fittings with a shelf of seven or fewer.
+           It leads hard instead: a sports frame outscores anything else on the
+           same face, and the shelf still fills. */
+        { v: 'sport',  l: 'Sport and active',   s: 'Polarised, wrapped, built to stay on',            score: { sport: 16, wrap: 3 } },
+        { v: 'any',    l: 'Not sure yet',       s: 'Show me the best of everything',                  score: {} }
       ],
       apply: function (a, v) { a.vibe = v; }
-    },
-    {
-      id: 'wear',
-      q: 'Where will these actually live?',
-      hint: 'Be honest. The answer changes the lens as much as the frame.',
-      options: [
-        { v: 'city',   l: 'Everyday, in the city', s: 'Commutes, coffee, going out',   score: { best: 2, code: 2, staff: 1 } },
-        /* Answering this is a functional constraint, not a preference: a frame
-           that is not built for sport is the wrong answer however well it fits,
-           so this narrows to the polarised sports range outright. */
-        { v: 'sport',  l: 'Running, riding, gym',  s: 'They have to stay on',          score: { sport: 7, wrap: 4, ovsz: -2, riml: -2 }, require: 'sport' },
-        { v: 'beach',  l: 'Beach and travel',      s: 'Sun, water, long days out',     score: { ovsz: 3, sport: 2, vint: 1 } },
-        { v: 'night',  l: 'Out, mostly for looks', s: 'The frame is the outfit',       score: { tech: 3, ovsz: 3, luxe: 2 } }
-      ],
-      apply: function (a, v) { a.wear = v; }
     },
     {
       id: 'tint',
       q: 'Which lens do you reach for?',
       hint: 'Tint changes the whole character of a frame, and it is the thing people regret getting wrong.',
       options: [
-        { v: 'dark',   l: 'Dark — black, brown, smoke', s: 'Hides the eyes, holds up in hard sun',   score: { dark: 7, darkish: 2 } },
-        { v: 'light',  l: 'Light — blue, beige, clear', s: 'Softer, shows the eyes, reads modern',   score: { light: 7, lightish: 2 } },
-        { v: 'either', l: 'Either — surprise me',       s: 'Fit matters more to you than colour',    score: {} }
+        { v: 'dark',   l: 'Dark — black, brown, smoke', s: 'Hides the eyes, holds up in hard sun', score: { dark: 7, darkish: 2 } },
+        { v: 'light',  l: 'Light — blue, beige, clear', s: 'Softer, shows the eyes, reads modern', score: { light: 7, lightish: 2 } },
+        { v: 'either', l: 'Either — surprise me',       s: 'Fit matters more to you than colour',  score: {} }
       ],
       apply: function (a, v) { a.tint = v; }
     }
@@ -186,13 +183,14 @@
 
   /* -------------------------------------------------------------- archetypes */
 
+  /* One per shelf on the vibe question, so the name the customer is given is
+     the name of the range they just picked. */
   var ARCHETYPES = [
-    { k: 'sport', n: 'THE SPRINTER',  d: 'Built to stay on. Wrapped, polarised, unbothered.' },
-    { k: 'tech',  n: 'THE OPERATOR',  d: 'Y2K metal and future-tense geometry. You dress like the year after next.' },
-    { k: 'vint',  n: 'THE ARCHIVIST', d: 'You buy the frame that already had a life. Tortoise, acetate, ninety-something.' },
-    { k: 'luxe',  n: 'THE ICON',      d: 'Nothing shouting. The most expensive-looking thing you own is a silhouette.' },
-    { k: 'ice',   n: 'THE GLACIER',   d: 'Clear, chrome, cold. You like a frame you can see through.' },
-    { k: 'code',  n: 'THE REGULAR',   d: 'One black pair, worn to death, replaced with the same. Correct.' }
+    { k: 'sport',  n: 'THE SPRINTER',  d: 'Built to stay on. Wrapped, polarised, unbothered.' },
+    { k: 'tech',   n: 'THE OPERATOR',  d: 'Y2K metal and future-tense geometry. You dress like the year after next.' },
+    { k: 'vint',   n: 'THE ARCHIVIST', d: 'You buy the frame that already had a life. Tortoise, acetate, ninety-something.' },
+    { k: 'luxe',   n: 'THE ICON',      d: 'Nothing shouting. The most expensive-looking thing you own is a silhouette.' },
+    { k: 'summer', n: 'THE ESCAPIST',  d: 'Salt, glare and a long way from the office. Built for the light out there.' }
   ];
   var DEFAULT_ARCHETYPE = { n: 'THE PURIST', d: 'Fit first, fashion second. We picked on shape alone.' };
 
@@ -274,12 +272,21 @@
     for (i = 0; i < products.length; i++) {
       var p = products[i];
       var key = parseTitle(p.t).alias.toUpperCase();
-      var g = pool[key] || (pool[key] = { iv: 0, rc: 0, weighted: 0, rt: 0 });
+      var g = pool[key] || (pool[key] = { iv: 0, rc: 0, weighted: 0, rt: 0, qr: null, qrn: 0 });
       g.iv += p.iv || 0;
       g.rc += p.rc || 0;
       g.weighted += (p.rt || 0) * (p.rc || 0);
+      if (p.qr != null && isFinite(Number(p.qr))) {
+        g.qr = (g.qr || 0) + Number(p.qr);
+        g.qrn++;
+      }
     }
-    for (k in pool) if (pool[k].rc) pool[k].rt = pool[k].weighted / pool[k].rc;
+    for (k in pool) {
+      if (pool[k].rc) pool[k].rt = pool[k].weighted / pool[k].rc;
+      /* A line's learned score is the mean of its colourways, not their sum —
+         a line split six ways should not out-earn one sold as a single product. */
+      if (pool[k].qrn) pool[k].qr = pool[k].qr / pool[k].qrn;
+    }
     return pool;
   }
 
@@ -309,6 +316,18 @@
 
      Capped at roughly 6 combined, it can reorder frames that already suit the
      face and can never overturn the fit itself. */
+  /* What the quiz has learned, written back into each product's
+     custom.quiz_rank metafield from Shopify's own attribution of the clicks and
+     orders this quiz produced. Normalised to roughly -2..+5 so a proven
+     performer rises without ever overturning the fit, and so a frame with no
+     history yet is simply un-boosted rather than buried. */
+  function learned(line, use) {
+    if (!use || line.qr == null) return 0;
+    var q = Number(line.qr);
+    if (!isFinite(q)) return 0;
+    return Math.max(-2, Math.min(5, q));
+  }
+
   function performance(line) {
     var s = 0;
 
@@ -324,8 +343,13 @@
        more than 800 to 900 — and centred at ten so it cuts both ways. A line
        down to its last unit is marked down, not merely left unrewarded: it is
        about to be unavailable, and recommending it wastes the fitting. */
-    if (line.iv > 0) s += (Math.min(Math.log(line.iv) / Math.LN10, 3) - 1) * 2;
-    else s -= 2;
+    if (line.iv > 0) {
+      s += (Math.min(Math.log(line.iv) / Math.LN10, 3) - 1) * 2;
+      /* Below a handful of units the log curve is too gentle to matter, and a
+         line with three pairs left was leading whole shelves on the strength of
+         an exact tint match. It will be gone before the customer comes back. */
+      if (line.iv < 5) s -= 3;
+    } else s -= 2;
 
     return s;
   }
@@ -363,6 +387,14 @@
       for (var k in sc) wanted[k] = (wanted[k] || 0) + sc[k];
     });
 
+    /* The shelf the customer asked for by name. It is the one trait allowed
+       through the fit gate below, because an explicit request outranks a soft
+       optical preference: someone who says "sport" and has a square face wants
+       polarised wraps, ranked worst-fit-last, not a shelf of round luxe frames
+       because every sports frame in stock is a wrap and a square face reads
+       wraps as a mild negative. */
+    var shelf = SHELVES.indexOf(answers.vibe) >= 0 ? answers.vibe : null;
+
     /* Pooled over every product, including sold-out colourways: a line's depth
        is the line's depth regardless of which colours are showing today. */
     var lines = linesOf(products);
@@ -373,6 +405,7 @@
       if (opts.hideOOS && !p.a) continue;
       var traits = read(p);
       if (required && !traits[required]) continue;
+      var onShelf = shelf !== null && traits[shelf] === true;
       var line = lines[parseTitle(p.t).alias.toUpperCase()] || { iv: p.iv || 0, rc: p.rc || 0, rt: p.rt || 0 };
 
       /* 1. fit — how the frame shape reads against this face.
@@ -402,7 +435,7 @@
          neutral frame still collected taste, performance and curation points
          and won faces it had no business on. Zero is not a recommendation, so
          zero is excluded too. */
-      if (fitScore < 0) continue;
+      if (fitScore < 0 && !onShelf) continue;
 
       var score = fitScore * FIT_WEIGHT;
       /* 2. taste and use — what they told us they want */
@@ -410,13 +443,16 @@
       /* 3. proven performers — a bounded tiebreaker between frames that
             already suit the face */
       score += performance(line);
-      /* 4. house curation, smaller still */
-      if (traits.best) score += 1;
-      if (traits.staff) score += 1;
+      score += learned(line, opts.useLearned);
+      /* 4. in stock and shippable today, which beats a marginally better fit
+            the customer cannot buy */
       if (p.a) score += 3;
 
       var row = { p: p, score: score, traits: traits, meta: parseTitle(p.t), line: line };
-      if (fitScore > 0) scored.push(row); else neutral.push(row);
+      /* A frame from the shelf they named belongs on the shelf they named,
+         even at neutral or negative fit — the penalty is already in its score,
+         so it sorts below the ones that also suit the face. */
+      if (fitScore > 0 || onShelf) scored.push(row); else neutral.push(row);
     }
 
     var order = function (a, b) {
@@ -453,13 +489,14 @@
        fired, leaving three frames for anyone wanting sports on a square, heart
        or diamond face. Neutral-fit frames land after every frame that
        positively suits the face, never among them. */
-    if (out.length < NEUTRAL_FALLBACK_AT) collapse(neutral, out);
+    var target = opts.results || NEUTRAL_FALLBACK_AT;
+    if (out.length < target) collapse(neutral, out);
 
     return out;
   }
 
   function archetypeFor(answers, top) {
-    var key = answers.wear === 'sport' ? 'sport' : answers.vibe;
+    var key = answers.vibe;
     for (var i = 0; i < ARCHETYPES.length; i++) if (ARCHETYPES[i].k === key) return ARCHETYPES[i];
     return DEFAULT_ARCHETYPE;
   }
@@ -488,10 +525,12 @@
     this.asked = [];
     this.at = 0;
     this.products = [];
-    this.count = parseInt(root.dataset.results, 10) || 4;
+    this.count = parseInt(root.dataset.results, 10) || 10;
     this.hideOOS = root.dataset.hideOos === 'true';
     this.persist = root.dataset.persist === 'true';
     this.themeCards = root.dataset.themeCards === 'true';
+    this.useLearned = root.dataset.useLearned !== 'false';
+    this.utmCampaign = root.dataset.utmCampaign || 'fitting-room';
     this.collectPhone = root.dataset.collectPhone === 'true';
     this.phoneRequired = root.dataset.phoneRequired === 'true';
     this.leadEndpoint = root.dataset.leadEndpoint || '/contact';
@@ -661,7 +700,7 @@
     }
     var trial = Object.assign({}, this.answers);
     trial[q.id] = opt.v;
-    var top = rank(this.products, trial, { hideOOS: this.hideOOS });
+    var top = rank(this.products, trial, { hideOOS: this.hideOOS, useLearned: this.useLearned, results: this.count });
     this.setFrame(frameFor(trial, top));
   };
 
@@ -768,7 +807,7 @@
     /* Sent, not awaited. A slow or misconfigured endpoint must never stand
        between the customer and the frames they just answered six questions for. */
     try {
-      var results = rank(this.products, this.answers, { hideOOS: this.hideOOS })
+      var results = rank(this.products, this.answers, { hideOOS: this.hideOOS, useLearned: this.useLearned, results: this.count })
         .slice(0, this.count).map(function (r) { return r.meta.alias; }).join(', ');
       var body = 'Fitting Room result — ' +
         'phone: ' + number +
@@ -802,7 +841,7 @@
 
   Quiz.prototype.finish = function (restored) {
     var self = this;
-    var results = rank(this.products, this.answers, { hideOOS: this.hideOOS });
+    var results = rank(this.products, this.answers, { hideOOS: this.hideOOS, useLearned: this.useLearned, results: this.count });
     var top = results.slice(0, this.count);
     var face = this.answers.face || 'oval';
     var arch = archetypeFor(this.answers, top);
@@ -855,6 +894,19 @@
      as it arrives. That way the recommendations are the same cards the
      collection pages use — same badges, same price formatting, same sale
      highlighting — without this file having to imitate any of it. */
+  /* Every result link is tagged so Shopify attributes the click, and any order
+     that follows, back to this quiz and to the exact answers that produced it.
+     That attribution is the whole learning loop: nothing here needs a tracker
+     of its own, and the shop's existing analytics already reports it. */
+  Quiz.prototype.tag = function (url) {
+    var a = this.answers;
+    var profile = [a.gender || 'any', a.face || 'na', a.size || 'na', a.vibe || 'any'].join('-');
+    var q = 'utm_source=fitting-room&utm_medium=quiz' +
+            '&utm_campaign=' + encodeURIComponent(this.utmCampaign) +
+            '&utm_content=' + encodeURIComponent(profile);
+    return url + (url.indexOf('?') > -1 ? '&' : '?') + q;
+  };
+
   Quiz.prototype.renderCards = function (top) {
     var self = this;
     this.el.grid.innerHTML = '';
@@ -883,6 +935,7 @@
      product in scope, which is what lets a storefront-side quiz render a
      server-side product card. */
   Quiz.prototype.loadThemeCard = function (mount, r) {
+    var self = this;
     var url = r.p.u + (r.p.u.indexOf('?') > -1 ? '&' : '?') + 'section_id=' + encodeURIComponent(this.cardSection);
     fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
       .then(function (res) { return res.ok ? res.text() : null; })
@@ -895,6 +948,11 @@
         var holder = document.createElement('div');
         holder.innerHTML = trimmed;
         if (!holder.querySelector('.card-product, .card')) return;
+        /* The theme card brings its own links; tag them too. */
+        var links = holder.querySelectorAll('a[href]');
+        for (var i = 0; i < links.length; i++) {
+          links[i].setAttribute('href', self.tag(links[i].getAttribute('href')));
+        }
         mount.innerHTML = '';
         while (holder.firstChild) mount.appendChild(holder.firstChild);
       })
@@ -907,7 +965,7 @@
     var p = r.p, m = r.meta;
     var a = document.createElement('a');
     a.className = 'psq__card';
-    a.href = p.u;
+    a.href = this.tag(p.u);
 
     var fig = document.createElement('figure');
     fig.className = 'psq__shot';

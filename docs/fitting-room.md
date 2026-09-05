@@ -73,15 +73,21 @@ in `techno` and it starts being offered to people who pick the techno
 aesthetic. Pull it from `bestsellers` and it stops getting the popularity
 nudge. No re-tagging, no re-coding, no re-deploying.
 
-These collections are wired in already:
+These nineteen collections are wired in already:
 
 | Signal | Collections |
 | --- | --- |
 | Frame shape | Rectangular, Oval, Round, Cateye, Rimless, Wraparound, Oversized, Geometric |
-| Aesthetic | Vintage, Techno, Daily Luxe, Code, Ice Ice Baby |
+| Who it's for | Men, Women |
+| Frame size | Small Face Types, Medium Face Type, Large Face Types |
+| Aesthetic | Daily Luxe, Summer Is Coming, Techno, Vintage |
 | Use case | Polarised Sports |
-| Candidate pool only | Prescription Friendly — no longer a filter, but many of the best-performing frames live there, so it still feeds the shelf |
-| Confidence | Bestsellers, Staff picks, Markdowns, Buy any 3 |
+| Candidate pool only | Sale |
+
+Shape, size and vibe are the three the customer is actually asked about, and
+they are the three the shelf is built from. Gender is a strong lean rather than
+a filter — plenty of frames sit in both collections and a few sit in neither,
+and none of those should become unreachable.
 
 Each is a setting, so if a collection is renamed or replaced, re-point it in the
 theme editor rather than in code.
@@ -91,6 +97,23 @@ aviator, hexagon, butterfly, slim, chunky, Y2K, retro. Including `Overized`,
 which is a live typo in the catalogue and is matched deliberately. A polarised
 sports frame is also treated as a wraparound, because that is what the category
 physically is.
+
+### What the quiz learns
+
+Every link on the result carries UTM attribution
+(`utm_source=fitting-room&utm_medium=quiz&utm_content=<profile>`), so Shopify's
+own analytics can say which frames the quiz sent people to and which of those
+turned into orders. That verdict is written back to each product's
+`custom.quiz_rank` metafield (product, `number_decimal`, storefront-readable —
+the definition exists on the store), read at render time and applied as a
+bounded −2…+5 term. A frame with no history is un-boosted, never buried, which
+is the right starting point for anything new.
+
+Pooled as the **mean** across a line's colourways, not the sum — a line split
+six ways should not out-earn one sold as a single product.
+
+Turn it off with the *Use learned ranking* setting if the numbers ever look
+wrong; nothing else changes.
 
 ### Proven performers
 
@@ -241,20 +264,32 @@ Fit is weighted **3×** above aesthetic and popularity. That matters: without it
 a bestseller in the wrong shape outranks the right shape, which is the one
 failure a fitting quiz cannot afford. Bestsellers now only break near-ties.
 
-### Sport is a constraint, not a taste
+### The shelf you name outranks the fit
 
-Answering *"running, riding, gym"* narrows to the polarised sports range
-outright. A frame that isn't built for sport is the wrong answer however well it
-suits the face, so this is the one hard filter in the quiz.
+Sport used to narrow outright. There are ten polarised frames in stock, most of
+them wraparounds, and four of the six face shapes read a wraparound as a mild
+negative — so the hard filter left **216 of the 1,296 fittings with a shelf of
+seven frames or fewer**, and a square-faced customer who asked for sport was
+shown round luxe frames instead.
+
+The rule that replaced it: **a frame from the shelf the customer named by
+hand is never gated out on shape.** The fit penalty stays in its score, so the
+best-fitting sports frame leads and the worst-fitting one comes last — but they
+are all sports frames, which is what was asked for. Everything else still has to
+positively suit the face to appear at all.
 
 ### The width question
 
 Nobody owns a pupillometer, so the quiz never asks for a measurement. It asks
 how sunglasses *currently sit*:
 
-- *They slide down my nose* → the frame is too wide → slim frames, oversized penalised
-- *They press on my temples* → too narrow → oversized and wraparound promoted
-- *They look small on me* → statement widths
+- *They slide down my nose* → the frame is too wide → the **Small Face Types** collection leads, Large is pushed down hard
+- *They sit about right* → **Medium Face Type** leads, with Small and Large both still in play
+- *They press on my temples* → **Large Face Types** leads, Small is pushed down hard
+- *They look small on me* → Large plus **Oversized**, for statement widths
+
+Each option reads straight onto the shop's own size collections, so re-filing a
+frame in Shopify moves it in the quiz on the next page load.
 
 ### Colourways
 
@@ -296,12 +331,13 @@ reads as a fitting.
 | Setting | Notes |
 | --- | --- |
 | Use the theme's own product cards | On by default. Falls back to a built-in card if the companion section is missing |
-| Frames to recommend | 2–8, default 4 |
+| Frames to recommend | 4–16, default 10 |
 | Hide sold-out frames | On by default |
-| Frames read per collection | 40 covers this catalogue; raise for better matches, lower for a lighter page |
+| Frames read per collection | Liquid reads at most 50 products per collection in one pass, so 50 is the ceiling and the right value |
 | Fallback collection | Linked when a fitting is too narrow, and from the no-JavaScript message |
 | Lens tint | The one colour on the stage |
-| Collection pickers | Re-point any signal without touching code |
+| Collection pickers | Nineteen of them — re-point any signal without touching code |
+| Use learned ranking | On by default; reads `custom.quiz_rank` |
 
 The questions and the scoring live in `assets/shades-quiz.js`, in two clearly
 marked blocks at the top of the file — `FIT` and `QUESTIONS`. Both are plain
@@ -326,37 +362,40 @@ storefront, and looks to a customer like a quiz that recommends nothing.
 
 ## Verified
 
-Headless Chromium, `preview/quiz.html` against a live 178-frame snapshot of the
-catalogue:
+Node against a live 178-frame snapshot of the catalogue, and headless Chromium
+against `preview/quiz.html`:
 
-- **All 2,160 answer combinations** (6 faces × 4 fits × 6 aesthetics × 5
-  use-cases × 3 tints) return results. The thinnest returns 8 frames — the
-  sports-narrowed path — and no combination dead-ends.
-- **Every face shape returns only on-doctrine frames** in its top four.
-- **36 different frames** take the top slot across those runs, the most frequent
-  at 13.8% — proven lines lead without one product owning the quiz.
-- Each of the three tint answers returns a visibly different shelf.
-- Sports filter: 100% of results are sports frames. Sold-out filter: no leaks.
-  Colourway dedupe: no repeated alias in any result.
-- No horizontal overflow at 320 / 360 / 390 / 414 / 430 / 768 / 1024 / 1440 /
-  1920 px. No tap target under 44px. No console errors.
-- Keyboard: arrow keys walk the options, Enter selects, the question takes focus
-  on each step.
-- Under `prefers-reduced-motion: reduce`: zero animating elements, grain removed.
-- Back button re-plans correctly, including backing out of a skipped question.
+- **All 1,296 answer combinations** (3 genders × 6 faces × 4 fits × 6 vibes ×
+  3 tints) return a **full shelf of ten**. None comes up short.
+- **105 different frames** appear across those runs and **58 different frames**
+  take the top slot, the most frequent at 12% — proven lines lead without one
+  product owning the quiz.
+- **Every face shape returns only on-doctrine frames**, with the single
+  deliberate exception above: a shelf the customer named by hand.
+- Two full end-to-end passes in Chromium — gender → face → size → vibe → tint →
+  lead capture → result — return ten cards each with no JavaScript errors.
+- `preview/liquid-test.js` renders the real template and finds the index
+  populated.
 
-Re-verified after the section was rebuilt to inherit the theme: the quiz reads
-`#ffffff` background, `#000000` text, Work Sans at 15px, black square uppercase
-buttons and a 40px page margin straight from the theme's tokens — none of it
-hardcoded.
+## Known catalogue gaps
 
-Two things the preview cannot reproduce, both noted in the file itself:
+The quiz can only steer on what the collections say. As of the last sweep, of
+178 live frames:
 
-- Headings fall back to Archivo. The live theme uses Basic Commercial, which is
-  Shopify-hosted and cannot load in a static file. Both are grotesques of the
-  same weight, so the layout reads the same.
-- Results use the built-in fallback card, because a `file://` page has no
-  storefront to fetch from. On the store the theme's own cards are used.
+- **20 carry no shape collection**, including the three deepest-stocked new
+  lines — Contour (213 units across three colourways), Tresor (113) and the
+  Limited Edition techno frame (97). A frame with no shape cannot be fitted to a
+  face, so these only ever appear as top-up. Filing them into Rectangular, Oval,
+  Round, Cateye, Rimless, Wraparound, Oversized or Geometric puts them straight
+  into rotation.
+- **16 carry no size collection** — Aurora (146u), Spectre (86u), Monarch,
+  Fluff, Luna, Quantum, Cosmopolitan, Tara 2.0, Opium, Akita, both Festive SZN
+  frames, Pharrell, Liberty, Orlando, Credence.
+- **7 carry no gender** — Quebec (59u), Luna, Quantum, NOIR 140, Titan, Orlando,
+  Credence.
 
-The preview's product images load from the Shopify CDN, so they appear when you
-open it on a normal connection.
+Also worth a look: the **Rectangular** collection currently holds seven rimless
+frames (Aphrodite, Roma, Athena, Credence, Woddy, Popsicle and all four
+Serendipity 2.0 colourways). They score as both shapes at once, which is part of
+why Serendipity kept surfacing on faces it doesn't suit. Nothing in the code
+needs to change if they come out of Rectangular.
