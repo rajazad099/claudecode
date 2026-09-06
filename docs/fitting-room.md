@@ -68,10 +68,17 @@ out of 277 carry one — so tags would have produced a quiz that recommended the
 same four frames to everyone. Traits come from **collection membership**, read
 through `product.collections` at render time.
 
+Collections are the **only** source. An earlier version also read the product
+title — "Classic" meant vintage, "Gold" meant luxe, "Y2k" meant techno — and it
+was wrong often enough to matter: Offset Clubmaster in *Black Gold* was leading
+the Daily Luxe shelf on the strength of the word *Gold*, and it is not in Daily
+Luxe. A word in a product name is a guess about merchandising. The collection
+**is** the merchandising, so the collection is what counts.
+
 That has a useful consequence: **the quiz re-merchandises itself.** Put a frame
-in `techno` and it starts being offered to people who pick the techno
-aesthetic. Pull it from `bestsellers` and it stops getting the popularity
-nudge. No re-tagging, no re-coding, no re-deploying.
+in `techno` and it starts being offered to people who pick the techno aesthetic.
+Take it out and it stops. No re-tagging, no re-coding, no re-deploying — and no
+way for a product name to overrule a decision made in the admin.
 
 These nineteen collections are wired in already:
 
@@ -92,11 +99,9 @@ and none of those should become unreachable.
 Each is a setting, so if a collection is renamed or replaced, re-point it in the
 theme editor rather than in code.
 
-The product **title** is read too, for the shape words collections don't carry —
-aviator, hexagon, butterfly, slim, chunky, Y2K, retro. Including `Overized`,
-which is a live typo in the catalogue and is matched deliberately. A polarised
-sports frame is also treated as a wraparound, because that is what the category
-physically is.
+The one exception is `JUDGED` — a short, documented table for the frames that
+sit in no shape collection at all, described further down. It is a fallback, not
+a source: file the frame into a shape collection and the collection wins.
 
 ### What the quiz learns
 
@@ -147,8 +152,8 @@ recommended to everybody:
    shape traits that cancel to zero is not a recommendation. Serendipity 2.0 is
    both rimless and rectangular, which cancels on a square face and on a long
    one, and it is now correctly absent from both.
-2. **Taste modifies.** Aesthetic and tint are worth roughly what a shape trait
-   is worth, so saying "vintage" genuinely reorders the shelf.
+2. **Taste modifies.** The aesthetic is worth roughly what a shape trait is
+   worth, so saying "vintage" genuinely reorders the shelf.
 3. **Performance breaks ties.** Reviews and stock depth are capped at about six
    points combined. They are face-independent — a deep line earns the same
    credit against every face — so left unbounded they stop being a tiebreaker
@@ -201,22 +206,20 @@ Together these are bounded so they rank well-fitting frames against each other
 rather than overruling the fit — a bestseller in the wrong shape still loses to
 the right shape.
 
-### Tint
-
-Tint has to distinguish *"this frame is dark"* from *"this frame comes in six
-colours, one of which is dark"* — otherwise every deep line matches both
-preferences and the question does nothing. A frame split one product per
-colourway states its tint exactly in its `: Colour` suffix and scores full
-credit; a frame that keeps its colours as variants scores partial credit, so it
-sits below an exact match without being excluded.
-
 ### The fitting table
 
 The rule is contrast, not echo: you give a face the geometry it hasn't got.
 
-The six questions are: who we're fitting, face shape, how frames currently sit,
-aesthetic, where they'll be worn, and lens tint — plus a jawline question that
-only appears if the face-shape question is skipped.
+The four questions are: who we're fitting, face shape, how frames currently sit,
+and what they're for — plus a jawline question that only appears if the
+face-shape question is skipped.
+
+A lens-tint question used to sit at the end and has been removed. It read the
+tint off the product's colourway words, which is a guess about a photograph:
+"Emerald" is a frame colour on one line and a lens colour on the next, and a
+frame sold in six colourways matched both answers at once. A question that
+cannot be answered reliably is worse than no question — it costs the customer a
+tap and moves the shelf on noise.
 
 **Who we're fitting** is a light steer toward how each range is styled, not a
 filter — almost the whole catalogue is unisex and nothing is hidden from anyone.
@@ -249,7 +252,8 @@ number is not asked again.
 
 Leads post to the store's own `/contact` form by default, which emails the
 number together with the full fitting — face shape, fit, styling, aesthetic,
-tint and the frames matched — so the lead arrives with the context to act on it.
+the aesthetic and the frames matched — so the lead arrives with the context to
+act on it.
 Point **Where to send leads** at a webhook instead (Bitespeed, Zapier, Klaviyo)
 to send it there.
 
@@ -377,7 +381,6 @@ reads as a fitting.
 | Hide sold-out frames | On by default |
 | Frames read per collection | Liquid reads at most 50 products per collection in one pass, so 50 is the ceiling and the right value |
 | Fallback collection | Linked when a fitting is too narrow, and from the no-JavaScript message |
-| Lens tint | The one colour on the stage |
 | Collection pickers | Nineteen of them — re-point any signal without touching code |
 | Use learned ranking | On by default; reads `custom.quiz_rank` |
 
@@ -407,19 +410,20 @@ storefront, and looks to a customer like a quiz that recommends nothing.
 Node against a live 178-frame snapshot of the catalogue, and headless Chromium
 against `preview/quiz.html`:
 
-- **All 1,296 answer combinations** (3 genders × 6 faces × 4 fits × 6 vibes ×
-  3 tints) return a **full shelf of ten**. None comes up short.
+- **All 432 answer combinations** (3 genders × 6 faces × 4 fits × 6 vibes)
+  return a **full shelf of ten**. None comes up short.
 - **98 different frames** appear across those runs and **60 different frames**
   take the top slot, the most frequent at 11% — proven lines lead without one
   product owning the quiz.
-- The split holds everywhere: **all 1,296** produce four on-shelf frames above
-  the line and six off-shelf below it, with **no duplicates**, **no shelf short
-  of ten**, and **no on-shelf frame leaking into a block that promises a
-  different aesthetic**.
+- The split holds everywhere: **all 432** produce a full shelf with **no
+  duplicates** and **no on-shelf frame leaking into a block that promises a
+  different aesthetic**. Four of the six aesthetics fill the top block outright;
+  **sport cannot**, because the Polarised Sports collection holds three frame
+  lines, so those fittings correctly get the softened divider instead.
 - **Every face shape returns only on-doctrine frames**, with the single
   deliberate exception above: a shelf the customer named by hand.
-- Two full end-to-end passes in Chromium — gender → face → size → vibe → tint →
-  lead capture → result — return ten cards each with no JavaScript errors.
+- Two full end-to-end passes in Chromium — gender → face → size → vibe → lead
+  capture → result — return ten cards each with no JavaScript errors.
 - `preview/liquid-test.js` renders the real template and finds the index
   populated.
 

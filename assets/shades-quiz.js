@@ -168,17 +168,6 @@
       ],
       apply: function (a, v) { a.vibe = v; }
     },
-    {
-      id: 'tint',
-      q: 'Which lens do you reach for?',
-      hint: 'Tint changes the whole character of a frame, and it is the thing people regret getting wrong.',
-      options: [
-        { v: 'dark',   l: 'Dark — black, brown, smoke', s: 'Hides the eyes, holds up in hard sun', score: { dark: 7, darkish: 2 } },
-        { v: 'light',  l: 'Light — blue, beige, clear', s: 'Softer, shows the eyes, reads modern', score: { light: 7, lightish: 2 } },
-        { v: 'either', l: 'Either — surprise me',       s: 'Fit matters more to you than colour',  score: {} }
-      ],
-      apply: function (a, v) { a.tint = v; }
-    }
   ];
 
   /* -------------------------------------------------------------- archetypes */
@@ -195,33 +184,6 @@
   var DEFAULT_ARCHETYPE = { n: 'THE PURIST', d: 'Fit first, fashion second. We picked on shape alone.' };
 
   /* ------------------------------------------------------ title -> traits */
-
-  var TINT_DARK  = /\b(black|brown|smoke|smoked|tortoise|grey|gray|charcoal|olive|forest|emerald|midnight|ash|dark|espresso|leopard)\b/i;
-  var TINT_LIGHT = /\b(blue|beige|biege|clear|transparent|white|silver|yellow|pink|orange|purple|gold|ice|crystal|sand|rose|cream|lilac)\b/i;
-
-  /* Tint has to distinguish "this frame IS dark" from "this frame is sold in
-     several colours, one of which is dark" — otherwise every deep line matches
-     both preferences and the question does nothing.
-
-     A frame split one product per colourway states its tint exactly in the
-     ": Colour" suffix. A frame that keeps its colours as variants only offers
-     the tint, so it scores the weaker `-ish` trait and sits below an exact
-     match without being excluded. */
-  function tintTraits(p, traits) {
-    var parts = String(p.t).split(/\s+:\s+/);
-    var exact = parts.length > 1 ? parts.pop() : null;
-    if (exact !== null) {
-      if (TINT_DARK.test(exact))  { traits.dark = true;  traits.darkish = true;  return; }
-      if (TINT_LIGHT.test(exact)) { traits.light = true; traits.lightish = true; return; }
-    }
-    var pool = (p.cl || '') + ' ' + p.t;
-    var d = TINT_DARK.test(pool), l = TINT_LIGHT.test(pool);
-    /* Only one tint in the whole range: that is what the frame is. */
-    if (d && !l) { traits.dark = true; traits.darkish = true; return; }
-    if (l && !d) { traits.light = true; traits.lightish = true; return; }
-    if (d) traits.darkish = true;
-    if (l) traits.lightish = true;
-  }
 
   /* The shapes that can be fitted to a face. `slim`, `metal`, `uni` and the
      rest describe a frame without saying what shape it is. */
@@ -271,35 +233,30 @@
        "Polarsied" is why no title rule catches this one. */
     'MONGUL':           ['wrap', 'ovsz'],
     /* LOW CONFIDENCE. Futuristic / techno / rave, no geometry given. */
-    'KATANA':           ['wrap']
+    'KATANA':           ['wrap'],
+    /* The title says Aviator and nothing else does; there is no aviator
+       collection for it to sit in. */
+    'AKITA':            ['avia'],
+    /* "futuristic wraparound shield silhouette", frame 145, lens height 45. */
+    'LEX':              ['wrap']
   };
 
-  var TITLE_RULES = [
-    [/rimless/i, 'riml'], [/cat[\s-]?eye/i, 'cate'], [/wrap/i, 'wrap'],
-    [/aviator|pilot/i, 'avia'], [/hexagon|hex\b|octagon|geometric/i, 'geo'],
-    [/rectangular|rectangle|square|squared/i, 'rect'], [/round/i, 'round'],
-    [/oval|butterfly/i, 'oval'],
-    /* "Overized" is a live typo in the catalogue — match it on purpose. */
-    [/over\s*i?zed|chunky|thick|bold|jumbo/i, 'ovsz'],
-    [/slim|sleek|thin|micro|skinny/i, 'slim'],
-    [/y2k|futuristic|techno|tech\b|cyber|3d|alien/i, 'tech'],
-    [/retro|vintage|archive|90'?s|classic|heritage/i, 'vint'],
-    [/polaris|polariz|sport|shield/i, 'sport'],
-    [/sports?\s+sunglasses|shield|wrap/i, 'wrap'],
-    [/metal|chrome|steel|titanium/i, 'metal'],
-    [/unisex/i, 'uni'],
-    [/luxury|luxe|premium|gold/i, 'luxe'],
-    [/clear|transparent|ice|crystal/i, 'ice']
-  ];
+  /* WHAT A FRAME IS, ACCORDING TO THE SHOP.
 
+     Traits come from collection membership and nothing else. An earlier version
+     also read the product title — "Classic" meant vintage, "Gold" meant luxe,
+     "Y2k" meant techno — and that was wrong often enough to matter: Offset
+     Clubmaster in Black Gold was leading the Daily Luxe shelf on the strength of
+     the word Gold, and it is not in Daily Luxe. A word in a product name is a
+     guess about merchandising; the collection is the merchandising.
+
+     One documented exception below, and it is a fallback rather than a source:
+     JUDGED, for the handful of frames that sit in no shape collection at all. */
   function read(p) {
     var traits = Object.create(null);
     var i, c = p.c || [];
     for (i = 0; i < c.length; i++) traits[c[i]] = true;
-    for (i = 0; i < TITLE_RULES.length; i++) {
-      if (TITLE_RULES[i][0].test(p.t)) traits[TITLE_RULES[i][1]] = true;
-    }
-    /* Only when neither the collections nor the title said what shape it is. */
+    /* Only when the collections did not say what shape it is. */
     var shaped = false;
     for (i = 0; i < FITTABLE.length; i++) if (traits[FITTABLE[i]]) shaped = true;
     if (!shaped) {
@@ -312,7 +269,6 @@
         traits.judged = true;
       }
     }
-    tintTraits(p, traits);
     return traits;
   }
 
@@ -977,7 +933,6 @@
         ' | styling: ' + (this.answers.gender || '-') +
         ' | aesthetic: ' + (this.answers.vibe || '-') +
         ' | wear: ' + (this.answers.wear || '-') +
-        ' | tint: ' + (this.answers.tint || '-') +
         ' | matched: ' + results;
 
       var fd = new FormData();
@@ -1020,8 +975,8 @@
       ['Width', { small: 'Narrower than standard', medium: 'Standard width',
                   large: 'Wider than standard', statement: 'Statement width' }[this.answers.size] || 'Standard width'],
       ['Frame', top.length ? (top[0].meta.desc || 'Best available fit') : '—'],
-      ['Tint', { dark: 'Dark — black, brown, smoke', light: 'Light — blue, beige, clear' }[this.answers.tint] ||
-                (this.answers.vibe === 'sport' ? 'Polarised preferred' : 'No preference')]
+      ['Looking for', { luxe: 'Everyday quality', summer: 'Beach and vacation', tech: 'Party and rave',
+                        vint: 'Retro and archive', sport: 'Sport and active' }[this.answers.vibe] || 'The best of everything']
     ];
     this.el.spec.innerHTML = spec.map(function (r) {
       return '<li><b>' + r[0] + '</b><span></span></li>';

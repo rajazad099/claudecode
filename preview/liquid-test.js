@@ -95,7 +95,7 @@ const ctx = {
   if (!data.length) { console.log('*** EMPTY INDEX — this is the bug the store reported ***'); process.exit(1); }
   data.forEach(p => console.log('   ' + p.t.slice(0,52).padEnd(54) +
     'inv ' + String(p.iv).padStart(4) + '  traits ' + JSON.stringify(p.c) +
-    (p.rt ? '  ' + p.rt + '* x' + p.rc : '') + (p.cl ? '  colours "' + p.cl + '"' : '')));
+    (p.rt ? '  ' + p.rt + '* x' + p.rc : '')));
 
   const jewellery = data.find(p => /bracelet/i.test(p.t));
   console.log('\nchecks:');
@@ -103,6 +103,7 @@ const ctx = {
   console.log('  traits resolved from handles  :', data.some(p => p.c.includes('rect')) ? 'yes' : 'NO');
   console.log('  inventory summed from variants:', data.some(p => p.iv === 940) ? 'yes' : 'NO');
   console.log('  review metafields read        :', data.some(p => p.rt === 4.78) ? 'yes' : 'NO');
-  console.log('  colourway text captured       :', data.some(p => p.cl) ? 'yes' : 'NO');
+  console.log('  traits are collections only   :',
+    data.every(p => Array.isArray(p.c)) && !('cl' in (data[0] || {})) ? 'yes' : 'NO');
   console.log('  dedupe across pools           :', new Set(data.map(p=>p.h)).size === data.length ? 'yes' : 'NO');
 })();
