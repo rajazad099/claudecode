@@ -103,36 +103,6 @@
       apply: function (a, v) { a.gender = v; }
     },
     {
-      id: 'face',
-      q: 'Which of these is closest to your face?',
-      hint: 'Pull your hair back, look straight on, and pick the outline that matches. Most people are between two — go with the closer one, or skip and we’ll work it out from your jaw.',
-      options: [
-        { v: 'oval',    l: 'Oval',    s: 'Longer than wide, tapering gently to the chin' },
-        { v: 'round',   l: 'Round',   s: 'Full cheeks, soft chin, about as wide as it is long' },
-        { v: 'square',  l: 'Square',  s: 'Jaw and forehead near the same width, corners defined' },
-        { v: 'heart',   l: 'Heart',   s: 'Widest at the brow, narrowing to a pointed chin' },
-        { v: 'long',    l: 'Long',    s: 'Clearly longer than it is wide, forehead to chin' },
-        { v: 'diamond', l: 'Diamond', s: 'Cheekbones the widest part, brow and jaw narrower' }
-      ],
-      apply: function (a, v) { a.face = v; }
-    },
-    {
-      id: 'jaw',
-      q: 'Your jawline, honestly?',
-      hint: 'This tells us the same thing, from an easier angle.',
-      when: function (a) { return !a.face && a.skippedFace === true; },
-      options: [
-        { v: 'soft',    l: 'Soft and curved',     s: 'No hard corners anywhere' },
-        { v: 'sharp',   l: 'Sharp and angular',   s: 'A jaw you could set a ruler against' },
-        { v: 'pointed', l: 'Narrow and pointed',  s: 'Comes to a point at the chin' },
-        { v: 'even',    l: 'Even, in proportion', s: 'Nothing especially wide or narrow' }
-      ],
-      apply: function (a, v) {
-        a.face = { soft: 'round', sharp: 'square', pointed: 'heart', even: 'oval' }[v];
-        a.faceInferred = true;
-      }
-    },
-    {
       /* Reads straight onto the small / medium / large face-type collections.
          Nobody knows their frame width in millimetres, but everyone knows how
          their last pair sat. */
@@ -167,6 +137,43 @@
         { v: 'any',    l: 'Not sure yet',       s: 'Show me the best of everything',                  score: {} }
       ],
       apply: function (a, v) { a.vibe = v; }
+    },
+    {
+      /* Last, and deliberately so. The three questions before it are ones
+         anybody can answer without thinking — who it is for, how frames sit,
+         what it is for — so the quiz is already three-quarters done and the
+         stage is already moving by the time it asks the one question people
+         hesitate over. It is also the question that pays off visually: the
+         silhouette has been abstract the whole way, and this is where it
+         becomes their face. */
+      id: 'face',
+      q: 'Last one — which of these is closest to your face?',
+      hint: 'Pull your hair back, look straight on, and pick the outline that matches. Most people are between two — go with the closer one, or skip and we’ll work it out from your jaw.',
+      options: [
+        { v: 'oval',    l: 'Oval',    s: 'Longer than wide, tapering gently to the chin' },
+        { v: 'round',   l: 'Round',   s: 'Full cheeks, soft chin, about as wide as it is long' },
+        { v: 'square',  l: 'Square',  s: 'Jaw and forehead near the same width, corners defined' },
+        { v: 'heart',   l: 'Heart',   s: 'Widest at the brow, narrowing to a pointed chin' },
+        { v: 'long',    l: 'Long',    s: 'Clearly longer than it is wide, forehead to chin' },
+        { v: 'diamond', l: 'Diamond', s: 'Cheekbones the widest part, brow and jaw narrower' }
+      ],
+      apply: function (a, v) { a.face = v; }
+    },
+    {
+      id: 'jaw',
+      q: 'Your jawline, honestly?',
+      hint: 'This tells us the same thing, from an easier angle.',
+      when: function (a) { return !a.face && a.skippedFace === true; },
+      options: [
+        { v: 'soft',    l: 'Soft and curved',     s: 'No hard corners anywhere' },
+        { v: 'sharp',   l: 'Sharp and angular',   s: 'A jaw you could set a ruler against' },
+        { v: 'pointed', l: 'Narrow and pointed',  s: 'Comes to a point at the chin' },
+        { v: 'even',    l: 'Even, in proportion', s: 'Nothing especially wide or narrow' }
+      ],
+      apply: function (a, v) {
+        a.face = { soft: 'round', sharp: 'square', pointed: 'heart', even: 'oval' }[v];
+        a.faceInferred = true;
+      }
     },
   ];
 
@@ -831,6 +838,10 @@
       var opt = null;
       for (var i = 0; i < q.options.length; i++) if (q.options[i].v === v) opt = q.options[i];
       if (opt && q.apply) q.apply(this.answers, v);
+      /* Commit the same stage change the hover preview shows. On a mouse the
+         preview has already fired; on a touchscreen there is no hover at all,
+         and without this the stage would sit still for the whole quiz. */
+      if (opt) this.preview(q, opt);
       this.emit('answer', { question: q.id, answer: v });
     }
     this.at++;

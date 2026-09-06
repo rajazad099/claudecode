@@ -210,9 +210,21 @@ the right shape.
 
 The rule is contrast, not echo: you give a face the geometry it hasn't got.
 
-The four questions are: who we're fitting, face shape, how frames currently sit,
-and what they're for — plus a jawline question that only appears if the
+The four questions, in order: who we're fitting, how frames currently sit, what
+they're for, and face shape — plus a jawline question that only appears if the
 face-shape question is skipped.
+
+**Face shape is deliberately last.** It is the only question people hesitate
+over — most cannot name their own face shape, which is why it is answered with
+six drawn outlines rather than words — and asking it second was asking for the
+hardest thing while the visitor had the least invested. Moved to the end, three
+easy questions are already answered and the stage is already moving before it
+comes up, so the sunk cost runs the right way. It also pays off visually: the
+silhouette is abstract for the whole quiz and this is the step where it becomes
+*their* face, one question before the frames appear.
+
+Order is presentational only. The same answers produce the same shelf whichever
+sequence they arrive in — scoring reads the finished answer set, not the path.
 
 A lens-tint question used to sit at the end and has been removed. It read the
 tint off the product's colourway words, which is a guess about a photograph:
@@ -422,8 +434,12 @@ against `preview/quiz.html`:
   lines, so those fittings correctly get the softened divider instead.
 - **Every face shape returns only on-doctrine frames**, with the single
   deliberate exception above: a shelf the customer named by hand.
-- Two full end-to-end passes in Chromium — gender → face → size → vibe → lead
-  capture → result — return ten cards each with no JavaScript errors.
+- Two full end-to-end passes in Chromium — gender → size → vibe → face → lead
+  capture → result — return ten cards each with no JavaScript errors, and the
+  shelves are identical to the ones the old question order produced.
+- The skip path still works from the back of the quiz: skipping face turns
+  "step 4 of 4" into "step 5 of 5", the jawline question infers the shape, and
+  the read-out says so.
 - `preview/liquid-test.js` renders the real template and finds the index
   populated.
 
