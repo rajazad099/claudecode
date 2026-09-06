@@ -1,0 +1,27 @@
+{
+  "sections": {
+    "shades_quiz": {
+      "type": "shades-quiz",
+      "settings": {
+        "use_theme_cards": true,
+        "result_count": 10,
+        "hide_sold_out": true,
+        "remember_result": true,
+        "use_learned_rank": true,
+        "collect_phone": true,
+        "phone_required": false,
+        "per_collection": 50
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "content_width": "page-width-medium",
+        "hdr_alignment": "align-center",
+        "padding_top": 40,
+        "padding_bottom": 60
+      }
+    }
+  },
+  "order": ["shades_quiz", "main"]
+}
