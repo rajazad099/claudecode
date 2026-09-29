@@ -314,7 +314,7 @@
               counts frames that are genuinely in stock right now rather than a
               figure typed in here and left to rot. Hidden until it is real.
             {%- endcomment -%}
-            <p class="psq__stat" data-psq-stat data-template="{{ s.intro_stat | default: 'Fitting from {count} frames in stock today.' | escape }}" hidden></p>
+            <p class="psq__stat" data-psq-stat data-template="{{ s.intro_stat | default: 'Fitting from [count] frames in stock today.' | escape }}" hidden></p>
             <button type="button" class="psq__cta" data-psq-start>{{ s.start_label | default: 'Begin the fitting' }}</button>
             <p class="psq__note" data-psq-resume hidden>
               <button type="button" class="psq__link" data-psq-restore>{{ s.resume_label | default: 'Show my last result' }}</button>
@@ -421,8 +421,8 @@
       "type": "text",
       "id": "intro_stat",
       "label": "Intro stat line",
-      "default": "Fitting from {count} frames in stock today.",
-      "info": "{count} is replaced with the number of distinct frames currently in stock. Leave the placeholder in, or clear the field to hide the line."
+      "default": "Fitting from [count] frames in stock today.",
+      "info": "[count] is replaced with the number of distinct frames currently in stock. Leave the placeholder in, or clear the field to hide the line."
     },
     {
       "type": "text",

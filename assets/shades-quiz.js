@@ -769,7 +769,7 @@
       n++;
     }
     if (n < 2) return;
-    this.el.stat.textContent = this.el.stat.dataset.template.replace('{count}', n);
+    this.el.stat.textContent = this.el.stat.dataset.template.replace('[count]', n);
     this.el.stat.hidden = false;
   };
 
