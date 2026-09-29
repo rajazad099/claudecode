@@ -147,6 +147,7 @@
          silhouette has been abstract the whole way, and this is where it
          becomes their face. */
       id: 'face',
+      skip: 'I honestly can’t tell — ask me something else',
       q: 'Last one — which of these is closest to your face?',
       hint: 'Pull your hair back, look straight on, and pick the outline that matches. Most people are between two — go with the closer one, or skip and we’ll work it out from your jaw.',
       options: [
@@ -686,10 +687,12 @@
       consent: root.querySelector('[data-psq-consent]'),
       phoneErr: root.querySelector('[data-psq-phone-error]'),
       phoneSkip: root.querySelector('[data-psq-phone-skip]'),
-      caption: root.querySelector('[data-psq-caption]')
+      caption: root.querySelector('[data-psq-caption]'),
+      stat: root.querySelector('[data-psq-stat]')
     };
 
     this.bind();
+    this.stat();
     this.setFace(null);
     this.setFrame('rect');
     this.offerResume();
@@ -750,13 +753,34 @@
     });
   };
 
+  /* The intro claims a number, and the number is real: distinct frames, in
+     stock, that this quiz could actually put in front of someone today. Counted
+     from the same index the recommendations come out of, so it cannot drift
+     away from the truth the way a number typed into a theme setting would. */
+  Quiz.prototype.stat = function () {
+    if (!this.el.stat) return;
+    var lines = Object.create(null), n = 0, i;
+    for (i = 0; i < this.products.length; i++) {
+      var p = this.products[i];
+      if (!p.a) continue;
+      var key = parseTitle(p.t).alias.toUpperCase();
+      if (lines[key]) continue;
+      lines[key] = true;
+      n++;
+    }
+    if (n < 2) return;
+    this.el.stat.textContent = this.el.stat.dataset.template.replace('{count}', n);
+    this.el.stat.hidden = false;
+  };
+
   Quiz.prototype.start = function () {
     this.answers = {};
     this.asked = [];
     this.phoneDone = false;
     this.at = 0;
     this.plan();
-    this.root.classList.remove('is-result', 'is-lead');
+    this.root.classList.remove('is-result', 'is-lead', 'is-revealing');
+    if (this.revealTimer) clearTimeout(this.revealTimer);
     this.emit('start', {});
     this.show('question');
     this.render();
@@ -782,9 +806,15 @@
     this.el.question.textContent = q.q;
     this.el.hint.textContent = q.hint || '';
     this.el.back.hidden = this.at === 0;
-    this.el.skip.hidden = q.id !== 'face';
+    this.el.skip.hidden = !q.skip;
+    /* "Not sure — skip" is a dead end phrased as a shrug. The face question has
+       a real second route, so it says what that route is. */
+    if (q.skip) this.el.skip.textContent = q.skip;
 
     this.el.options.innerHTML = '';
+    /* Six face outlines read as six outlines in a grid and as a wall of text in
+       a list. The question the quiz is built around gets the grid. */
+    this.el.options.className = 'psq__options' + (q.id === 'face' ? ' is-figures' : '');
     this.el.options.setAttribute('aria-label', q.q);
     q.options.forEach(function (opt, i) {
       var b = document.createElement('button');
@@ -1011,11 +1041,53 @@
     this.root.classList.remove('is-lead');
     this.root.classList.add('is-result');
     if (this.el.caption) this.el.caption.textContent = 'Your fit';
+    /* Restoring a saved result is not a reveal — they have seen it. */
+    if (restored) this.root.classList.remove('is-revealing'); else this.reveal();
     if (this.persist && !restored) this.save();
     this.emit('complete', {
       face: face, archetype: arch.n,
       products: top.map(function (r) { return r.p.h; })
     });
+  };
+
+  /* THE REVEAL.
+
+     Without this the last answer swaps straight to a wall of ten products, and
+     the one question the whole quiz was built around — face shape, asked last
+     precisely so it would land — lands on nothing.
+
+     So the result screen arrives in three beats rather than one: the drawn
+     frame lowers onto the silhouette that has been abstract the entire way, the
+     archetype name resolves, and only then does the shelf come in. It is about
+     a second in total, which is long enough to read as deliberate and short
+     enough that nobody waits.
+
+     It is skippable on any tap or key, because a beat you cannot skip stops
+     being a flourish the second time you see it. Users who ask for reduced
+     motion never see it at all — the stylesheet collapses every duration, and
+     the timer below is the only thing that still has to be short-circuited. */
+  var REVEAL_MS = 1100;
+
+  Quiz.prototype.reveal = function () {
+    var self = this;
+    if (this.revealTimer) clearTimeout(this.revealTimer);
+
+    var reduced = typeof matchMedia === 'function' &&
+                  matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) { this.root.classList.remove('is-revealing'); return; }
+
+    this.root.classList.add('is-revealing');
+
+    var end = function () {
+      if (!self.root.classList.contains('is-revealing')) return;
+      self.root.classList.remove('is-revealing');
+      clearTimeout(self.revealTimer);
+      document.removeEventListener('keydown', end, true);
+      self.root.removeEventListener('click', end, true);
+    };
+    document.addEventListener('keydown', end, true);
+    this.root.addEventListener('click', end, true);
+    this.revealTimer = setTimeout(end, REVEAL_MS);
   };
 
   /* Results are rendered twice over: a built-in card goes in immediately so the

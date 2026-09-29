@@ -226,6 +226,35 @@ silhouette is abstract for the whole quiz and this is the step where it becomes
 Order is presentational only. The same answers produce the same shelf whichever
 sequence they arrive in — scoring reads the finished answer set, not the path.
 
+The face question is laid out as a **grid of drawings** rather than a list: six
+outlines three across, label underneath, description dropped. Nobody can *name*
+their own face shape — they can only recognise it — so the layout that lets the
+eye compare six shapes at once beats the one that asks them to read six
+sentences. Its way out says what it actually does (*"I honestly can't tell — ask
+me something else"*) instead of the generic skip, because there is a real second
+route behind it.
+
+### The reveal
+
+The last answer used to swap straight to a wall of ten products, which wasted
+the one question the quiz was built around. The result now arrives in three
+beats over about a second: the drawn frame **lowers onto the silhouette** that
+has been abstract the whole way — the gesture of a pair of glasses going on, at
+the one moment where that is literally what is happening — then the archetype
+name resolves, then the shelf comes in.
+
+The beats are staged against each other, not run together: the frame lands at
+620ms, the name is legible by 700ms, the first card starts moving at 780ms. It
+is **opacity and transform only**, so nothing reflows underneath it and the
+shelf's height never jumps.
+
+It is **skippable on any tap or key** — a beat you cannot skip stops being a
+flourish the second time you see it — and anyone who asks for reduced motion
+never sees it: the stylesheet collapses every duration and the JavaScript
+short-circuits the timer, so the whole result is simply present.
+
+Restoring a saved result skips it too. They have already seen it.
+
 A lens-tint question used to sit at the end and has been removed. It read the
 tint off the product's colourway words, which is a guess about a photograph:
 "Emerald" is a frame colour on one line and a lens colour on the next, and a
@@ -393,6 +422,7 @@ reads as a fitting.
 | Hide sold-out frames | On by default |
 | Frames read per collection | Liquid reads at most 50 products per collection in one pass, so 50 is the ceiling and the right value |
 | Fallback collection | Linked when a fitting is too narrow, and from the no-JavaScript message |
+| Intro stat line | `{count}` is replaced with the live number of distinct in-stock frames; clear the field to hide it |
 | Collection pickers | Nineteen of them — re-point any signal without touching code |
 | Use learned ranking | On by default; reads `custom.quiz_rank` |
 

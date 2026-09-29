@@ -2,7 +2,7 @@
   PROJECT SHADES — THE FITTING ROOM
   PS-003 // a frame-finder quiz that answers in the storefront's own voice.
 
-  The customer answers five questions. A face silhouette and a pair of lenses,
+  The customer answers four questions. A face silhouette and a pair of lenses,
   drawn in SVG, morph as they answer — the face becomes their face shape, the
   lenses become the frame being recommended. The results are the theme's own
   product cards.
@@ -308,7 +308,13 @@
           <article class="psq__screen is-active" data-screen="intro">
             <p class="psq__eyebrow">{{ s.eyebrow | default: 'The fitting room' }}</p>
             <h2 class="psq__title">{{ s.heading | default: 'Find the frame that fits your face.' }}</h2>
-            <p class="psq__body">{{ s.intro | default: 'Six questions. About a minute. We read your face shape, how frames sit on you and what you actually wear — then pull the frames that match.' }}</p>
+            <p class="psq__body">{{ s.intro | default: 'Four questions. Under a minute. We read your face shape, how frames sit on you and what you actually wear — then pull the ten that match.' }}</p>
+            {%- comment -%}
+              The number is filled in by JS from the live product index, so it
+              counts frames that are genuinely in stock right now rather than a
+              figure typed in here and left to rot. Hidden until it is real.
+            {%- endcomment -%}
+            <p class="psq__stat" data-psq-stat data-template="{{ s.intro_stat | default: 'Fitting from {count} frames in stock today.' | escape }}" hidden></p>
             <button type="button" class="psq__cta" data-psq-start>{{ s.start_label | default: 'Begin the fitting' }}</button>
             <p class="psq__note" data-psq-resume hidden>
               <button type="button" class="psq__link" data-psq-restore>{{ s.resume_label | default: 'Show my last result' }}</button>
@@ -410,6 +416,13 @@
       "id": "intro",
       "label": "Intro",
       "default": "Six questions. About a minute. We read your face shape, how frames sit on you and what you actually wear — then pull the frames that match."
+    },
+    {
+      "type": "text",
+      "id": "intro_stat",
+      "label": "Intro stat line",
+      "default": "Fitting from {count} frames in stock today.",
+      "info": "{count} is replaced with the number of distinct frames currently in stock. Leave the placeholder in, or clear the field to hide the line."
     },
     {
       "type": "text",

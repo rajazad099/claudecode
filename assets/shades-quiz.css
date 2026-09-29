@@ -115,12 +115,16 @@
   transition: opacity .45s cubic-bezier(.2, .7, .2, 1);
 }
 .psq__faces path {
+  transform-box: fill-box;
+  transform-origin: center;
   stroke: rgba(var(--psq-fg-rgb), .3);
   fill: none;
 }
 .psq__faces path.is-on { opacity: 1; }
 
 .psq__frames > g {
+  transform-box: fill-box;
+  transform-origin: center;
   fill: none;
   stroke: var(--psq-fg);
   stroke-width: 2.25;
@@ -138,6 +142,43 @@
 
 .psq__features { stroke: rgba(var(--psq-fg-rgb), .3); transition: opacity .45s ease; }
 .psq.is-faceless .psq__features { opacity: 0; }
+
+/* ------------------------------------------------------------- the reveal */
+
+/* Three beats, not one. The frame lowers onto the silhouette that has been
+   abstract the whole quiz, the archetype resolves, and the shelf follows. The
+   timings below are staged against each other rather than run together: the
+   frame lands at 620ms, the name is legible by 700ms, the first card starts
+   moving at 780ms. Held together they read as one gesture; run at once they
+   read as a page that could not decide what to load first.
+
+   Everything here is opacity and transform only, so it composites on the GPU
+   and cannot reflow the shelf underneath it. */
+.psq.is-revealing .psq__frames > g.is-on { animation: psq-fit .62s cubic-bezier(.22, .9, .25, 1) both; }
+.psq.is-revealing .psq__faces path.is-on { animation: psq-settle .5s ease both; }
+
+.psq.is-revealing .psq__alias { animation: psq-land .42s cubic-bezier(.2, .7, .2, 1) both; animation-delay: .34s; }
+.psq.is-revealing .psq__verdict,
+.psq.is-revealing .psq__spec { animation: psq-in .4s ease both; animation-delay: .5s; }
+.psq.is-revealing .psq__grid { animation: psq-in .45s ease both; animation-delay: .62s; }
+.psq.is-revealing .psq__nav--result { opacity: 0; }
+
+/* The frame is drawn at the eye line, so it comes down from above the brow and
+   settles — the gesture of a pair of glasses being put on, at the one moment in
+   the quiz where that is literally what is happening. */
+@keyframes psq-fit {
+  0%   { opacity: 0; transform: translateY(-26px) scale(1.06); }
+  60%  { opacity: 1; transform: translateY(2px) scale(.995); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes psq-settle {
+  from { opacity: 0; transform: scale(.97); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes psq-land {
+  from { opacity: 0; transform: translateY(8px); letter-spacing: .28em; }
+  to   { opacity: 1; transform: none; }
+}
 
 .psq__caption {
   position: absolute;
@@ -236,6 +277,46 @@
   border-color: var(--psq-fg);
 }
 .psq__opt[aria-checked="true"] .psq__opt-s { color: inherit; opacity: .7; }
+/* The live frame count under the intro copy. Set in the accent face at the
+   scale of the spec read-out, so it reads as a fact rather than a headline. */
+.psq__stat {
+  margin: -4px 0 0;
+  font-family: var(--psq-accent-font);
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--psq-faint);
+}
+
+/* THE FACE QUESTION.
+
+   Six outlines stacked in a list is six rows of text with a small picture
+   attached, and the picture is the whole point — nobody can name their own face
+   shape, they can only recognise it. Laid out as a grid of drawings with the
+   label underneath, the eye compares the shapes instead of reading the words.
+   Three across on desktop, two on a phone. */
+.psq__options.is-figures {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.psq__options.is-figures .psq__opt {
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 10px 13px;
+  text-align: center;
+}
+.psq__options.is-figures .psq__opt-txt { align-items: center; }
+.psq__options.is-figures .psq__opt-fig {
+  width: 54px;
+  height: 68px;
+  stroke-width: 2;
+  transition: opacity .2s ease, transform .25s cubic-bezier(.2, .7, .2, 1);
+}
+.psq__options.is-figures .psq__opt:hover .psq__opt-fig,
+.psq__options.is-figures .psq__opt:focus-visible .psq__opt-fig { transform: scale(1.06); }
+.psq__options.is-figures .psq__opt-s { display: none; }
+
 /* Options carrying a diagram lay out as a row; the rest are unaffected. */
 .psq__opt:has(.psq__opt-fig) { flex-direction: row; align-items: center; gap: 14px; }
 .psq__opt-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -559,6 +640,7 @@
 @media (min-width: 750px) {
   .psq__layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
   .psq__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .psq__options.is-figures { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   /* On the result screen the stage steps aside — the products are the payload. */
   .psq.is-result .psq__layout,
   .psq.is-lead .psq__layout { grid-template-columns: minmax(0, 1fr); }
@@ -578,4 +660,7 @@
     transition-duration: .01ms !important;
   }
   .psq__screen.is-active, .psq__slot { opacity: 1; transform: none; }
+  /* The reveal is pure animation, so with animations off there is nothing to
+     wait for — every part of the result is simply present. */
+  .psq.is-revealing .psq__nav--result { opacity: 1; }
 }
