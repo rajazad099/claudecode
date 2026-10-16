@@ -1,0 +1,140 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+{% include 'booster-seo' %}
+    <script>!function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}(window,document,"script","https://bzrcdn.openai.com/sdk/oaiq.min.js");oaiq("init",{pixelId:"SCdrQ4M6tEe3aCzFXUCJ5q",debug:true});</script>
+    {% render 'gokwik' %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+    {% render 'sr-checkout' %}
+    {%- unless settings.type_header_font.system? and settings.type_body_font.system? and settings.type_accent_font.system? -%}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {%- endunless -%}
+
+    {% comment %}<title>
+      {%- if current_tags %}{{ current_tags | join: ', ' }} {% endif -%} {{ page_title }}
+      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} | {{ shop.name }}{% endunless -%}
+    </title>{% endcomment %}
+
+    {% if page_description %}
+      {% comment %}<meta name="description" content="{{ page_description | escape }}">{% endcomment %}
+    {% endif %}
+
+    {% render 'meta-tags' %}
+    
+    <script src="{{ 'constants.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'pubsub.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
+    {{ content_for_header }}
+
+    {% render 'global-theme-styles' %}
+    
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    
+    {%- if settings.predictive_search_enabled -%}
+      <link rel="stylesheet" href="{{ 'component-predictive-search.css' | asset_url }}" media="print" onload="this.media='all'">
+      <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+
+    <script>
+    document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+    if (Shopify.designMode) {
+      document.documentElement.classList.add('shopify-design-mode');
+    }
+    </script>
+    {%- if request.design_mode -%}
+    <script src="{{ 'theme-editor.js' | asset_url }}" defer="defer"></script>
+    {%- endif -%}
+  <script>
+  function getUserTimezone() {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  }
+  function renderButton(showShiprocketCheckout) {
+    let modifiedCSS = "";
+    if (showShiprocketCheckout) {
+      modifiedCSS = `
+        button[name="checkout"]{display:none !important;}
+        .shopify-payment-button__button.shopify-payment-button__button--unbranded{display:none !important;}
+      `;
+    } else {
+      modifiedCSS = `
+        .shiprocket-headless{display:none !important;}
+      `;
+    }
+    const styleElement = document.createElement("style");
+    styleElement.textContent = modifiedCSS;
+    document.head.appendChild(styleElement);
+  }
+  function checkAndSetButtonVisibility() {
+    const indiaTimezones = ["Asia/Kolkata", "Asia/Calcutta"];
+    const userTimezone = getUserTimezone();
+    const isIndia = indiaTimezones.includes(userTimezone);
+    renderButton(isIndia);
+  }
+  checkAndSetButtonVisibility();
+</script>
+  
+</head>
+
+  <body class="body">
+    <a class="skip-to-content-link button visually-hidden" href="#MainContent">
+      {{ "accessibility.skip_to_text" | t }}
+    </a>
+
+    {%- if settings.cart_type == 'drawer' -%}
+      {%- render 'cart-drawer' -%}
+    {%- endif -%}
+    <div class="header-group">
+    {% sections 'header-group' %}
+    </div>
+    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+    
+    {% sections 'footer-group' %}
+    <ul hidden>
+      <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
+      <li id="a11y-new-window-message">{{ 'accessibility.link_messages.new_window' | t }}</li>
+    </ul>
+
+    {% render 'internationalization-global' %}
+    <script>
+      window.shopUrl = '{{ request.origin }}';
+      window.routes = {
+        cart_add_url: '{{ routes.cart_add_url }}',
+        cart_change_url: '{{ routes.cart_change_url }}',
+        cart_update_url: '{{ routes.cart_update_url }}',
+        cart_url: '{{ routes.cart_url }}',
+        predictive_search_url: '{{ routes.predictive_search_url }}'
+      };
+
+      window.cartStrings = {
+        error: `{{ 'sections.cart.cart_error' | t }}`,
+        quantityError: `{{ 'sections.cart.cart_quantity_error_html' | t: quantity: '[quantity]' }}`
+      }
+
+      window.variantStrings = {
+        addToCart: `{{ 'products.product.add_to_cart' | t }}`,
+        soldOut: `{{ 'products.product.sold_out' | t }}`,
+        unavailable: `{{ 'products.product.unavailable' | t }}`,
+        unavailable_with_option: `{{ 'products.product.value_unavailable' | t: option_value: '[value]' }}`,
+      }
+
+      window.accessibilityStrings = {
+        imageAvailable: `{{ 'products.product.media.image_available' | t: index: '[index]' }}`
+      }
+    </script>
+    <!-- Begin Shopify–payment-cart JavaScript -->
+
+<!-- End Shopify-payment JavaScript -->
+</body>
+</html>

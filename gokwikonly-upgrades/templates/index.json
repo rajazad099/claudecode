@@ -1,0 +1,774 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "image_banner": {
+      "type": "image-banner",
+      "blocks": {
+        "buttons_NrAWdR": {
+          "type": "buttons",
+          "disabled": true,
+          "settings": {
+            "btn_one_show": true,
+            "btn_one_txt": "enter",
+            "btn_one_link": "shopify://collections/all",
+            "btn_one_style": "link--underlined",
+            "btn_two_show": false,
+            "btn_two_txt": "Button label",
+            "btn_two_link": "",
+            "btn_two_style": "button--solid",
+            "btn_layout": "stacked",
+            "btn_color_scheme": "default",
+            "padding_top": 0,
+            "padding_bottom": 65
+          }
+        }
+      },
+      "block_order": [
+        "buttons_NrAWdR"
+      ],
+      "settings": {
+        "banner_size": "banner-style-large",
+        "banner_full_link": "shopify://collections/autumn-2026",
+        "image": "shopify://shop_images/Blue_Green_and_Pastel_Illustrated_Landscape_Desktop_Wallpaper.png",
+        "primary_image_size": "dt-full-bleed",
+        "image_padding": 0,
+        "main_image_animation": "none",
+        "image_blur": 0,
+        "primary_image_mobile_show": false,
+        "image_secondary": "shopify://shop_images/DSC09307_9790c474-f772-4939-bb8d-7d6424d7cba2.jpg",
+        "secondary_image_size": "dt-half-center",
+        "secondary_image_padding": 0,
+        "secondary_image_animation": "none",
+        "secondary_image_blur": 0,
+        "secondary_image_mobile_show": true,
+        "txt_position": "bottom_center",
+        "txt_alignment": "center",
+        "content_width": 50,
+        "fade_in_text": true,
+        "scroll_fade_effect": false,
+        "text_vertical_spacing": 10,
+        "top_padding": 0,
+        "bottom_padding": 0,
+        "text_color": "fg-white",
+        "bg_color": "rgba(0,0,0,0)",
+        "overlay_level": 0
+      }
+    },
+    "featured_collection_PWipPL": {
+      "type": "featured-collection",
+      "name": "t:sections.featured-collection.name",
+      "settings": {
+        "collection": "autumn-2026",
+        "content_alignment": "center",
+        "section_label": "AUTUMN 2026",
+        "heading": "NEW IN",
+        "heading_size": "h2",
+        "description": "",
+        "btn_enable": true,
+        "btn_label": "DISCOVER ALL 60 STYLES",
+        "btn_style": "solid",
+        "products_layout": "grid",
+        "arrow_style": "solid",
+        "content_width": "page-width",
+        "no_items": 8,
+        "mobile_grid": "2",
+        "tablet_grid": "3",
+        "dt_grid": "4",
+        "card_image_display": "second_image_hover",
+        "pagination_color_scheme": "body",
+        "show_prices": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "enable_quick_add": false,
+        "rollover_titles": false,
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "btn_color_scheme": "default",
+        "padding_top": 30,
+        "padding_bottom": 30,
+        "top_border": false,
+        "bottom_border": false,
+        "border_width": "normal",
+        "border_color": "dark"
+      }
+    },
+    "collection_lookbook_CQKYhT": {
+      "type": "collection-lookbook",
+      "name": "t:sections.collection-lookbook.presets.name",
+      "settings": {
+        "collection": "slim-metal-sunglasses",
+        "video_url": "shopify://files/videos/Reel_1.mp4",
+        "image_alignment": "right",
+        "products_layout": "grid",
+        "arrow_style": "solid",
+        "grid_columns": "double",
+        "grid_horizontal_position": "center",
+        "product_card_size": "normal",
+        "products_alignment": "center",
+        "no_items": 6,
+        "show_secondary_image": false,
+        "show_prices": true,
+        "show_vendor": false,
+        "section_label": "Road trip, anyone?",
+        "heading": "Bestseller, now in 6 new colors.",
+        "sub_heading": "",
+        "heading_size": "h2",
+        "section_heading_position": "normal",
+        "txt_alignment": "left",
+        "btn_txt": "SHOP ALL",
+        "btn_link": "shopify://collections/summer-is-coming",
+        "button_color_scheme": "default",
+        "btn_position": "middle",
+        "btn_style": "solid",
+        "content_width": "page-width-full-grid",
+        "card_spacing": 0,
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "padding_top_mobile": 0,
+        "padding_bottom_mobile": 0,
+        "padding_top": 90,
+        "padding_bottom": 60,
+        "top_border": false,
+        "bottom_border": false,
+        "border_width": "normal",
+        "border_color": "dark"
+      }
+    },
+    "featured_collection": {
+      "type": "featured-collection",
+      "custom_css": [],
+      "settings": {
+        "collection": "all",
+        "content_alignment": "center",
+        "section_label": "The whole thing",
+        "heading": "SHOP ALL STYLES",
+        "heading_size": "h2",
+        "description": "",
+        "btn_enable": true,
+        "btn_label": "Shop All",
+        "btn_style": "solid",
+        "products_layout": "grid",
+        "arrow_style": "solid-inverted",
+        "content_width": "page-width",
+        "no_items": 8,
+        "mobile_grid": "2",
+        "tablet_grid": "3",
+        "dt_grid": "4",
+        "card_image_display": "second_image_hover",
+        "pagination_color_scheme": "body",
+        "show_prices": true,
+        "show_vendor": false,
+        "show_rating": true,
+        "enable_quick_add": false,
+        "rollover_titles": true,
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "btn_color_scheme": "default",
+        "padding_top": 20,
+        "padding_bottom": 20,
+        "top_border": false,
+        "bottom_border": false,
+        "border_width": "normal",
+        "border_color": "dark"
+      }
+    },
+    "collection_cards": {
+      "type": "collection-cards",
+      "blocks": {
+        "featured_collection_AGUTVy": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "luxe-collection",
+            "image": "shopify://shop_images/Model_F2_PS_Jsstudio_Final-50.jpg",
+            "description": "",
+            "button_label": "Shop Now"
+          }
+        },
+        "featured_collection_Unk3dj": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "oval-sunglasses",
+            "image": "shopify://shop_images/Model_M2_PS_Jsstudio_Final-36.jpg",
+            "description": "",
+            "button_label": "Shop Now"
+          }
+        },
+        "featured_collection_B3jLY6": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "rimless",
+            "image": "shopify://shop_images/Model_M1_PS_Jsstudio_Final-29.jpg",
+            "description": "",
+            "button_label": "Shop Now"
+          }
+        },
+        "featured_collection_LC9Wai": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "rectangular-sunglasses",
+            "image": "shopify://shop_images/Model_F1_PS_Jsstudio_Final-24.jpg",
+            "description": "",
+            "button_label": "Shop Now"
+          }
+        },
+        "featured_collection_YY8DAN": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "new-arrivals",
+            "image": "shopify://shop_images/Model_F2_PS_Jsstudio_Final-19.jpg",
+            "description": "",
+            "button_label": "Shop Now"
+          }
+        },
+        "featured_collection_6PAHLc": {
+          "type": "featured_collection",
+          "settings": {
+            "collection": "sale",
+            "image": "shopify://shop_images/Model_M2_PS_Jsstudio_Final-25_1.jpg",
+            "description": "",
+            "button_label": "Shop Now"
+          }
+        }
+      },
+      "block_order": [
+        "featured_collection_AGUTVy",
+        "featured_collection_Unk3dj",
+        "featured_collection_B3jLY6",
+        "featured_collection_LC9Wai",
+        "featured_collection_YY8DAN",
+        "featured_collection_6PAHLc"
+      ],
+      "settings": {
+        "section_layout": "grid",
+        "arrow_style": "solid-inverted",
+        "grid_layout_mobile": "2",
+        "grid_layout_tablet": 3,
+        "grid_layout_desktop": 3,
+        "grid_spacing_vertical": 20,
+        "grid_spacing_horizontal": "default",
+        "content_width": "page-width",
+        "content_alignment": "center",
+        "section_label": "",
+        "heading": "Shop by Collection",
+        "sub_heading": "",
+        "btn_enable": false,
+        "btn_txt": "",
+        "btn_url": "",
+        "btn_style": "solid",
+        "btn_color_scheme": "default",
+        "card_layout": "overlay",
+        "card_ratio": "portrait",
+        "card_heading_visibility": "normal",
+        "card_heading_position": "bottom",
+        "card_heading_size": "normal",
+        "media_radius_top_only": false,
+        "show_card_buttons": false,
+        "cards_button_position": "inline",
+        "cards_button_style": "button--solid",
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "padding_top": 50,
+        "padding_bottom": 0,
+        "top_border": false,
+        "bottom_border": false,
+        "border_width": "normal",
+        "border_color": "dark"
+      }
+    },
+    "rich_text_NhBA4f": {
+      "type": "rich-text",
+      "blocks": {
+        "caption_rVzfny": {
+          "type": "caption",
+          "disabled": true,
+          "settings": {
+            "caption": "Add a tagline",
+            "alignment": "left",
+            "opacity": 100
+          }
+        },
+        "heading_4AVNjx": {
+          "type": "heading",
+          "disabled": true,
+          "settings": {
+            "heading": "No loud logos, just good taste.",
+            "heading_size": "h2",
+            "alignment": "center"
+          }
+        },
+        "text_LALpKh": {
+          "type": "text",
+          "disabled": true,
+          "settings": {
+            "text": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.</p>",
+            "text_size": "text-std",
+            "alignment": "left",
+            "text_indent": "noindent"
+          }
+        }
+      },
+      "block_order": [
+        "caption_rVzfny",
+        "heading_4AVNjx",
+        "text_LALpKh"
+      ],
+      "name": "t:sections.rich-text.presets.name",
+      "settings": {
+        "content_width": "page-width",
+        "bg_image_darken": 0,
+        "bg_image_blur": 0,
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "padding_top": 20,
+        "padding_bottom": 0,
+        "top_border": false,
+        "bottom_border": false,
+        "border_width": "normal",
+        "border_color": "dark"
+      }
+    },
+    "17820601839efef460": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "featured_product_xQ3Arm": {
+      "type": "featured-product",
+      "blocks": {
+        "title_AVQjWn": {
+          "type": "title",
+          "settings": {
+            "heading_size": "h3"
+          }
+        },
+        "price_7Nh6Lb": {
+          "type": "price",
+          "settings": {
+            "price_show_taxes": true
+          }
+        },
+        "button_B7fFQq": {
+          "type": "button",
+          "settings": {
+            "button_type": "link",
+            "button_text": "Shop now",
+            "button_style": "solid"
+          }
+        }
+      },
+      "block_order": [
+        "title_AVQjWn",
+        "price_7Nh6Lb",
+        "button_B7fFQq"
+      ],
+      "disabled": true,
+      "name": "t:sections.featured-product.presets.name",
+      "settings": {
+        "product": "fargo-vintage-unisex-sunglasses",
+        "show_tag": false,
+        "image": "shopify://shop_images/DSC06870_5fbedf4d-1237-490a-ae95-f1e3eaf5aa6f.jpg",
+        "image_ratio": "portrait",
+        "secondary_image_scale": "small",
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "btn_color_scheme": "default",
+        "top_border": false,
+        "bottom_border": false,
+        "border_width": "normal",
+        "border_color": "dark",
+        "txt_alignment": "left",
+        "content_width": "page-width",
+        "image_alignment": "right",
+        "card_spacing": 20,
+        "top_padding": 20,
+        "bottom_padding": 0
+      }
+    },
+    "17605983915001eb98": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "collection_lookbook": {
+      "type": "collection-lookbook",
+      "disabled": true,
+      "settings": {
+        "collection": "fargo",
+        "video_url": "shopify://files/videos/Reel 1 (3).mp4",
+        "image_alignment": "left",
+        "products_layout": "slider",
+        "arrow_style": "none",
+        "grid_columns": "double",
+        "grid_horizontal_position": "center",
+        "product_card_size": "normal",
+        "products_alignment": "center",
+        "no_items": 4,
+        "show_secondary_image": false,
+        "show_prices": true,
+        "show_vendor": false,
+        "section_label": "Shades of the season",
+        "heading": "Featured Frames",
+        "sub_heading": "",
+        "heading_size": "h2",
+        "section_heading_position": "normal",
+        "txt_alignment": "center",
+        "btn_txt": "",
+        "btn_link": "",
+        "button_color_scheme": "default",
+        "btn_position": "middle",
+        "btn_style": "solid",
+        "content_width": "page-width-full-grid",
+        "card_spacing": 0,
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "padding_top_mobile": 20,
+        "padding_bottom_mobile": 0,
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "top_border": true,
+        "bottom_border": true,
+        "border_width": "full",
+        "border_color": "dark"
+      }
+    },
+    "collection_lookbook_ath47Q": {
+      "type": "collection-lookbook",
+      "disabled": true,
+      "name": "t:sections.collection-lookbook.presets.name",
+      "settings": {
+        "collection": "hadid",
+        "video_url": "shopify://files/videos/Reel 2 (3).mp4",
+        "image_alignment": "right",
+        "products_layout": "grid",
+        "arrow_style": "solid",
+        "grid_columns": "single",
+        "grid_horizontal_position": "center",
+        "product_card_size": "normal",
+        "products_alignment": "center",
+        "no_items": 4,
+        "show_secondary_image": false,
+        "show_prices": true,
+        "show_vendor": false,
+        "section_label": "NEW IN",
+        "heading": "FEATURED BAYONETTA FRAMES",
+        "sub_heading": "",
+        "heading_size": "h2",
+        "section_heading_position": "normal",
+        "txt_alignment": "center",
+        "btn_txt": "",
+        "btn_link": "",
+        "button_color_scheme": "default",
+        "btn_position": "middle",
+        "btn_style": "solid",
+        "content_width": "page-width-full-grid",
+        "card_spacing": 0,
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "padding_top_mobile": 0,
+        "padding_bottom_mobile": 0,
+        "padding_top": 50,
+        "padding_bottom": 60,
+        "top_border": false,
+        "bottom_border": false,
+        "border_width": "normal",
+        "border_color": "dark"
+      }
+    },
+    "collection_lookbook_CkeTh7": {
+      "type": "collection-lookbook",
+      "disabled": true,
+      "name": "t:sections.collection-lookbook.presets.name",
+      "settings": {
+        "collection": "vancouver",
+        "video_url": "shopify://files/videos/Motivational Travel Instagram Reels Video.mp4",
+        "image_alignment": "left",
+        "products_layout": "slider",
+        "arrow_style": "solid",
+        "grid_columns": "single",
+        "grid_horizontal_position": "center",
+        "product_card_size": "normal",
+        "products_alignment": "center",
+        "no_items": 2,
+        "show_secondary_image": false,
+        "show_prices": true,
+        "show_vendor": false,
+        "section_label": "FEATURED",
+        "heading": "VINTAGE OVERSIZED FRAMES",
+        "sub_heading": "",
+        "heading_size": "h2",
+        "section_heading_position": "normal",
+        "txt_alignment": "center",
+        "btn_txt": "",
+        "btn_link": "",
+        "button_color_scheme": "default",
+        "btn_position": "middle",
+        "btn_style": "solid",
+        "content_width": "page-width-full-grid",
+        "card_spacing": 0,
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "padding_top_mobile": 0,
+        "padding_bottom_mobile": 20,
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "top_border": false,
+        "bottom_border": false,
+        "border_width": "normal",
+        "border_color": "dark"
+      }
+    },
+    "1750582013849a6d9f": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "175058212996acdbf6": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "section_shop_the_look_Dai4Xd": {
+      "type": "section-shop-the-look",
+      "blocks": {
+        "product_hFjQH3": {
+          "type": "product",
+          "settings": {
+            "product": "budapest-classy-unisex-sunglasses"
+          }
+        }
+      },
+      "block_order": [
+        "product_hFjQH3"
+      ],
+      "disabled": true,
+      "name": "t:sections.shop_the_look.presets.name",
+      "settings": {
+        "caption": "",
+        "heading": "Featured looks",
+        "subheading": "",
+        "heading_size": "h2",
+        "heading_alignment": "center",
+        "section_heading_position": "top",
+        "btn_txt": "",
+        "btn_link": "",
+        "button_color": "primary-colour",
+        "btn_position": "top",
+        "btn_style": "solid",
+        "image": "shopify://shop_images/3-4.jpg",
+        "image_ratio": "portrait",
+        "dt_image_width": 50,
+        "content_width": "page-width",
+        "card_spacing": 10,
+        "txt_position_desktop": "middle",
+        "content_hoz_alignment": "center",
+        "card_grid_layout": "one",
+        "card_layout": "normal",
+        "card_size": "normal",
+        "show_price": true,
+        "show_vendor": false,
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "top_padding": 30,
+        "bottom_padding": 10,
+        "top_border": false,
+        "bottom_border": false,
+        "border_width": "normal",
+        "border_color": "dark"
+      }
+    },
+    "section_shop_the_look_mLjLUN": {
+      "type": "section-shop-the-look",
+      "blocks": {
+        "product_XkhQJz": {
+          "type": "product",
+          "settings": {
+            "product": "firefox-y2k-sporty-sunglasses"
+          }
+        }
+      },
+      "block_order": [
+        "product_XkhQJz"
+      ],
+      "disabled": true,
+      "name": "t:sections.shop_the_look.presets.name",
+      "settings": {
+        "caption": "",
+        "heading": "",
+        "subheading": "",
+        "heading_size": "h2",
+        "heading_alignment": "left",
+        "section_heading_position": "normal",
+        "btn_txt": "",
+        "btn_link": "",
+        "button_color": "primary-colour",
+        "btn_position": "top",
+        "btn_style": "solid",
+        "image": "shopify://shop_images/29-4.jpg",
+        "image_ratio": "portrait",
+        "dt_image_width": 50,
+        "content_width": "page-width",
+        "card_spacing": 10,
+        "txt_position_desktop": "middle",
+        "content_hoz_alignment": "center",
+        "card_grid_layout": "one",
+        "card_layout": "normal",
+        "card_size": "normal",
+        "show_price": true,
+        "show_vendor": false,
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "top_padding": 10,
+        "bottom_padding": 10,
+        "top_border": false,
+        "bottom_border": false,
+        "border_width": "normal",
+        "border_color": "dark"
+      }
+    },
+    "section_shop_the_look_txCpeR": {
+      "type": "section-shop-the-look",
+      "blocks": {
+        "product_m9canc": {
+          "type": "product",
+          "settings": {
+            "product": "vengeance-2-0-futuristic-techno-sunglasses"
+          }
+        }
+      },
+      "block_order": [
+        "product_m9canc"
+      ],
+      "disabled": true,
+      "name": "t:sections.shop_the_look.presets.name",
+      "settings": {
+        "caption": "",
+        "heading": "",
+        "subheading": "",
+        "heading_size": "h2",
+        "heading_alignment": "left",
+        "section_heading_position": "normal",
+        "btn_txt": "",
+        "btn_link": "",
+        "button_color": "primary-colour",
+        "btn_position": "top",
+        "btn_style": "solid",
+        "image": "shopify://shop_images/WhatsAppImage2023-10-31at14.30.59.jpg",
+        "image_ratio": "portrait",
+        "dt_image_width": 50,
+        "content_width": "page-width",
+        "card_spacing": 10,
+        "txt_position_desktop": "middle",
+        "content_hoz_alignment": "center",
+        "card_grid_layout": "one",
+        "card_layout": "normal",
+        "card_size": "normal",
+        "show_price": true,
+        "show_vendor": false,
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "top_padding": 10,
+        "bottom_padding": 30,
+        "top_border": false,
+        "bottom_border": false,
+        "border_width": "normal",
+        "border_color": "dark"
+      }
+    },
+    "17508708040e5a0b7a": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "1760543991f33719a8": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "collection_lookbook_PWFtBW": {
+      "type": "collection-lookbook",
+      "disabled": true,
+      "name": "t:sections.collection-lookbook.presets.name",
+      "settings": {
+        "collection": "this-was-trash",
+        "video_url": "shopify://files/videos/Handycam.mp4",
+        "image_alignment": "left",
+        "products_layout": "grid",
+        "arrow_style": "solid",
+        "grid_columns": "single",
+        "grid_horizontal_position": "center",
+        "product_card_size": "small",
+        "products_alignment": "center",
+        "no_items": 3,
+        "show_secondary_image": true,
+        "show_prices": true,
+        "show_vendor": false,
+        "section_label": "We turned packets of chips into Sunglasses",
+        "heading": "Reborn Sunglasses in association with WITHOUT",
+        "sub_heading": "",
+        "heading_size": "h2",
+        "section_heading_position": "normal",
+        "txt_alignment": "center",
+        "btn_txt": "",
+        "btn_link": "",
+        "button_color_scheme": "default",
+        "btn_position": "middle",
+        "btn_style": "solid",
+        "content_width": "page-width-full-grid",
+        "card_spacing": 0,
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 40,
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "top_border": false,
+        "bottom_border": false,
+        "border_width": "normal",
+        "border_color": "dark"
+      }
+    },
+    "1781436376e3866720": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    }
+  },
+  "order": [
+    "image_banner",
+    "featured_collection_PWipPL",
+    "collection_lookbook_CQKYhT",
+    "featured_collection",
+    "collection_cards",
+    "rich_text_NhBA4f",
+    "17820601839efef460",
+    "featured_product_xQ3Arm",
+    "17605983915001eb98",
+    "collection_lookbook",
+    "collection_lookbook_ath47Q",
+    "collection_lookbook_CkeTh7",
+    "1750582013849a6d9f",
+    "175058212996acdbf6",
+    "section_shop_the_look_Dai4Xd",
+    "section_shop_the_look_mLjLUN",
+    "section_shop_the_look_txCpeR",
+    "17508708040e5a0b7a",
+    "1760543991f33719a8",
+    "collection_lookbook_PWFtBW",
+    "1781436376e3866720"
+  ]
+}

@@ -1,0 +1,39 @@
+{%- comment -%}
+  Splits the house naming convention into parts without touching product data.
+  "[ Toronto ] Oversized Y2k Sunglasses : Orange"
+    part: 'model'  -> Toronto
+    part: 'sub'    -> Oversized Y2k Sunglasses · Orange
+    part: 'colour' -> Orange
+    part: 'style'  -> Oversized Y2k Sunglasses
+  Titles without brackets fall back to the full title as the model name.
+{%- endcomment -%}
+{%- liquid
+  assign t = title | strip
+  assign model = t
+  assign rest = ''
+  if t contains '[' and t contains ']'
+    assign head = t | split: ']' | first
+    assign model = head | remove_first: '[' | strip
+    assign rest = t | remove_first: head | remove_first: ']' | strip
+  endif
+  assign rest = rest | replace: ' : ', ' · ' | replace: ' - ', ' · ' | replace: ' – ', ' · '
+  assign colour = ''
+  if rest contains ' · '
+    assign colour = rest | split: ' · ' | last | strip
+  endif
+  case part
+    when 'model'
+      echo model
+    when 'sub'
+      echo rest
+    when 'colour'
+      echo colour
+    when 'style'
+      if colour != ''
+        assign tail = ' · ' | append: colour
+        echo rest | remove_last: tail
+      else
+        echo rest
+      endif
+  endcase
+-%}
