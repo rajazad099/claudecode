@@ -78,6 +78,11 @@
   const fmt = (d, withWeekday = true) => d.toLocaleDateString('en-IN', { timeZone: 'UTC', weekday: withWeekday ? 'short' : undefined, day: 'numeric', month: 'short' });
   const sameDay = (a, b) => key(a) === key(b);
 
+  // Only touch the DOM when something actually changed. Rewriting identical text still counts
+  // as a DOM mutation, which would keep GoKwik's checkout button (it waits for a quiet DOM) loading.
+  const setText = (el, v) => { if (el.textContent !== v) el.textContent = v; };
+  const setHTML = (el, v) => { if (el.innerHTML !== v) el.innerHTML = v; };
+  const setHidden = (el, v) => { if (el && el.hidden !== v) el.hidden = v; };
   const readPin = () => { try { return localStorage.getItem('ps:pin') || ''; } catch (_) { return ''; } };
   const paint = () => {
     const now = istNow();
@@ -97,15 +102,15 @@
     // Minimal: a prompt until a pincode is entered, then one line with the estimated range.
     $$('[data-ps-eta]').forEach((el) => {
       const line = el.closest('.ps-ship__eta');
-      if (!pin) { if (line) line.hidden = false; el.textContent = 'Enter your pincode to check estimated delivery'; return; }
-      if (line) line.hidden = false;
-      el.innerHTML = `Estimated delivery to ${pin}: ${arrive}`;
+      setHidden(line, false);
+      if (!pin) { setText(el, 'Enter your pincode to check estimated delivery'); return; }
+      setHTML(el, `Estimated delivery to ${pin}: ${arrive}`);
     });
 
     // Countdown only when dispatch is less than 8 hours away.
     const mins = Math.floor((ship - now) / 60000);
-    $$('[data-ps-countdown]').forEach((el) => { el.hidden = true; });
-    $$('[data-ps-ship-short]').forEach((el) => { el.textContent = sameDay(ship, now) ? 'Ships today' : `Ships ${fmt(ship)}`; });
+    $$('[data-ps-countdown]').forEach((el) => setHidden(el, true));
+    $$('[data-ps-ship-short]').forEach((el) => setText(el, sameDay(ship, now) ? 'Ships today' : `Ships ${fmt(ship)}`));
     $$('[data-ps-pin] input').forEach((i) => { if (pin && !i.value) i.value = pin; });
   };
   document.addEventListener('submit', (e) => {
@@ -124,7 +129,12 @@
   const drawer = document.querySelector('cart-drawer');
   if (drawer && 'MutationObserver' in window) {
     let t;
-    new MutationObserver(() => { clearTimeout(t); t = setTimeout(paint, 50); }).observe(drawer, { childList: true, subtree: true });
+    new MutationObserver((records) => {
+      // React only to the theme swapping in new cart HTML (element nodes added), not to text updates.
+      if (!records.some((r) => Array.from(r.addedNodes).some((n) => n.nodeType === 1))) return;
+      clearTimeout(t);
+      t = setTimeout(paint, 50);
+    }).observe(drawer, { childList: true, subtree: true });
   }
 
   /* ---------- One-tap add from "Pairs well with" ---------- */
