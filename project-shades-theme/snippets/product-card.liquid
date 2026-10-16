@@ -16,7 +16,8 @@
   endif
 -%}
 <article class="card">
-  <a class="card__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}" tabindex="-1">
+  <div class="card__media">
+  <a class="card__media-link" href="{{ product.url }}" aria-label="{{ product.title | escape }}" tabindex="-1">
     {%- if img1 -%}
       {{ img1.preview_image | image_url: width: 720 | image_tag: loading: lazy, sizes: sizes, widths: '360, 540, 720', alt: product.title }}
       {%- if img2 and img2.media_type == 'image' -%}
@@ -33,13 +34,14 @@
       {%- endfor -%}
       {%- if product.compare_at_price > product.price -%}
         {%- assign off = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
-        <span class="badge">−{{ off }}%</span>
+        <span class="badge">−{{ off | floor }}%</span>
       {%- endif -%}
     {%- endif -%}
   </div>
   {%- if quick -%}
     <button class="card__add" type="button" data-quick-add="{{ variant.id }}" aria-label="Add {{ product.title | escape }} to bag">{% render 'icon', name: 'plus' %}</button>
   {%- endif -%}
+  </div>
   <a class="card__body" href="{{ product.url }}">
     {%- capture col -%}{% render 'ps-name', title: product.title, part: 'colour' %}{%- endcapture -%}
     {%- if col != blank -%}<span class="label label--muted">[ {{ col }} ]</span>{%- endif -%}
@@ -47,7 +49,7 @@
     <span class="card__sub">{% render 'ps-name', title: product.title, part: 'style' %}</span>
     <span class="card__meta">
       {% render 'price', price: product.price, compare: product.compare_at_price %}
-      {%- if rating_count > 0 -%}{% render 'stars', rating: rating %}{%- endif -%}
+      {%- if rating_count > 0 -%}<span class="card__rating" aria-label="Rated {{ rating | round: 1 }} out of 5">★ {{ rating | round: 1 }}</span>{%- endif -%}
     </span>
   </a>
 </article>

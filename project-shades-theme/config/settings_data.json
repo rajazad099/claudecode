@@ -30,7 +30,7 @@
     "secClr": "#ffffff",
     "goEnable": true,
     "main-titile": "Checkout",
-    "sub-titile": "UPI · Cards · Cash on delivery",
+    "sub-titile": "",
     "goBuynowEnable": true,
     "buynow-titile": "Buy now",
     "btnBClr": "#FF5A1F",

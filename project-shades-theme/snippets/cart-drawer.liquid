@@ -106,7 +106,7 @@
           <div class="cart-sum__row cart-sum__row--save"><span>You save</span><span>{{ cart.total_discount | money_without_trailing_zeros }}</span></div>
         {%- endif -%}
         <div class="cart-sum__row cart-sum__row--total"><span>Total</span><span>{{ cart.total_price | money_without_trailing_zeros }}</span></div>
-        <span class="cart-sum__fine">{% render 'icon', name: 'truck' %} Free shipping · Cash on delivery available · <span data-eta-short>Dispatched in 24h</span></span>
+        <span class="cart-sum__fine">{% render 'icon', name: 'truck' %} Free shipping · COD available · <span data-eta-short>Ships in 24h</span></span>
       </div>
       {%- if settings.goEnable -%}
         {% render 'gokwik-checkout' %}
