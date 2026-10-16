@@ -2492,5 +2492,17 @@
         "default": "#ffffff"
       }
     ]
+  },
+  {
+    "name": "PS: offers & delivery",
+    "settings": [
+      { "type": "header", "content": "Bundle offer (keep identical to your Kite discount)" },
+      { "type": "range", "id": "ps_tier1_qty", "label": "Tier 1: pairs", "min": 2, "max": 5, "step": 1, "default": 2 },
+      { "type": "text", "id": "ps_tier1_label", "label": "Tier 1: reward", "default": "10% off" },
+      { "type": "range", "id": "ps_tier2_qty", "label": "Tier 2: pairs", "min": 3, "max": 6, "step": 1, "default": 3 },
+      { "type": "text", "id": "ps_tier2_label", "label": "Tier 2: reward", "default": "15% off" },
+      { "type": "header", "content": "Delivery dates" },
+      { "type": "textarea", "id": "ps_holidays", "label": "No-dispatch holidays", "info": "One date per line as YYYY-MM-DD. Sundays are already excluded.", "default": "2026-10-02\n2027-01-26\n2027-08-15\n2027-10-02" }
+    ]
   }
 ]

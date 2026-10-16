@@ -1,0 +1,18 @@
+{%- comment -%}
+  Delivery-date box. All maths runs in ps-upgrades.js in India time:
+  10am daily dispatch cut-off, no Sunday/holiday dispatch, no Sunday delivery.
+  Transit table: shop metafield ps_ops.delivery (kept up to date from real delivered orders),
+  with a built-in fallback in the script.
+{%- endcomment -%}
+<div class="ps ps-ship" {{ block.shopify_attributes }} data-ps-ship>
+  <p class="ps-ship__eta">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v10H3zM14 9h4l3 3v4h-7"/><circle cx="7" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></svg>
+    <span data-ps-eta>Ships by 10am on working days. Delivered in 3–7 days across India.</span>
+  </p>
+  <p class="ps-ship__count" data-ps-countdown hidden></p>
+  <form class="ps-ship__pin" data-ps-pin novalidate>
+    <label class="visually-hidden" for="PsPin-{{ section.id }}">Pincode</label>
+    <input id="PsPin-{{ section.id }}" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="Enter pincode for delivery date" autocomplete="postal-code">
+    <button type="submit">Check</button>
+  </form>
+</div>

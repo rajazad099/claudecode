@@ -83,6 +83,14 @@
   checkAndSetButtonVisibility();
 </script>
   
+    {{ 'ps-upgrades.css' | asset_url | stylesheet_tag }}
+    <script>
+      window.PS_CFG = { holidays: {{ settings.ps_holidays | newline_to_br | split: '<br />' | json }} };
+      {%- if shop.metafields.ps_ops.delivery != blank %}
+      window.PS_DELIVERY = {{ shop.metafields.ps_ops.delivery.value | json }};
+      {%- endif %}
+    </script>
+    <script src="{{ 'ps-upgrades.js' | asset_url }}" defer="defer"></script>
 </head>
 
   <body class="body">

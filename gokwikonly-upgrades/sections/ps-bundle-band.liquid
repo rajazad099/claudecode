@@ -1,0 +1,43 @@
+{%- comment -%} Buy 2 / Buy 3 band. Numbers come from Theme settings → PS: bundle offer, so they always match the cart. {%- endcomment -%}
+{%- assign s = section.settings -%}
+<section class="ps ps-band">
+  <div class="ps-band__wrap">
+    <div class="ps-band__copy">
+      {%- if s.label != blank -%}<span class="ps-label ps-band__label">{{ s.label }}</span>{%- endif -%}
+      <h2 class="ps-band__heading">{{ s.heading }}</h2>
+      {%- if s.text != blank -%}<p class="ps-band__text">{{ s.text }}</p>{%- endif -%}
+      {%- if s.btn_label != blank -%}
+        <a class="ps-band__btn" href="{{ s.btn_link | default: routes.all_products_collection_url }}">{{ s.btn_label }}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      {%- endif -%}
+    </div>
+    <div class="ps-band__tiers">
+      <div class="ps-tier">
+        <span class="ps-label">Buy</span>
+        <span class="ps-tier__qty">{{ settings.ps_tier1_qty }}</span>
+        <span class="ps-tier__off">Get {{ settings.ps_tier1_label }}</span>
+      </div>
+      <div class="ps-tier ps-tier--hero">
+        <span class="ps-label">Buy</span>
+        <span class="ps-tier__qty">{{ settings.ps_tier2_qty }}</span>
+        <span class="ps-tier__off">Get {{ settings.ps_tier2_label }}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PS: Buy 2 / Buy 3 band",
+  "settings": [
+    { "type": "paragraph", "content": "The numbers come from Theme settings → PS: bundle offer. Keep them identical to your Kite discount." },
+    { "type": "text", "id": "label", "label": "Label", "default": "The more the merrier" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "One for you. One for the group chat." },
+    { "type": "text", "id": "text", "label": "Text", "default": "Mix any frames. The discount applies automatically in your bag — no code needed." },
+    { "type": "text", "id": "btn_label", "label": "Button", "default": "Build your pair" },
+    { "type": "url", "id": "btn_link", "label": "Button link" }
+  ],
+  "presets": [ { "name": "PS: Buy 2 / Buy 3 band" } ]
+}
+{% endschema %}

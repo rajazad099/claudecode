@@ -220,6 +220,7 @@
           </div>
           <div id="CartDrawer-CartErrors" role="alert"></div>
         </form>
+        {%- render 'ps-cart-upsell' -%}
       </cart-drawer-items>
       <div class="drawer__footer">
         {%- if settings.show_cart_note -%}
@@ -304,6 +305,7 @@
           </span>
         </div>
 
+        {%- render 'ps-cart-trust', part: 'line' -%}
         <div class="cart__ctas">
         {%- if settings.cart_show_review_button -%}
         <div><a href="{{ routes.cart_url }}" class="button button--outline">{{ 'general.cart.view' | t }}</a></div> 
@@ -319,6 +321,7 @@
           </button>
           <div class="shiprocket-headless" data-type="mini-cart"></div> -->
           {% render 'gokwik-checkout' %}
+          {%- render 'ps-cart-trust', part: 'pay' -%}
           {% if settings.cart_show_payment_methods %}
           <div class="cart-footer__payment-methods">
           <ul class="payments_list_cart" role="list">

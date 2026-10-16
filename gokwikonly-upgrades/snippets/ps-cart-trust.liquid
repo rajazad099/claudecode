@@ -1,0 +1,9 @@
+{%- comment -%} Trust line above checkout ('line') and payment row below it ('pay'). No COD callout by design. {%- endcomment -%}
+{%- if part == 'pay' -%}
+  <div class="ps ps-pay ps-label"><span>UPI</span><span>·</span><span>Cards</span><span>·</span><span>Wallets</span></div>
+{%- else -%}
+  <p class="ps ps-cart-trust">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v10H3zM14 9h4l3 3v4h-7"/><circle cx="7" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></svg>
+    <span>Free shipping · <span data-ps-ship-short>Ships by 10am on working days</span></span>
+  </p>
+{%- endif -%}

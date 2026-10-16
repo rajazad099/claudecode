@@ -1,0 +1,47 @@
+{%- comment -%}
+  "Pairs well with" in the cart drawer.
+  Order of picks: frames actually bought together with what's in the bag
+  (product metafield custom.pairs_with, refreshed monthly from orders),
+  then last-30-day bestsellers (collection 'bestsellers', refreshed monthly).
+  Never shows items already in the bag or anything sold out.
+{%- endcomment -%}
+{%- if cart.item_count > 0 -%}
+  {%- liquid
+    assign in_cart = cart.items | map: 'product_id' | join: ','
+    assign seen = ',' | append: in_cart | append: ','
+    assign shown = 0
+  -%}
+  {%- capture cards -%}
+    {%- for item in cart.items -%}
+      {%- for p in item.product.metafields.custom.pairs_with.value -%}
+        {%- assign key = ',' | append: p.id | append: ',' -%}
+        {%- if shown < 8 and p.available -%}
+          {%- unless seen contains key -%}
+            {%- render 'ps-upsell-card', product: p -%}
+            {%- assign seen = seen | append: p.id | append: ',' -%}
+            {%- assign shown = shown | plus: 1 -%}
+          {%- endunless -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endfor -%}
+    {%- for p in collections['bestsellers'].products limit: 20 -%}
+      {%- assign key = ',' | append: p.id | append: ',' -%}
+      {%- if shown < 8 and p.available -%}
+        {%- unless seen contains key -%}
+          {%- render 'ps-upsell-card', product: p -%}
+          {%- assign seen = seen | append: p.id | append: ',' -%}
+          {%- assign shown = shown | plus: 1 -%}
+        {%- endunless -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- if shown > 0 -%}
+    <div class="ps ps-upsell">
+      <div class="ps-upsell__head">
+        <h3>Pairs well with</h3>
+        <span class="ps-label">Tap to add</span>
+      </div>
+      <div class="ps-upsell__rail">{{ cards }}</div>
+    </div>
+  {%- endif -%}
+{%- endif -%}

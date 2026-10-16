@@ -1,0 +1,64 @@
+{%- comment -%}
+  Face-fit row + "Find your fit" sheet. Reads the store's face-type collections
+  (small-face-types, medium-face-type, large-face-types); hides itself if a product is in none.
+  Optional product metafield custom.frame_width (mm) adds the width line.
+{%- endcomment -%}
+{%- liquid
+  assign fit_small = false
+  assign fit_medium = false
+  assign fit_large = false
+  for c in product.collections
+    case c.handle
+      when 'small-face-types'
+        assign fit_small = true
+      when 'medium-face-type'
+        assign fit_medium = true
+      when 'large-face-types'
+        assign fit_large = true
+    endcase
+  endfor
+  assign width = product.metafields.custom.frame_width.value
+  capture model
+    render 'ps-name', title: product.title, part: 'model'
+  endcapture
+-%}
+{%- if fit_small or fit_medium or fit_large -%}
+  <div class="ps ps-fit" {{ block.shopify_attributes }}>
+    <div class="ps-fit__left">
+      <span class="ps-fit__title">Fits{% if width != blank %} <span>· {{ width }}mm wide</span>{% endif %}</span>
+      <span class="ps-fit__faces">
+        <span class="ps-label ps-fit__face{% if fit_small %} is-on{% endif %}">Small</span>
+        <span class="ps-label ps-fit__face{% if fit_medium %} is-on{% endif %}">Medium</span>
+        <span class="ps-label ps-fit__face{% if fit_large %} is-on{% endif %}">Large</span>
+        <span class="ps-label ps-fit__word">faces</span>
+      </span>
+    </div>
+    <button class="ps-fit__open" type="button" data-ps-open="PsFit-{{ section.id }}">Find my fit</button>
+  </div>
+
+  <dialog class="ps ps-sheet" id="PsFit-{{ section.id }}" aria-labelledby="PsFitTitle-{{ section.id }}">
+    <div class="ps-sheet__inner">
+      <div class="ps-sheet__head">
+        <h3 id="PsFitTitle-{{ section.id }}">Find your fit</h3>
+        <button class="ps-sheet__close" type="button" data-ps-close aria-label="Close">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <p style="margin:0">No tape measure? Use any debit or credit card. It's 85.6mm wide, the same everywhere.</p>
+      <ol>
+        <li>Stand in front of a mirror and hold the card flat under your nose, one short edge in the middle of your nose.</li>
+        <li>Look where the other edge lands.</li>
+        <li>Ends at the middle of your eye → <b>small face</b>. Outer corner of your eye → <b>medium</b>. Past your eye → <b>large</b>.</li>
+      </ol>
+      <table>
+        <thead><tr><th class="ps-label">Face</th><th class="ps-label">Frame width</th><th class="ps-label">Feels like</th></tr></thead>
+        <tbody>
+          <tr><td>Small</td><td>Under 135mm</td><td>Snug, sits close</td></tr>
+          <tr><td>Medium</td><td>135–145mm</td><td>Most people land here</td></tr>
+          <tr><td>Large</td><td>145mm +</td><td>Room at the temples</td></tr>
+        </tbody>
+      </table>
+      {%- if width != blank -%}<p style="margin:0"><b>{{ model | strip }}</b> is {{ width }}mm wide.</p>{%- endif -%}
+    </div>
+  </dialog>
+{%- endif -%}
