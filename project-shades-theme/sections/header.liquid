@@ -1,0 +1,106 @@
+{%- assign menu = section.settings.menu -%}
+<header class="header">
+  <div class="wrap header__bar">
+    <div class="header__left">
+      <button class="icon-btn icon-btn--menu" type="button" data-open-drawer="MenuDrawer" aria-label="Open menu" aria-controls="MenuDrawer">{% render 'icon', name: 'menu' %}</button>
+    </div>
+    <a class="header__logo" href="{{ routes.root_url }}" style="--logo-w: {{ section.settings.logo_width_mobile }}px; --logo-w-dt: {{ section.settings.logo_width }}px">
+      {%- if settings.logo != blank -%}
+        {{ settings.logo | image_url: width: 600 | image_tag: alt: shop.name, loading: 'eager', widths: '200, 300, 400, 600', sizes: '(min-width: 990px) 200px, 160px' }}
+      {%- else -%}
+        <span class="header__logo-text">{{ shop.name }}</span>
+      {%- endif -%}
+    </a>
+
+    <nav class="header__nav" aria-label="Main">
+      <ul class="nav-desktop">
+        {%- for link in menu.links -%}
+          <li>
+            {%- if link.links.size > 0 -%}
+              <button type="button" aria-haspopup="true">{{ link.title }} {% render 'icon', name: 'chevron' %}</button>
+              <div class="nav-dd">
+                <a href="{{ link.url }}"><b>All {{ link.title | downcase }}</b></a>
+                {%- for child in link.links -%}<a href="{{ child.url }}">{{ child.title }}</a>{%- endfor -%}
+              </div>
+            {%- else -%}
+              <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    <div class="header__right">
+      <button class="icon-btn" type="button" data-open-drawer="SearchPop" aria-label="Search" aria-controls="SearchPop">{% render 'icon', name: 'search' %}</button>
+      <a class="icon-btn" href="{{ routes.cart_url }}" data-cart-toggle aria-label="Bag, {{ cart.item_count }} items">
+        {% render 'icon', name: 'bag' %}
+        <span class="cart-count" data-cart-count data-count="{{ cart.item_count }}">{{ cart.item_count }}</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<div class="drawer drawer--left" id="MenuDrawer" role="dialog" aria-modal="true" aria-label="Menu" tabindex="-1">
+  <div class="drawer__head">
+    <span class="label">Menu</span>
+    <button class="icon-btn" type="button" data-close aria-label="Close menu">{% render 'icon', name: 'close' %}</button>
+  </div>
+  <div class="drawer__body">
+    <ul class="menu-list">
+      {%- for link in menu.links -%}
+        <li>
+          {%- if link.links.size > 0 -%}
+            <details>
+              <summary>{{ link.title }} {% render 'icon', name: 'plus' %}</summary>
+              <div class="menu-sub">
+                {%- for child in link.links -%}<a href="{{ child.url }}">{{ child.title }}</a>{%- endfor -%}
+              </div>
+            </details>
+          {%- else -%}
+            <a href="{{ link.url }}">{{ link.title }}</a>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+    <div class="menu-help">
+      <span class="label label--muted">Need a hand?</span>
+      {%- if settings.whatsapp_number != blank -%}
+        <a href="https://wa.me/{{ settings.whatsapp_number | remove: '+' | remove: ' ' }}" target="_blank" rel="noopener">{% render 'icon', name: 'whatsapp' %} WhatsApp {{ settings.whatsapp_number }}</a>
+      {%- endif -%}
+      {%- if settings.support_email != blank -%}
+        <a href="mailto:{{ settings.support_email }}">{% render 'icon', name: 'mail' %} {{ settings.support_email }}</a>
+      {%- endif -%}
+      {%- if settings.social_instagram_link != blank -%}
+        <a href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener">{% render 'icon', name: 'instagram' %} @project.shades</a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+<div class="search-pop" id="SearchPop" role="dialog" aria-modal="true" aria-label="Search" tabindex="-1">
+  <form action="{{ routes.search_url }}" method="get" role="search">
+    <input type="hidden" name="type" value="product">
+    <label class="visually-hidden" for="SearchInput">Search frames</label>
+    <input id="SearchInput" type="search" name="q" placeholder="Search frames, shapes, colours" autocomplete="off" data-predictive>
+    <button class="icon-btn" type="button" data-close aria-label="Close search">{% render 'icon', name: 'close' %}</button>
+  </form>
+  <div class="search-results" data-predictive-results aria-live="polite"></div>
+  {%- if section.settings.search_links != blank -%}
+    <div class="chips">
+      {%- for link in section.settings.search_links.links -%}<a class="chip" href="{{ link.url }}">{{ link.title }}</a>{%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    { "type": "link_list", "id": "search_links", "label": "Quick links in search", "info": "Shown as chips under the search box." },
+    { "type": "range", "id": "logo_width_mobile", "label": "Logo width (mobile)", "min": 100, "max": 220, "step": 5, "unit": "px", "default": 150 },
+    { "type": "range", "id": "logo_width", "label": "Logo width (desktop)", "min": 120, "max": 320, "step": 10, "unit": "px", "default": 200 }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,46 @@
+{%- assign s = section.settings -%}
+<section class="section section--ink">
+  <div class="wrap feature">
+    <div class="feature__media" data-reveal>
+      {%- if s.video != blank -%}
+        {{ s.video | video_tag: autoplay: false, loop: true, muted: true, playsinline: true, controls: false, preload: 'none', image_size: '900x', data-autoplay: '' }}
+      {%- elsif s.image != blank -%}
+        {{ s.image | image_url: width: 1000 | image_tag: loading: 'lazy', alt: '' }}
+      {%- endif -%}
+    </div>
+    <div style="display:grid;gap:22px">
+      <div class="section-head" style="margin:0" data-reveal>
+        <div>
+          <span class="label" style="color:var(--sun)">{{ s.label }}</span>
+          <h2 class="h1">{{ s.heading }}</h2>
+        </div>
+      </div>
+      {%- if s.text != blank -%}<p class="lede" data-reveal>{{ s.text }}</p>{%- endif -%}
+      {%- if s.collection != blank -%}
+        <div class="rail">
+          {%- for product in s.collection.products limit: 8 -%}
+            {% render 'product-card', product: product, sizes: '(min-width: 990px) 20vw, 68vw' %}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+      {%- if s.btn_label != blank -%}<div><a class="btn btn--paper" href="{{ s.btn_link | default: s.collection.url }}">{{ s.btn_label }} {% render 'icon', name: 'arrow' %}</a></div>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Video feature",
+  "settings": [
+    { "type": "video", "id": "video", "label": "Video" },
+    { "type": "image_picker", "id": "image", "label": "Image (if no video)" },
+    { "type": "text", "id": "label", "label": "Label", "default": "[ Slim metal ]" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "The bestseller, now in six colours." },
+    { "type": "text", "id": "text", "label": "Text" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "text", "id": "btn_label", "label": "Button", "default": "Shop slim metal" },
+    { "type": "url", "id": "btn_link", "label": "Button link" }
+  ],
+  "presets": [ { "name": "Video feature" } ]
+}
+{% endschema %}

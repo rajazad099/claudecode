@@ -1,0 +1,18 @@
+<div class="wrap coll-head"><h1 class="h1">All collections</h1></div>
+<div class="wrap" style="padding-bottom:64px">
+  <div class="vibes">
+    {%- for c in collections -%}
+      {%- if c.products_count > 0 -%}
+        <a class="vibe" href="{{ c.url }}">
+          {%- assign img = c.featured_image | default: c.products.first.featured_image -%}
+          {%- if img -%}{{ img | image_url: width: 800 | image_tag: loading: 'lazy', alt: '' }}{%- endif -%}
+          <span class="vibe__text"><span class="label">[ {{ c.products_count }} ]</span><span class="vibe__name">{{ c.title }}</span></span>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{ "name": "Collections list", "settings": [] }
+{% endschema %}

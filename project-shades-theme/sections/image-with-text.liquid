@@ -1,0 +1,33 @@
+{%- assign s = section.settings -%}
+<section class="section{% if s.tone == 'raise' %} section--raise{% elsif s.tone == 'ink' %} section--ink{% endif %}">
+  <div class="wrap iwt{% if s.flip %} iwt--flip{% endif %}">
+    <div class="iwt__media" data-reveal>
+      {%- if s.image != blank -%}
+        {{ s.image | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 50vw, 100vw', widths: '600, 900, 1200', alt: s.image.alt }}
+      {%- endif -%}
+    </div>
+    <div class="iwt__text" data-reveal>
+      {%- if s.label != blank -%}<span class="label label--muted">{{ s.label }}</span>{%- endif -%}
+      <h2 class="h2">{{ s.heading }}</h2>
+      <div class="rte" style="font-size:16.5px;max-width:52ch">{{ s.text }}</div>
+      {%- if s.btn_label != blank -%}<div><a class="btn" href="{{ s.btn_link }}">{{ s.btn_label }} {% render 'icon', name: 'arrow' %}</a></div>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Image with text",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "checkbox", "id": "flip", "label": "Image on the right", "default": false },
+    { "type": "select", "id": "tone", "label": "Background", "options": [ { "value": "paper", "label": "Paper" }, { "value": "raise", "label": "Light" }, { "value": "ink", "label": "Ink" } ], "default": "paper" },
+    { "type": "text", "id": "label", "label": "Label" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Heading" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "text", "id": "btn_label", "label": "Button" },
+    { "type": "url", "id": "btn_link", "label": "Button link" }
+  ],
+  "presets": [ { "name": "Image with text" } ]
+}
+{% endschema %}

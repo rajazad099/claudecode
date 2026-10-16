@@ -1,0 +1,90 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Project Shades",
+    "theme_version": "1.0.0",
+    "theme_author": "Project Shades",
+    "theme_documentation_url": "https://www.projectshades.com",
+    "theme_support_url": "https://www.projectshades.com/pages/contact"
+  },
+  {
+    "name": "Brand",
+    "settings": [
+      { "type": "image_picker", "id": "logo", "label": "Logo" },
+      { "type": "image_picker", "id": "favicon", "label": "Favicon" },
+      { "type": "header", "content": "Colours" },
+      { "type": "color", "id": "color_paper", "label": "Paper (background)", "default": "#F3F0E8" },
+      { "type": "color", "id": "color_ink", "label": "Ink (text & buttons)", "default": "#111111" },
+      { "type": "color", "id": "color_accent", "label": "Signature accent", "default": "#FF5A1F" },
+      { "type": "color", "id": "color_tile", "label": "Product tile", "default": "#E9E5DA" },
+      { "type": "color", "id": "color_sale", "label": "Savings text", "default": "#C2410C" },
+      { "type": "range", "id": "page_width", "label": "Page width", "min": 1100, "max": 1600, "step": 20, "unit": "px", "default": 1360 }
+    ]
+  },
+  {
+    "name": "Trust & contact",
+    "settings": [
+      { "type": "paragraph", "content": "Store-wide review numbers show on products with few reviews of their own. Keep them in sync with Judge.me." },
+      { "type": "text", "id": "store_rating", "label": "Store rating", "default": "4.5" },
+      { "type": "text", "id": "store_review_count", "label": "Store review count", "default": "684+" },
+      { "type": "text", "id": "whatsapp_number", "label": "WhatsApp number", "default": "+91 7558544365" },
+      { "type": "text", "id": "support_email", "label": "Support email", "default": "support@projectshades.com" }
+    ]
+  },
+  {
+    "name": "Bundle offer",
+    "settings": [
+      { "type": "paragraph", "content": "Display only. The discount itself comes from your automatic discount (Kite). Keep these numbers identical to it." },
+      { "type": "checkbox", "id": "bundle_enable", "label": "Show bundle progress", "default": true },
+      { "type": "range", "id": "bundle_tier1_qty", "label": "Tier 1: pairs", "min": 2, "max": 5, "step": 1, "default": 2 },
+      { "type": "text", "id": "bundle_tier1_label", "label": "Tier 1: reward", "default": "10% off" },
+      { "type": "range", "id": "bundle_tier2_qty", "label": "Tier 2: pairs", "min": 3, "max": 6, "step": 1, "default": 3 },
+      { "type": "text", "id": "bundle_tier2_label", "label": "Tier 2: reward", "default": "15% off" }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      { "type": "checkbox", "id": "cart_upsell_enable", "label": "Show 'make it a pair' rail in cart", "default": true },
+      { "type": "collection", "id": "cart_upsell_collection", "label": "Products to suggest", "info": "Your bestsellers. Single-colour products add in one tap; the rest link to their page." }
+    ]
+  },
+  {
+    "name": "Social",
+    "settings": [
+      { "type": "text", "id": "social_instagram_link", "label": "Instagram" },
+      { "type": "text", "id": "social_facebook_link", "label": "Facebook" },
+      { "type": "text", "id": "social_youtube_link", "label": "YouTube" },
+      { "type": "text", "id": "social_twitter_link", "label": "X / Twitter" }
+    ]
+  },
+  {
+    "name": "Gokwik",
+    "settings": [
+      { "type": "text", "id": "mid", "label": "Merchant Id" },
+      { "type": "header", "content": "Select environment" },
+      { "type": "select", "id": "envType", "label": "Environment", "options": [ { "value": "qa", "label": "QA" }, { "value": "sandbox", "label": "Sandbox" }, { "value": "production", "label": "Production" } ], "default": "production" },
+      { "type": "checkbox", "id": "hideFlow", "label": "Button hide without disable", "info": "To hide only button without disable Gokwik flow", "default": false },
+      { "type": "header", "content": "Google Ads conversion label" },
+      { "type": "text", "id": "gkAdsConfig", "label": "Enter Google Adwords ID", "placeholder": "Starts with AW- ...." },
+      { "type": "header", "content": "Google Analytics Conversion Lable" },
+      { "type": "text", "id": "ga4Gokwik", "label": "Enter Google Analytics ID", "placeholder": "Starts with GA- ...." },
+      { "type": "header", "content": "Merchant Checkout Button" },
+      { "type": "checkbox", "id": "btnTxt", "label": "Merchant button title enable", "info": "Merchant button text will be replaced by Gokwik text", "default": true },
+      { "type": "text", "id": "gk-merchant-btnText", "label": "Merchant button title" },
+      { "type": "text", "id": "fbpixel", "label": "FB Pixel " },
+      { "type": "header", "content": "Color theme" },
+      { "type": "color", "id": "priClr", "label": "Primary Color" },
+      { "type": "color", "id": "secClr", "label": "Secondary Color" },
+      { "type": "header", "content": "Checkout Button" },
+      { "type": "checkbox", "id": "goEnable", "label": "Enable Checkout Button", "info": "To insert button use {% include 'gokwik-checkout'%}" },
+      { "type": "text", "id": "main-titile", "label": "Button Text", "default": "Pay via UPI/COD" },
+      { "type": "text", "id": "sub-titile", "label": "Button Sub Text" },
+      { "type": "header", "content": "Buy Now Button" },
+      { "type": "checkbox", "id": "goBuynowEnable", "label": "Enable Buynow Button", "info": "To insert button use {% include 'gokwik-buy-now'%}" },
+      { "type": "text", "id": "buynow-titile", "label": "Button Text", "default": "Gokwik Buy Now" },
+      { "type": "color", "id": "btnBClr", "label": "Background Color", "default": "#45e8d8" },
+      { "type": "color", "id": "btnTextClr", "label": "Text Color", "default": "#ffffff" }
+    ]
+  }
+]

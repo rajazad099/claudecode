@@ -1,0 +1,385 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "image": "shopify://shop_images/DSC09307_9790c474-f772-4939-bb8d-7d6424d7cba2.jpg",
+        "image_desktop": "shopify://shop_images/Blue_Green_and_Pastel_Illustrated_Landscape_Desktop_Wallpaper.png",
+        "kicker": "Autumn '26 drop is live",
+        "heading": "Shades with a point of view.",
+        "text": "Frames for people who don't do boring. UV400 on every pair, cash on delivery on every order.",
+        "btn1_label": "Shop the drop",
+        "btn1_link": "shopify://collections/autumn-2026",
+        "btn2_label": "Bestsellers",
+        "btn2_link": "shopify://collections/bestsellers"
+      }
+    },
+    "press": {
+      "type": "press",
+      "blocks": {
+        "p1": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/logo-grazia.png",
+            "name": "Grazia",
+            "link": ""
+          }
+        },
+        "p2": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/images_1.png",
+            "name": "",
+            "link": ""
+          }
+        },
+        "p3": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Untitled_2_01.png",
+            "name": "",
+            "link": ""
+          }
+        },
+        "p4": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Beige_and_White_Be_Yourself_Square_Pillow.png",
+            "name": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4"
+      ],
+      "settings": {
+        "label": "As seen in",
+        "speed": 28
+      }
+    },
+    "best": {
+      "type": "product-rail",
+      "settings": {
+        "label": "Most loved",
+        "heading": "Bestsellers",
+        "products": [
+          "depp-premium-acetate-sunglasses",
+          "kingston-futuristic-unisex-sunglasses",
+          "hecate-slim-black-metal-sunglasses",
+          "eclipse-archive-metal-sunglasses",
+          "vancouver-unisex-aviator-sunglasses",
+          "toronto-oversized-y2k-sunglasses-orange",
+          "fargo-vintage-unisex-sunglasses",
+          "toronto-oversized-y2k-sunglasses-green",
+          "katana-futuristic-techno-sunglasses",
+          "serendipity-2-0-holiday-rimless-sunglasses-clear"
+        ],
+        "limit": 10,
+        "layout": "rail",
+        "tone": "paper",
+        "link_label": "Shop all",
+        "link": "shopify://collections/all"
+      }
+    },
+    "vibes": {
+      "type": "vibes",
+      "blocks": {
+        "v1": {
+          "type": "vibe",
+          "settings": {
+            "collection": "techno",
+            "image": "shopify://shop_images/Model_F2_PS_Jsstudio_Final-19.jpg",
+            "title": "Main character",
+            "tag": "Futuristic"
+          }
+        },
+        "v2": {
+          "type": "vibe",
+          "settings": {
+            "collection": "oversized-sunglasses",
+            "image": "shopify://shop_images/Model_M2_PS_Jsstudio_Final-25_1.jpg",
+            "title": "Paparazzi-proof",
+            "tag": "Oversized"
+          }
+        },
+        "v3": {
+          "type": "vibe",
+          "settings": {
+            "collection": "luxe-collection",
+            "image": "shopify://shop_images/Model_F2_PS_Jsstudio_Final-50.jpg",
+            "title": "Quiet luxury",
+            "tag": "Daily Luxe"
+          }
+        },
+        "v4": {
+          "type": "vibe",
+          "settings": {
+            "collection": "rectangular-sunglasses",
+            "image": "shopify://shop_images/Model_F1_PS_Jsstudio_Final-24.jpg",
+            "title": "Off-duty",
+            "tag": "Rectangular"
+          }
+        },
+        "v5": {
+          "type": "vibe",
+          "settings": {
+            "collection": "oval-sunglasses",
+            "image": "shopify://shop_images/Model_M2_PS_Jsstudio_Final-36.jpg",
+            "title": "Vintage soul",
+            "tag": "Oval"
+          }
+        },
+        "v6": {
+          "type": "vibe",
+          "settings": {
+            "collection": "rimless",
+            "image": "shopify://shop_images/Model_M1_PS_Jsstudio_Final-29.jpg",
+            "title": "Barely there",
+            "tag": "Rimless"
+          }
+        }
+      },
+      "block_order": [
+        "v1",
+        "v2",
+        "v3",
+        "v4",
+        "v5",
+        "v6"
+      ],
+      "settings": {
+        "label": "Shop by vibe",
+        "heading": "Who are you today?"
+      }
+    },
+    "bundle": {
+      "type": "bundle-band",
+      "settings": {
+        "label": "The more the merrier",
+        "heading": "One for you. One for the group chat.",
+        "text": "Mix any frames. The discount applies automatically in your bag — no code needed.",
+        "btn_label": "Build your pair",
+        "btn_link": "shopify://collections/all"
+      }
+    },
+    "newin": {
+      "type": "product-rail",
+      "settings": {
+        "label": "Autumn '26",
+        "heading": "New in",
+        "collection": "autumn-2026",
+        "limit": 8,
+        "layout": "grid",
+        "tone": "paper",
+        "link_label": "See all new",
+        "link": "shopify://collections/autumn-2026"
+      }
+    },
+    "feature": {
+      "type": "video-feature",
+      "settings": {
+        "video": "shopify://files/videos/Reel_1.mp4",
+        "label": "[ Slim metal ]",
+        "heading": "The bestseller, now in six colours.",
+        "text": "Featherlight metal, slim lenses, zero effort. The pair that goes with everything you own.",
+        "collection": "slim-metal-sunglasses",
+        "btn_label": "Shop slim metal",
+        "btn_link": "shopify://collections/slim-metal-sunglasses"
+      }
+    },
+    "promise": {
+      "type": "promise",
+      "blocks": {
+        "x1": {
+          "type": "promise",
+          "settings": {
+            "icon": "sun",
+            "title": "UV400 on every pair",
+            "text": "Blocks 100% of UVA and UVB rays. Non-negotiable."
+          }
+        },
+        "x2": {
+          "type": "promise",
+          "settings": {
+            "icon": "cash",
+            "title": "Cash on delivery",
+            "text": "Pay when it lands. UPI, cards and wallets work too."
+          }
+        },
+        "x3": {
+          "type": "promise",
+          "settings": {
+            "icon": "bolt",
+            "title": "Ships in 24 hours",
+            "text": "Order today, dispatched the next working day."
+          }
+        },
+        "x4": {
+          "type": "promise",
+          "settings": {
+            "icon": "return",
+            "title": "Easy returns",
+            "text": "Not feeling it? Raise a request within 3 days of delivery."
+          }
+        }
+      },
+      "block_order": [
+        "x1",
+        "x2",
+        "x3",
+        "x4"
+      ],
+      "settings": {
+        "label": "The fine print, made big",
+        "heading": "Good taste, zero risk.",
+        "tight": false
+      }
+    },
+    "reviews": {
+      "type": "apps",
+      "blocks": {
+        "medals": {
+          "type": "shopify://apps/judge-me-reviews/blocks/medals/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "medals"
+      ],
+      "settings": {
+        "label": "684+ verified reviews",
+        "heading": "Don't take our word for it.",
+        "anchor": "reviews",
+        "ink": false
+      }
+    },
+    "insta": {
+      "type": "apps",
+      "blocks": {
+        "feed": {
+          "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
+          "settings": {
+            "title": "",
+            "title_color": "",
+            "title_size_v2": 0,
+            "alignment": "center",
+            "instafeed_margin_top": 0,
+            "instafeed_margin_bottom": 0,
+            "instafeed_margin_sides": 0,
+            "show_instagram_link": false,
+            "link_alignment": "left",
+            "link_color": "#000000",
+            "background_color": "",
+            "feed_id": "",
+            "html_area": ""
+          }
+        }
+      },
+      "block_order": [
+        "feed"
+      ],
+      "settings": {
+        "label": "@project.shades",
+        "heading": "Worn by you.",
+        "anchor": "",
+        "ink": false
+      }
+    },
+    "manifesto": {
+      "type": "manifesto",
+      "settings": {
+        "tone": "ink",
+        "label": "Why Project Shades",
+        "heading": "No loud logos. Just good taste.",
+        "text": "<p>Project Shades started in 2022 with one rule: never make the predictable pair. We pull from global street style, run it through our own lens and price it like it should be.</p><p>Every frame gets a name, a personality and UV400 lenses. You bring the attitude.</p>",
+        "btn_label": "Our story",
+        "btn_link": "shopify://pages/about-us"
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Are these sunglasses UV protected?",
+            "answer": "<p>Yes. Every pair offers UV400 protection — meaning 100% shield from UVA &amp; UVB rays.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Is cash on delivery available?",
+            "answer": "<p>Yes, on every order across India, along with UPI, cards and wallets. Shipping is free.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "How long will my order take to arrive?",
+            "answer": "<p>3–7 working days in India. We ship all orders next day, except Sundays. Tentative delivery timeline once shipped: Mumbai &amp; Pune 2 days, Delhi &amp; Ahmedabad 3–4 days, Bangalore &amp; Hyderabad 4–5 days.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Will it suit my face?",
+            "answer": "<p>Every product page shows which face sizes a frame fits, plus a 30-second fit check you can do with any debit card. Still unsure? WhatsApp us a selfie on +91 7558544365 and we'll tell you honestly.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "How can I track my order?",
+            "answer": "<p>Once shipped, you'll receive a tracking link via email and WhatsApp. You can also <a href=\"https://projectshades.shiprocket.co/tracking\">track it here</a> anytime.</p>"
+          }
+        },
+        "q6": {
+          "type": "question",
+          "settings": {
+            "question": "Can I change my order after placing it?",
+            "answer": "<p>Only if it hasn't shipped. We move fast — like your new shades will. Reach out on support@projectshades.com, WhatsApp +91 7558544365 or DM @project.shades.</p>"
+          }
+        },
+        "q7": {
+          "type": "question",
+          "settings": {
+            "question": "What if my product arrives damaged or not as expected?",
+            "answer": "<p>Rare, but we've got you. <a href=\"https://returns.logisy.tech/returns?encipherencode=gAAAAABodNVtF_Ir8odNhpD6RRc9cqW00HTTYRbjMzR3BJDlSTh1oEY3zyQHpGyTR0lPl0fHtjxxWrFUT24j0rPNVbGCfQtQuA==\">Raise a return request</a> within 3 days of delivery.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6",
+        "q7"
+      ],
+      "settings": {
+        "label": "Questions, answered",
+        "heading": "Before you ask."
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "press",
+    "best",
+    "vibes",
+    "bundle",
+    "newin",
+    "feature",
+    "promise",
+    "reviews",
+    "insta",
+    "manifesto",
+    "faq"
+  ]
+}

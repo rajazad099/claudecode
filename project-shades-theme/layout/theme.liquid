@@ -1,0 +1,72 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    {%- include 'booster-seo' -%}
+    <script>!function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f)}(window,document,"script","https://bzrcdn.openai.com/sdk/oaiq.min.js");oaiq("init",{pixelId:"SCdrQ4M6tEe3aCzFXUCJ5q"});</script>
+    {%- render 'gokwik' -%}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="{{ settings.color_paper }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    {%- render 'meta-tags' -%}
+
+    <style>
+      :root {
+        --paper: {{ settings.color_paper }};
+        --ink: {{ settings.color_ink }};
+        --sun: {{ settings.color_accent }};
+        --tile: {{ settings.color_tile }};
+        --sale: {{ settings.color_sale }};
+        --page-width: {{ settings.page_width }}px;
+      }
+    </style>
+    {{ 'ps.css' | asset_url | stylesheet_tag }}
+
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+      window.PS = {
+        routes: {
+          root: {{ routes.root_url | json }},
+          cart: {{ routes.cart_url | json }},
+          cartAdd: {{ routes.cart_add_url | json }},
+          cartChange: {{ routes.cart_change_url | json }},
+          search: {{ routes.search_url | json }},
+          predictive: {{ routes.predictive_search_url | json }}
+        },
+        moneyFormat: {{ shop.money_format | json }},
+        bundle: [
+          { qty: {{ settings.bundle_tier1_qty }}, label: {{ settings.bundle_tier1_label | json }} },
+          { qty: {{ settings.bundle_tier2_qty }}, label: {{ settings.bundle_tier2_label | json }} }
+        ]
+      };
+    </script>
+    <script src="{{ 'ps.js' | asset_url }}" defer></script>
+
+    {{ content_for_header }}
+  </head>
+
+  <body class="template-{{ template.name }}" data-template="{{ template.name }}">
+    <a class="skip-link" href="#MainContent">Skip to content</a>
+
+    {%- sections 'header-group' -%}
+
+    <main id="MainContent" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {%- sections 'footer-group' -%}
+
+    {%- unless template.name == 'cart' -%}{%- section 'cart-drawer' -%}{%- endunless -%}
+    <div class="scrim" data-scrim hidden></div>
+  </body>
+</html>

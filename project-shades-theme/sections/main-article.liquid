@@ -1,0 +1,17 @@
+<article class="wrap" style="padding:48px var(--gutter) 80px;display:grid;gap:24px;justify-items:center">
+  <div style="display:grid;gap:12px;max-width:72ch;width:100%">
+    <a class="label label--muted" href="{{ blog.url }}">← {{ blog.title }}</a>
+    <h1 class="h1">{{ article.title }}</h1>
+    <span class="label label--muted">{{ article.published_at | date: '%d %b %Y' }}</span>
+  </div>
+  {%- if article.image -%}
+    <div style="width:100%;max-width:1100px;aspect-ratio:16/9;overflow:hidden;background:var(--tile)">
+      {{ article.image | image_url: width: 1800 | image_tag: loading: 'eager', sizes: '100vw', alt: article.title, style: 'width:100%;height:100%;object-fit:cover' }}
+    </div>
+  {%- endif -%}
+  <div class="prose rte" style="width:100%">{{ article.content }}</div>
+</article>
+
+{% schema %}
+{ "name": "Article", "settings": [] }
+{% endschema %}

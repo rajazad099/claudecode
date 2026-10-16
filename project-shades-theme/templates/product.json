@@ -1,0 +1,251 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "name": {
+          "type": "name",
+          "settings": {
+            "show_type": false,
+            "min_reviews": 5
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {
+            "note": ""
+          }
+        },
+        "variants": {
+          "type": "variant_picker",
+          "settings": {}
+        },
+        "fit": {
+          "type": "fit",
+          "settings": {}
+        },
+        "buy": {
+          "type": "buy_buttons",
+          "settings": {
+            "cod_line": "Cash on delivery available · Free shipping"
+          }
+        },
+        "ship": {
+          "type": "shipping",
+          "settings": {}
+        },
+        "tiers": {
+          "type": "tiers",
+          "settings": {}
+        },
+        "trust": {
+          "type": "trust",
+          "settings": {
+            "title_1": "Cash on delivery",
+            "sub_1": "Pay when it arrives",
+            "title_2": "Ships in 24 hours",
+            "sub_2": "Next working day",
+            "title_3": "UV400 on every pair",
+            "sub_3": "Blocks 100% UVA + UVB",
+            "title_4": "Easy returns",
+            "sub_4": "Within 3 days of delivery"
+          }
+        },
+        "why": {
+          "type": "highlights",
+          "settings": {
+            "heading": "Why you'll love it"
+          }
+        },
+        "details": {
+          "type": "details",
+          "settings": {
+            "open": true
+          }
+        },
+        "shipret": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Shipping & returns",
+            "content": "<p>Free shipping across India. We dispatch within 24 working hours (no Sunday dispatch); delivery takes 3–7 days once shipped. Cash on delivery available.</p><p>Returns are accepted within 3 days of delivery — <a href=\"https://returns.logisy.tech/returns?encipherencode=gAAAAABodNVtF_Ir8odNhpD6RRc9cqW00HTTYRbjMzR3BJDlSTh1oEY3zyQHpGyTR0lPl0fHtjxxWrFUT24j0rPNVbGCfQtQuA==\">raise a request here</a>. Read the full <a href=\"/policies/refund-policy\">return policy</a>.</p>"
+          }
+        },
+        "care": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Care",
+            "content": "<p>Clean lenses with a soft microfibre cloth, never your T-shirt. Keep them in a case when they're off your face, and don't leave them on a hot dashboard.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "name",
+        "price",
+        "variants",
+        "fit",
+        "buy",
+        "ship",
+        "tiers",
+        "trust",
+        "why",
+        "details",
+        "shipret",
+        "care"
+      ],
+      "settings": {}
+    },
+    "reviews": {
+      "type": "apps",
+      "blocks": {
+        "jdgm": {
+          "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+            "review_data": "real_data",
+            "max_width": 1200,
+            "show_shop_reviews": true,
+            "empty_state": "hide_widget"
+          }
+        }
+      },
+      "block_order": [
+        "jdgm"
+      ],
+      "settings": {
+        "label": "Reviews",
+        "heading": "What people say.",
+        "anchor": "reviews",
+        "ink": false
+      }
+    },
+    "recs": {
+      "type": "product-recommendations",
+      "settings": {
+        "label": "Same energy",
+        "heading": "You might also like",
+        "intent": "related",
+        "limit": 8
+      }
+    },
+    "press": {
+      "type": "press",
+      "blocks": {
+        "p1": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/logo-grazia.png",
+            "name": "Grazia",
+            "link": ""
+          }
+        },
+        "p2": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/images_1.png",
+            "name": "",
+            "link": ""
+          }
+        },
+        "p3": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Untitled_2_01.png",
+            "name": "",
+            "link": ""
+          }
+        },
+        "p4": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Beige_and_White_Be_Yourself_Square_Pillow.png",
+            "name": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4"
+      ],
+      "settings": {
+        "label": "As seen in",
+        "speed": 28
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Are these sunglasses UV protected?",
+            "answer": "<p>Yes. Every pair offers UV400 protection — meaning 100% shield from UVA &amp; UVB rays.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Is cash on delivery available?",
+            "answer": "<p>Yes, on every order across India, along with UPI, cards and wallets. Shipping is free.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "How long will my order take to arrive?",
+            "answer": "<p>3–7 working days in India. We ship all orders next day, except Sundays. Tentative delivery timeline once shipped: Mumbai &amp; Pune 2 days, Delhi &amp; Ahmedabad 3–4 days, Bangalore &amp; Hyderabad 4–5 days.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Will it suit my face?",
+            "answer": "<p>Every product page shows which face sizes a frame fits, plus a 30-second fit check you can do with any debit card. Still unsure? WhatsApp us a selfie on +91 7558544365 and we'll tell you honestly.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "How can I track my order?",
+            "answer": "<p>Once shipped, you'll receive a tracking link via email and WhatsApp. You can also <a href=\"https://projectshades.shiprocket.co/tracking\">track it here</a> anytime.</p>"
+          }
+        },
+        "q6": {
+          "type": "question",
+          "settings": {
+            "question": "Can I change my order after placing it?",
+            "answer": "<p>Only if it hasn't shipped. We move fast — like your new shades will. Reach out on support@projectshades.com, WhatsApp +91 7558544365 or DM @project.shades.</p>"
+          }
+        },
+        "q7": {
+          "type": "question",
+          "settings": {
+            "question": "What if my product arrives damaged or not as expected?",
+            "answer": "<p>Rare, but we've got you. <a href=\"https://returns.logisy.tech/returns?encipherencode=gAAAAABodNVtF_Ir8odNhpD6RRc9cqW00HTTYRbjMzR3BJDlSTh1oEY3zyQHpGyTR0lPl0fHtjxxWrFUT24j0rPNVbGCfQtQuA==\">Raise a return request</a> within 3 days of delivery.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6",
+        "q7"
+      ],
+      "settings": {
+        "label": "Questions, answered",
+        "heading": "Before you ask."
+      }
+    }
+  },
+  "order": [
+    "main",
+    "reviews",
+    "recs",
+    "press",
+    "faq"
+  ]
+}

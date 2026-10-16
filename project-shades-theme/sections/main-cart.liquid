@@ -1,0 +1,18 @@
+{%- comment -%}
+  /cart page. The drawer is the real cart; this page opens it and shows the same content inline
+  for anyone who lands here directly (e.g. from an abandoned-cart link).
+{%- endcomment -%}
+<div class="wrap" style="padding:32px var(--gutter) 64px;max-width:640px">
+  <h1 class="h1" style="margin-bottom:20px">Your bag</h1>
+  <div class="cart-page" style="border:1px solid var(--line)">
+    <div data-cart-page>{% render 'cart-drawer' %}</div>
+  </div>
+</div>
+<style>
+  .cart-page .drawer { position: static; transform: none; visibility: visible; width: 100%; }
+  .cart-page .drawer__head { display: none; }
+</style>
+
+{% schema %}
+{ "name": "Cart page", "settings": [] }
+{% endschema %}

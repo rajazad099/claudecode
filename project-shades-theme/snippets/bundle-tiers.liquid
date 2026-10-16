@@ -1,0 +1,45 @@
+{%- comment -%}
+  Buy 2 / Buy 3 progress. Display only — the discount itself is the store's automatic
+  (Kite) discount, which applies at cart and checkout regardless of theme.
+  Accepts count (pairs in bag) and context ('cart' or 'pdp').
+{%- endcomment -%}
+{%- liquid
+  assign t1 = settings.bundle_tier1_qty
+  assign t2 = settings.bundle_tier2_qty
+  assign c = count | default: 0
+  if c >= t2
+    assign fill = 100
+  elsif c >= t1
+    assign fill = 66
+  elsif c > 0
+    assign fill = 33
+  else
+    assign fill = 6
+  endif
+  assign need1 = t1 | minus: c
+  assign need2 = t2 | minus: c
+-%}
+<div class="{% if context == 'cart' %}cart-tiers{% else %}tiers{% endif %}" data-tiers>
+  {%- if context == 'cart' -%}
+    <p>
+      {%- if c >= t2 -%}
+        <b>{{ settings.bundle_tier2_label }} unlocked.</b> Best price on the house.
+      {%- elsif c >= t1 -%}
+        <b>{{ settings.bundle_tier1_label }} unlocked.</b> Add {{ need2 }} more {% if need2 == 1 %}pair{% else %}pairs{% endif %} for {{ settings.bundle_tier2_label }}.
+      {%- else -%}
+        Add {{ need1 }} more {% if need1 == 1 %}pair{% else %}pairs{% endif %} and get <b>{{ settings.bundle_tier1_label }}</b> on your order.
+      {%- endif -%}
+    </p>
+  {%- else -%}
+    <div class="tiers__head">
+      <span><b>Buy {{ t1 }}, get {{ settings.bundle_tier1_label }}</b> · Buy {{ t2 }}, get {{ settings.bundle_tier2_label }}</span>
+      <span class="label" data-tiers-status>{% if c > 0 %}{{ c }} in bag{% else %}Auto-applied{% endif %}</span>
+    </div>
+  {%- endif -%}
+  <div class="tiers__bar" aria-hidden="true"><span class="tiers__fill" style="width: {{ fill }}%"></span></div>
+  <div class="tiers__steps" aria-hidden="true">
+    <span class="tiers__step{% if c >= 1 %} is-on{% endif %}">1 pair</span>
+    <span class="tiers__step{% if c >= t1 %} is-on{% endif %}">{{ t1 }} · {{ settings.bundle_tier1_label }}</span>
+    <span class="tiers__step{% if c >= t2 %} is-on{% endif %}">{{ t2 }} · {{ settings.bundle_tier2_label }}</span>
+  </div>
+</div>

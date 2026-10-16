@@ -1,0 +1,19 @@
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "settings": {
+        "heading": "First dibs on every drop.",
+        "subheading": "New drops and restocks, straight to your inbox. No spam, ever.",
+        "menu": "footer",
+        "help_menu": "",
+        "hours": "",
+        "logo": "shopify://shop_images/type_1.png",
+        "signoff": "Born in India, worn loud."
+      }
+    }
+  },
+  "order": ["footer"]
+}

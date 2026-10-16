@@ -1,0 +1,64 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "per_page": 24,
+        "show_description": true,
+        "chips": "main-menu"
+      }
+    },
+    "promise": {
+      "type": "promise",
+      "blocks": {
+        "x1": {
+          "type": "promise",
+          "settings": {
+            "icon": "sun",
+            "title": "UV400 on every pair",
+            "text": "Blocks 100% of UVA and UVB rays. Non-negotiable."
+          }
+        },
+        "x2": {
+          "type": "promise",
+          "settings": {
+            "icon": "cash",
+            "title": "Cash on delivery",
+            "text": "Pay when it lands. UPI, cards and wallets work too."
+          }
+        },
+        "x3": {
+          "type": "promise",
+          "settings": {
+            "icon": "bolt",
+            "title": "Ships in 24 hours",
+            "text": "Order today, dispatched the next working day."
+          }
+        },
+        "x4": {
+          "type": "promise",
+          "settings": {
+            "icon": "return",
+            "title": "Easy returns",
+            "text": "Not feeling it? Raise a request within 3 days of delivery."
+          }
+        }
+      },
+      "block_order": [
+        "x1",
+        "x2",
+        "x3",
+        "x4"
+      ],
+      "settings": {
+        "label": "",
+        "heading": "",
+        "tight": true
+      }
+    }
+  },
+  "order": [
+    "main",
+    "promise"
+  ]
+}

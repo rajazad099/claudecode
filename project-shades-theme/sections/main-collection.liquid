@@ -1,0 +1,117 @@
+{%- liquid
+  assign s = section.settings
+  assign sort_by = collection.sort_by | default: collection.default_sort_by
+  assign active_count = 0
+  for f in collection.filters
+    assign active_count = active_count | plus: f.active_values.size
+    if f.type == 'price_range' and f.min_value.value != nil or f.max_value.value != nil
+      assign active_count = active_count | plus: 1
+    endif
+  endfor
+-%}
+<div class="wrap coll-head">
+  <span class="label label--muted">[ {{ collection.products_count }} frames ]</span>
+  <h1 class="h1">{{ collection.title }}</h1>
+  {%- if collection.description != blank and s.show_description -%}<div class="lede rte">{{ collection.description }}</div>{%- endif -%}
+  {%- if s.chips != blank -%}
+    <div class="chips" style="margin-top:6px">
+      {%- for link in s.chips.links -%}
+        {%- for child in link.links -%}<a class="chip{% if child.url == collection.url %} is-active{% endif %}" href="{{ child.url }}">{{ child.title }}</a>{%- endfor -%}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{%- paginate collection.products by s.per_page -%}
+  <div class="coll-bar">
+    <div class="wrap coll-bar__inner">
+      {%- if collection.filters.size > 0 -%}
+        <button type="button" data-open-drawer="FilterDrawer">{% render 'icon', name: 'filter' %} Filter{% if active_count > 0 %} ({{ active_count }}){% endif %}</button>
+      {%- else -%}<span></span>{%- endif -%}
+      <form method="get">
+        {%- for f in collection.filters -%}
+          {%- for v in f.active_values -%}<input type="hidden" name="{{ v.param_name }}" value="{{ v.value }}">{%- endfor -%}
+        {%- endfor -%}
+        <label class="visually-hidden" for="SortBy">Sort</label>
+        <select id="SortBy" name="sort_by" data-autosubmit>
+          {%- for option in collection.sort_options -%}<option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name }}</option>{%- endfor -%}
+        </select>
+      </form>
+    </div>
+  </div>
+
+  <div class="wrap" style="padding-bottom:64px">
+    {%- if collection.products.size == 0 -%}
+      <div style="padding:48px 0;display:grid;gap:14px;justify-items:start">
+        <p class="h3">Nothing matches those filters.</p>
+        <a class="btn btn--ghost" href="{{ collection.url }}">Clear filters</a>
+      </div>
+    {%- else -%}
+      <div class="grid grid--4">
+        {%- for product in collection.products -%}
+          {%- if forloop.index <= 4 -%}{%- assign lazy = 'eager' -%}{%- else -%}{%- assign lazy = 'lazy' -%}{%- endif -%}
+          {% render 'product-card', product: product, lazy: lazy %}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if paginate.pages > 1 -%}
+      <nav class="pagination" aria-label="Pages">
+        {%- for part in paginate.parts -%}
+          {%- if part.is_link -%}<a href="{{ part.url }}">{{ part.title }}</a>
+          {%- elsif part.title == paginate.current_page -%}<span class="is-current" aria-current="page">{{ part.title }}</span>
+          {%- else -%}<span>{{ part.title }}</span>{%- endif -%}
+        {%- endfor -%}
+      </nav>
+    {%- endif -%}
+  </div>
+{%- endpaginate -%}
+
+{%- if collection.filters.size > 0 -%}
+<div class="drawer drawer--left" id="FilterDrawer" role="dialog" aria-modal="true" aria-label="Filters" tabindex="-1">
+  <form method="get" style="display:contents">
+    <input type="hidden" name="sort_by" value="{{ sort_by }}">
+    <div class="drawer__head">
+      <span class="drawer__title">Filter</span>
+      <button class="icon-btn" type="button" data-close aria-label="Close filters">{% render 'icon', name: 'close' %}</button>
+    </div>
+    <div class="drawer__body">
+      {%- for f in collection.filters -%}
+        <details class="facet"{% if forloop.index <= 3 %} open{% endif %}>
+          <summary>{{ f.label }}{% if f.active_values.size > 0 %} <span class="label">({{ f.active_values.size }})</span>{% endif %}</summary>
+          {%- if f.type == 'price_range' -%}
+            <div class="facet__price">
+              <input type="number" name="{{ f.min_value.param_name }}" placeholder="Min ₹" value="{{ f.min_value.value | divided_by: 100 }}" inputmode="numeric" min="0">
+              <input type="number" name="{{ f.max_value.param_name }}" placeholder="Max ₹" value="{{ f.max_value.value | divided_by: 100 }}" inputmode="numeric" min="0">
+            </div>
+          {%- else -%}
+            <div class="facet__opts">
+              {%- for v in f.values -%}
+                <label>
+                  <input type="checkbox" name="{{ v.param_name }}" value="{{ v.value }}"{% if v.active %} checked{% endif %}{% if v.count == 0 and v.active == false %} disabled{% endif %}>
+                  <span class="pill">{{ v.label }} <span class="label label--muted" style="margin-left:6px">{{ v.count }}</span></span>
+                </label>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </details>
+      {%- endfor -%}
+    </div>
+    <div class="drawer__foot" style="display:grid;grid-template-columns:1fr 1.4fr;gap:8px">
+      <a class="btn btn--ghost" href="{{ collection.url }}?sort_by={{ sort_by }}">Clear</a>
+      <button class="btn" type="submit">Show results</button>
+    </div>
+  </form>
+</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Collection grid",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 12, "max": 48, "step": 4, "default": 24 },
+    { "type": "checkbox", "id": "show_description", "label": "Show collection description", "default": true },
+    { "type": "link_list", "id": "chips", "label": "Style chips menu", "info": "Pick your main menu — its dropdown links (e.g. Shop by style) become quick chips." }
+  ]
+}
+{% endschema %}

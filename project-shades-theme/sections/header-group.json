@@ -1,0 +1,21 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "blocks": {
+        "a1": { "type": "announcement", "settings": { "text": "Buy 2, get 10% off · Buy 3, get 15% off", "link": "shopify://collections/all" } },
+        "a2": { "type": "announcement", "settings": { "text": "Free shipping + cash on delivery, all India", "link": "" } },
+        "a3": { "type": "announcement", "settings": { "text": "Order today, dispatched in 24 hours", "link": "" } }
+      },
+      "block_order": ["a1", "a2", "a3"],
+      "settings": {}
+    },
+    "header": {
+      "type": "header",
+      "settings": { "menu": "main-menu", "search_links": "homepage-theme", "logo_width_mobile": 150, "logo_width": 200 }
+    }
+  },
+  "order": ["announcement", "header"]
+}

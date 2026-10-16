@@ -1,0 +1,38 @@
+<div class="wrap coll-head">
+  <span class="label label--muted">Search</span>
+  <h1 class="h1">{% if search.performed %}“{{ search.terms }}”{% else %}Find your frame{% endif %}</h1>
+  <form action="{{ routes.search_url }}" method="get" role="search" style="display:flex;gap:8px;max-width:560px">
+    <input type="hidden" name="type" value="product">
+    <label class="visually-hidden" for="SearchPage">Search</label>
+    <input id="SearchPage" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Aviator, round, black…" style="flex:1;min-width:0;height:52px;border:1px solid var(--line);background:var(--raise);padding:0 14px;font-size:16px">
+    <button class="btn" type="submit">Search</button>
+  </form>
+</div>
+<div class="wrap" style="padding-bottom:64px">
+  {%- if search.performed -%}
+    {%- paginate search.results by 24 -%}
+      {%- if search.results_count == 0 -%}
+        <p class="lede" style="padding:24px 0">Nothing for “{{ search.terms }}”. Try a shape — aviator, round, rectangular — or a colour.</p>
+        <a class="btn btn--ghost" href="{{ routes.all_products_collection_url }}">Browse all frames</a>
+      {%- else -%}
+        <p class="label label--muted" style="margin:12px 0 20px">{{ search.results_count }} results</p>
+        <div class="grid grid--4">
+          {%- for item in search.results -%}
+            {%- if item.object_type == 'product' -%}{% render 'product-card', product: item %}{%- endif -%}
+          {%- endfor -%}
+        </div>
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagination" aria-label="Pages">
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}<a href="{{ part.url }}">{{ part.title }}</a>{%- elsif part.title == paginate.current_page -%}<span class="is-current">{{ part.title }}</span>{%- else -%}<span>{{ part.title }}</span>{%- endif -%}
+            {%- endfor -%}
+          </nav>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endpaginate -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{ "name": "Search results", "settings": [] }
+{% endschema %}

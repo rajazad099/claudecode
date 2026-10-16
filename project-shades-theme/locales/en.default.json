@@ -1,0 +1,18 @@
+{
+  "general": {
+    "password_page": {
+      "login_form_heading": "Enter store using password"
+    },
+    "meta": {
+      "tags": "Tagged \"{{ tags }}\"",
+      "page": "Page {{ page }}"
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to bag",
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable"
+    }
+  }
+}

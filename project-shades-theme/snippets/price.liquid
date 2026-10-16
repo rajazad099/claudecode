@@ -1,0 +1,18 @@
+{%- comment -%}
+  Accepts price, compare (both in paise) and optional show_save.
+  Only shows a strike-through when there is a real compare-at price.
+{%- endcomment -%}
+{%- liquid
+  assign on_sale = false
+  if compare and compare > price
+    assign on_sale = true
+    assign save = compare | minus: price
+  endif
+-%}
+<span class="price" data-price>
+  <span>{{ price | money_without_trailing_zeros }}</span>
+  {%- if on_sale -%}
+    <s>{{ compare | money_without_trailing_zeros }}</s>
+    {%- if show_save -%}<span class="price__save">Save {{ save | money_without_trailing_zeros }}</span>{%- endif -%}
+  {%- endif -%}
+</span>

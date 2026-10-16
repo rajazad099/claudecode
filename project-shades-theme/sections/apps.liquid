@@ -1,0 +1,25 @@
+<div class="app-section{% if section.settings.ink %} section--ink{% endif %}" id="{{ section.settings.anchor | default: section.id }}">
+  <div class="wrap">
+    {%- if section.settings.heading != blank -%}
+      <div class="section-head"><div>
+        {%- if section.settings.label != blank -%}<span class="label label--muted">{{ section.settings.label }}</span>{%- endif -%}
+        <h2 class="h2">{{ section.settings.heading }}</h2>
+      </div></div>
+    {%- endif -%}
+    {%- for block in section.blocks -%}{% render block %}{%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Apps",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Label" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "text", "id": "anchor", "label": "Anchor id", "info": "Use 'reviews' for the product reviews widget so the rating link jumps to it." },
+    { "type": "checkbox", "id": "ink", "label": "Dark background", "default": false }
+  ],
+  "blocks": [ { "type": "@app" } ],
+  "presets": [ { "name": "Apps" } ]
+}
+{% endschema %}

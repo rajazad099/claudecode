@@ -1,0 +1,442 @@
+{%- comment -%}
+  Product page. Built to answer, in order, the questions an Instagram buyer has:
+  is it legit -> will it suit me -> is it worth it -> when will it arrive -> what if I don't like it.
+  Data sources, all optional, all falling back gracefully:
+    reviews.rating / reviews.rating_count  (Judge.me)
+    custom.story        rich copy written for this theme; falls back to the product description
+    custom.highlights   list of short selling lines
+    custom.frame_width, custom.lens_width, custom.lens_height, custom.temple_length, custom.weight_g,
+    custom.frame_material, custom.lens_material, custom.polarised
+    custom.siblings     other colourways of the same model (product list)
+  Face-fit is read from membership of the small/medium/large face-type collections.
+{%- endcomment -%}
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign form_id = 'product-form-' | append: section.id
+  assign mf = product.metafields.custom
+  assign rating = product.metafields.reviews.rating.value.rating
+  assign rating_count = product.metafields.reviews.rating_count.value | default: 0
+
+  assign model_name = product.title | split: ']' | first | remove_first: '[' | strip
+  unless product.title contains ']'
+    assign model_name = product.title
+  endunless
+
+  assign siblings = mf.siblings.value
+  if siblings == blank
+    assign sib_handle = model_name | handleize
+    assign sib_coll = collections[sib_handle]
+    if sib_coll != blank and sib_coll.products_count > 1 and sib_coll.products_count < 13
+      assign siblings = sib_coll.products
+    endif
+  endif
+
+  assign fit_small = false
+  assign fit_medium = false
+  assign fit_large = false
+  for c in product.collections
+    case c.handle
+      when 'small-face-types'
+        assign fit_small = true
+      when 'medium-face-type'
+        assign fit_medium = true
+      when 'large-face-types'
+        assign fit_large = true
+    endcase
+  endfor
+
+  assign cart_pairs = cart.item_count
+-%}
+
+<section class="wrap" data-product-section data-section="{{ section.id }}">
+  <nav class="pdp__crumbs label" aria-label="Breadcrumb">
+    <a href="{{ routes.root_url }}">Home</a><span>/</span>
+    {%- if collection -%}<a href="{{ collection.url }}">{{ collection.title }}</a><span>/</span>{%- endif -%}
+    <span>{{ model_name }}</span>
+  </nav>
+
+  <div class="pdp">
+    {%- comment -%} Gallery {%- endcomment -%}
+    <div class="gallery" data-gallery>
+      <div class="gallery__badges">
+        {%- if product.available == false -%}<span class="badge badge--ink">Sold out</span>{%- endif -%}
+        {%- for tag in product.tags -%}
+          {%- if tag contains 'badge:' -%}<span class="badge badge--sun">{{ tag | remove: 'badge:' | strip }}</span>{%- endif -%}
+        {%- endfor -%}
+      </div>
+      <div class="gallery__track" data-gallery-track>
+        {%- for media in product.media -%}
+          {%- liquid
+            assign cover = false
+            if media.preview_image.aspect_ratio < 0.95
+              assign cover = true
+            endif
+            if media.media_type == 'video' or media.media_type == 'external_video'
+              assign cover = true
+            endif
+            if forloop.first
+              assign loading = 'eager'
+              assign priority = 'high'
+            else
+              assign loading = 'lazy'
+              assign priority = 'auto'
+            endif
+          -%}
+          <div class="gallery__slide{% if cover %} gallery__slide--cover{% endif %}" data-media-id="{{ media.id }}">
+            {%- case media.media_type -%}
+              {%- when 'video' -%}
+                {{ media | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true, preload: 'none', image_size: '1080x' }}
+              {%- when 'external_video' -%}
+                {{ media | external_video_tag: loading: 'lazy' }}
+              {%- else -%}
+                {{ media.preview_image | image_url: width: 1400 | image_tag: loading: loading, fetchpriority: priority, sizes: '(min-width: 990px) 55vw, 100vw', widths: '480, 720, 960, 1200, 1400', alt: media.alt | default: product.title }}
+            {%- endcase -%}
+          </div>
+        {%- else -%}
+          <div class="gallery__slide">{{ 'product-1' | placeholder_svg_tag }}</div>
+        {%- endfor -%}
+      </div>
+      {%- if product.media.size > 1 -%}
+        <div class="gallery__dots" aria-hidden="true">
+          {%- for media in product.media limit: 12 -%}<i{% if forloop.first %} class="is-on"{% endif %}></i>{%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Info column {%- endcomment -%}
+    <div class="pinfo">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+
+          {%- when 'name' -%}
+            <div class="pinfo__head" {{ block.shopify_attributes }}>
+              <div class="pinfo__model">
+                <span class="label label--muted">[ {{ model_name }} ]</span>
+                {%- if block.settings.show_type and product.type != blank -%}<span class="label label--muted">{{ product.type }}</span>{%- endif -%}
+              </div>
+              <h1 class="pinfo__title">{{ model_name }}</h1>
+              {%- capture sub -%}{% render 'ps-name', title: product.title, part: 'sub' %}{%- endcapture -%}
+              {%- if sub != blank -%}<p class="pinfo__sub">{{ sub }}</p>{%- endif -%}
+              <div class="pinfo__rating">
+                {%- if rating_count >= block.settings.min_reviews -%}
+                  <a href="#reviews">{% render 'stars', rating: rating, count: rating_count %}</a>
+                {%- elsif settings.store_review_count != blank -%}
+                  <a href="#reviews">{% render 'stars', rating: settings.store_rating %}</a>
+                  <span class="label label--muted">{{ settings.store_rating }} · {{ settings.store_review_count }} verified store reviews</span>
+                {%- endif -%}
+              </div>
+            </div>
+
+          {%- when 'price' -%}
+            <div {{ block.shopify_attributes }}>
+              <div class="pinfo__price" data-price-wrap>
+                {% render 'price', price: current_variant.price, compare: current_variant.compare_at_price, show_save: true %}
+                <span class="pinfo__tax">Incl. of all taxes</span>
+              </div>
+              {%- if block.settings.note != blank -%}
+                <p class="pinfo__note" style="margin-top:8px">{% render 'icon', name: 'gift' %}<span>{{ block.settings.note }}</span></p>
+              {%- endif -%}
+            </div>
+
+          {%- when 'variant_picker' -%}
+            <div class="opt" {{ block.shopify_attributes }}>
+              {%- if siblings != blank and siblings.size > 1 -%}
+                <div class="opt__label"><b>Colour</b><span class="label label--muted">{% render 'ps-name', title: product.title, part: 'colour' %}</span></div>
+                <div class="swatches" role="list">
+                  {%- for s in siblings -%}
+                    <a class="swatch{% if s.id == product.id %} is-active{% endif %}{% unless s.available %} is-soldout{% endunless %}" href="{{ s.url }}" role="listitem" aria-label="{{ s.title | escape }}"{% if s.id == product.id %} aria-current="true"{% endif %}>
+                      <span class="swatch__img">{%- if s.featured_media -%}{{ s.featured_media.preview_image | image_url: width: 140 | image_tag: loading: 'lazy', alt: '' }}{%- endif -%}</span>
+                      <span class="swatch__name">{% capture sc %}{% render 'ps-name', title: s.title, part: 'colour' %}{% endcapture %}{{ sc | default: s.title }}</span>
+                    </a>
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+
+              {%- unless product.has_only_default_variant -%}
+                {%- for option in product.options_with_values -%}
+                  {%- assign oname = option.name | downcase -%}
+                  <fieldset class="opt" style="border:0;padding:0;margin:0" data-option-index="{{ forloop.index0 }}">
+                    <legend class="opt__label" style="width:100%;padding:0;margin-bottom:10px"><b>{{ option.name }}</b><span class="label label--muted" data-option-selected>{{ option.selected_value }}</span></legend>
+                    {%- if oname == 'color' or oname == 'colour' -%}
+                      <div class="swatches">
+                        {%- for value in option.values -%}
+                          {%- liquid
+                            assign v_img = nil
+                            for v in product.variants
+                              if v.options contains value and v.featured_media
+                                assign v_img = v.featured_media.preview_image
+                                break
+                              endif
+                            endfor
+                          -%}
+                          <label>
+                            <input class="visually-hidden" type="radio" name="{{ option.name }}-{{ section.id }}" value="{{ value | escape }}"{% if option.selected_value == value %} checked{% endif %} data-option-input>
+                            <span class="swatch">
+                              <span class="swatch__img">{%- if v_img -%}{{ v_img | image_url: width: 140 | image_tag: loading: 'lazy', alt: '' }}{%- endif -%}</span>
+                              <span class="swatch__name">{{ value }}</span>
+                            </span>
+                          </label>
+                        {%- endfor -%}
+                      </div>
+                    {%- else -%}
+                      <div class="pills">
+                        {%- for value in option.values -%}
+                          <label>
+                            <input class="visually-hidden" type="radio" name="{{ option.name }}-{{ section.id }}" value="{{ value | escape }}"{% if option.selected_value == value %} checked{% endif %} data-option-input>
+                            <span class="pill">{{ value }}</span>
+                          </label>
+                        {%- endfor -%}
+                      </div>
+                    {%- endif -%}
+                  </fieldset>
+                {%- endfor -%}
+              {%- endunless -%}
+            </div>
+
+          {%- when 'fit' -%}
+            {%- if fit_small or fit_medium or fit_large or mf.frame_width != blank -%}
+              <div class="fit" {{ block.shopify_attributes }}>
+                <div style="display:grid;gap:6px">
+                  <span><b>Fits</b>{% if mf.frame_width != blank %} · {{ mf.frame_width }}mm wide{% endif %}{% if mf.weight_g != blank %} · {{ mf.weight_g }}g{% endif %}</span>
+                  <span class="fit__faces">
+                    <span class="fit__face{% if fit_small %} is-on{% endif %}">Small</span>
+                    <span class="fit__face{% if fit_medium %} is-on{% endif %}">Medium</span>
+                    <span class="fit__face{% if fit_large %} is-on{% endif %}">Large</span>
+                    <span class="label label--muted" style="align-self:center;margin-left:4px">faces</span>
+                  </span>
+                </div>
+                <button type="button" data-open-modal="FitGuide-{{ section.id }}">Find my fit</button>
+              </div>
+            {%- endif -%}
+
+          {%- when 'buy_buttons' -%}
+            <div {{ block.shopify_attributes }} data-buy-block>
+              {%- form 'product', product, id: form_id, novalidate: 'novalidate', data-product-form: '' -%}
+                <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
+                <input type="hidden" name="quantity" value="1">
+                <div class="buy{% unless settings.goBuynowEnable %} buy--single{% endunless %}">
+                  <button class="btn" type="submit" name="add" data-add-button{% unless current_variant.available %} disabled{% endunless %}>
+                    <span data-add-label>{% if current_variant.available %}Add to bag{% else %}Sold out{% endif %}</span>
+                    <span class="spinner"></span>
+                  </button>
+                  {%- if product.available -%}{% render 'gokwik-buy-now' %}{%- endif -%}
+                  {%- if block.settings.cod_line != blank -%}<p class="buy__cod">{{ block.settings.cod_line }}</p>{%- endif -%}
+                </div>
+              {%- endform -%}
+            </div>
+
+          {%- when 'tiers' -%}
+            {%- if settings.bundle_enable -%}
+              <div {{ block.shopify_attributes }}>{% render 'bundle-tiers', count: cart_pairs, context: 'pdp' %}</div>
+            {%- endif -%}
+
+          {%- when 'shipping' -%}
+            <div class="ship" {{ block.shopify_attributes }} data-eta-block>
+              <p class="ship__eta">{% render 'icon', name: 'truck' %}<span data-eta>Dispatched within 24 hours. Delivered in 3–7 days across India.</span></p>
+              <form class="ship__pin" data-pincode-form>
+                <label class="visually-hidden" for="Pin-{{ section.id }}">Pincode</label>
+                <input id="Pin-{{ section.id }}" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="Enter pincode for delivery date" autocomplete="postal-code">
+                <button class="btn btn--ghost btn--sm" type="submit">Check</button>
+              </form>
+            </div>
+
+          {%- when 'trust' -%}
+            <div class="trust" {{ block.shopify_attributes }}>
+              {%- assign icons = 'cash,bolt,sun,return' | split: ',' -%}
+              {%- for i in (1..4) -%}
+                {%- assign tkey = 'title_' | append: i -%}
+                {%- assign skey = 'sub_' | append: i -%}
+                {%- if block.settings[tkey] != blank -%}
+                  <div class="trust__item">{% render 'icon', name: icons[forloop.index0] %}<span><b>{{ block.settings[tkey] }}</b>{{ block.settings[skey] }}</span></div>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+
+          {%- when 'highlights' -%}
+            {%- assign hl = mf.highlights.value -%}
+            {%- if hl != blank -%}
+              <div {{ block.shopify_attributes }}>
+                <p class="label label--muted" style="margin-bottom:10px">{{ block.settings.heading }}</p>
+                <ul class="why">{%- for h in hl -%}<li>{{ h }}</li>{%- endfor -%}</ul>
+              </div>
+            {%- endif -%}
+
+          {%- when 'details' -%}
+            <div class="acc" {{ block.shopify_attributes }}>
+              <details{% if block.settings.open %} open{% endif %}>
+                <summary>The story &amp; details<span class="acc__icon"></span></summary>
+                <div class="acc__body">
+                  {%- if mf.frame_width != blank or mf.lens_width != blank or mf.weight_g != blank -%}
+                    <div class="specs">
+                      {%- if mf.frame_width != blank -%}<div><span class="label label--muted">Frame width</span><b>{{ mf.frame_width }}mm</b></div>{%- endif -%}
+                      {%- if mf.lens_width != blank -%}<div><span class="label label--muted">Lens width</span><b>{{ mf.lens_width }}mm</b></div>{%- endif -%}
+                      {%- if mf.lens_height != blank -%}<div><span class="label label--muted">Lens height</span><b>{{ mf.lens_height }}mm</b></div>{%- endif -%}
+                      {%- if mf.temple_length != blank -%}<div><span class="label label--muted">Temple</span><b>{{ mf.temple_length }}mm</b></div>{%- endif -%}
+                      {%- if mf.weight_g != blank -%}<div><span class="label label--muted">Weight</span><b>{{ mf.weight_g }}g</b></div>{%- endif -%}
+                      {%- if mf.frame_material != blank -%}<div><span class="label label--muted">Frame</span><b>{{ mf.frame_material }}</b></div>{%- endif -%}
+                      {%- if mf.lens_material != blank -%}<div><span class="label label--muted">Lens</span><b>{{ mf.lens_material }}</b></div>{%- endif -%}
+                      <div><span class="label label--muted">Protection</span><b>UV400{% if mf.polarised.value %} · Polarised{% endif %}</b></div>
+                    </div>
+                  {%- endif -%}
+                  <div class="rte">
+                    {%- if mf.story != blank -%}{{ mf.story.value }}{%- else -%}{{ product.description }}{%- endif -%}
+                  </div>
+                </div>
+              </details>
+            </div>
+
+          {%- when 'collapsible' -%}
+            <div class="acc" {{ block.shopify_attributes }} style="border-top:0">
+              <details>
+                <summary>{{ block.settings.heading }}<span class="acc__icon"></span></summary>
+                <div class="acc__body rte">{{ block.settings.content }}{%- if block.settings.page != blank -%}{{ block.settings.page.content }}{%- endif -%}</div>
+              </details>
+            </div>
+
+          {%- when 'text' -%}
+            <div class="rte" {{ block.shopify_attributes }} style="font-size:14px">{{ block.settings.text }}</div>
+
+          {%- when '@app' -%}
+            {% render block %}
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{%- comment -%} Fit guide {%- endcomment -%}
+<div class="modal" id="FitGuide-{{ section.id }}" role="dialog" aria-modal="true" aria-labelledby="FitGuideTitle-{{ section.id }}" data-modal>
+  <div class="modal__head">
+    <span class="h3" id="FitGuideTitle-{{ section.id }}">Find your fit</span>
+    <button class="icon-btn" type="button" data-close aria-label="Close">{% render 'icon', name: 'close' %}</button>
+  </div>
+  <div class="fitguide">
+    <p>No tape measure? Use any debit or credit card — it's 85.6mm wide, the same everywhere.</p>
+    <ol>
+      <li>Stand in front of a mirror and hold the card flat under your nose, one short edge in the middle of your nose.</li>
+      <li>Look where the other edge lands.</li>
+      <li>Ends at the middle of your eye → <b>small face</b>. Outer corner of your eye → <b>medium</b>. Past your eye → <b>large</b>.</li>
+    </ol>
+    <table>
+      <thead><tr><th>Face</th><th>Frame width</th><th>Feels like</th></tr></thead>
+      <tbody>
+        <tr><td>Small</td><td>Under 135mm</td><td>Snug, sits close</td></tr>
+        <tr><td>Medium</td><td>135–145mm</td><td>Most people land here</td></tr>
+        <tr><td>Large</td><td>145mm +</td><td>Room at the temples</td></tr>
+      </tbody>
+    </table>
+    {%- if mf.frame_width != blank -%}<p><b>{{ model_name }}</b> is {{ mf.frame_width }}mm wide.</p>{%- endif -%}
+    <p class="label label--muted">Still unsure? WhatsApp us a selfie — we'll tell you honestly.</p>
+    {%- if settings.whatsapp_number != blank -%}
+      <a class="btn btn--ghost btn--block" href="https://wa.me/{{ settings.whatsapp_number | remove: '+' | remove: ' ' }}?text={{ 'Hi! Will ' | append: model_name | append: ' suit my face?' | url_encode }}" target="_blank" rel="noopener">{% render 'icon', name: 'whatsapp' %} Ask on WhatsApp</a>
+    {%- endif -%}
+  </div>
+</div>
+
+{%- comment -%} Sticky add-to-bag on mobile {%- endcomment -%}
+<div class="sticky-buy" data-sticky-buy aria-hidden="true">
+  {%- if product.featured_media -%}{{ product.featured_media.preview_image | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}{%- endif -%}
+  <div class="sticky-buy__info">
+    <b>{{ model_name }}</b>
+    <span data-sticky-price>{{ current_variant.price | money_without_trailing_zeros }}</span>
+  </div>
+  <button class="btn btn--sun" type="button" data-sticky-add{% unless current_variant.available %} disabled{% endunless %} tabindex="-1">Add to bag</button>
+</div>
+
+<script type="application/json" data-product-json>
+  {{ product | json }}
+</script>
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "url": {{ request.origin | append: product.url | json }},
+    {%- if product.featured_media -%}"image": [{{ product.featured_media | image_url: width: 1200 | prepend: 'https:' | json }}],{%- endif -%}
+    "description": {{ product.description | strip_html | strip | truncate: 500 | json }},
+    "brand": { "@type": "Brand", "name": {{ shop.name | json }} },
+    {%- if rating_count > 0 -%}
+    "aggregateRating": { "@type": "AggregateRating", "ratingValue": {{ rating | json }}, "reviewCount": {{ rating_count | json }} },
+    {%- endif -%}
+    "offers": [
+      {%- for variant in product.variants -%}
+        {
+          "@type": "Offer",
+          {%- if variant.sku != blank -%}"sku": {{ variant.sku | json }},{%- endif -%}
+          "availability": "http://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+          "price": {{ variant.price | divided_by: 100.00 | json }},
+          "priceCurrency": {{ cart.currency.iso_code | json }},
+          "url": {{ request.origin | append: variant.url | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Product page",
+  "tag": "div",
+  "class": "section-main-product",
+  "blocks": [
+    { "type": "@app" },
+    {
+      "type": "name", "name": "Name & rating", "limit": 1,
+      "settings": [
+        { "type": "checkbox", "id": "show_type", "label": "Show product type", "default": false },
+        { "type": "range", "id": "min_reviews", "label": "Show product rating from this many reviews", "info": "Below this, the store-wide rating shows instead.", "min": 1, "max": 20, "step": 1, "default": 5 }
+      ]
+    },
+    {
+      "type": "price", "name": "Price", "limit": 1,
+      "settings": [
+        { "type": "text", "id": "note", "label": "Offer line under price", "info": "Only add what is true today, e.g. a prepaid discount you run in GoKwik." }
+      ]
+    },
+    { "type": "variant_picker", "name": "Colours & variants", "limit": 1, "settings": [] },
+    { "type": "fit", "name": "Face fit", "limit": 1, "settings": [] },
+    {
+      "type": "buy_buttons", "name": "Buy buttons", "limit": 1,
+      "settings": [
+        { "type": "text", "id": "cod_line", "label": "Line under buttons", "default": "Cash on delivery available · Free shipping" }
+      ]
+    },
+    { "type": "tiers", "name": "Buy 2 / Buy 3 bar", "limit": 1, "settings": [] },
+    { "type": "shipping", "name": "Delivery date", "limit": 1, "settings": [] },
+    {
+      "type": "trust", "name": "Trust grid", "limit": 1,
+      "settings": [
+        { "type": "text", "id": "title_1", "label": "Item 1", "default": "Cash on delivery" },
+        { "type": "text", "id": "sub_1", "label": "Item 1 detail", "default": "Pay when it arrives" },
+        { "type": "text", "id": "title_2", "label": "Item 2", "default": "Ships in 24 hours" },
+        { "type": "text", "id": "sub_2", "label": "Item 2 detail", "default": "Next working day" },
+        { "type": "text", "id": "title_3", "label": "Item 3", "default": "UV400 on every pair" },
+        { "type": "text", "id": "sub_3", "label": "Item 3 detail", "default": "Blocks 100% UVA + UVB" },
+        { "type": "text", "id": "title_4", "label": "Item 4", "default": "Easy returns" },
+        { "type": "text", "id": "sub_4", "label": "Item 4 detail", "default": "Within 3 days of delivery" }
+      ]
+    },
+    {
+      "type": "highlights", "name": "Highlights", "limit": 1,
+      "settings": [ { "type": "text", "id": "heading", "label": "Heading", "default": "Why you'll love it" } ]
+    },
+    {
+      "type": "details", "name": "Story & specs", "limit": 1,
+      "settings": [ { "type": "checkbox", "id": "open", "label": "Open by default", "default": false } ]
+    },
+    {
+      "type": "collapsible", "name": "Collapsible tab",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Shipping & returns" },
+        { "type": "richtext", "id": "content", "label": "Content" },
+        { "type": "page", "id": "page", "label": "Content from a page" }
+      ]
+    },
+    {
+      "type": "text", "name": "Text",
+      "settings": [ { "type": "richtext", "id": "text", "label": "Text" } ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,121 @@
+{%- comment -%}
+  Cart drawer. Re-rendered through the Section Rendering API after every change,
+  so everything here reads straight from the live `cart` object.
+{%- endcomment -%}
+{%- liquid
+  assign upsell_source = settings.cart_upsell_collection
+  assign in_cart = cart.items | map: 'product_id' | join: ','
+  assign in_cart = ',' | append: in_cart | append: ','
+-%}
+<div class="drawer drawer--right" id="CartDrawer" data-cart-drawer data-count="{{ cart.item_count }}" role="dialog" aria-modal="true" aria-label="Your bag" tabindex="-1">
+  <div class="drawer__head">
+    <span class="drawer__title">Your bag{% if cart.item_count > 0 %} <span class="label label--muted">({{ cart.item_count }})</span>{% endif %}</span>
+    <button class="icon-btn" type="button" data-close aria-label="Close bag">{% render 'icon', name: 'close' %}</button>
+  </div>
+
+  {%- if cart.item_count == 0 -%}
+    <div class="drawer__body">
+      <div class="cart-empty">
+        <p class="h3">Your bag is empty.<br>Your face isn't.</p>
+        <p class="lede">Every pair is UV400, ships in 24 hours and comes with cash on delivery.</p>
+        <a class="btn" href="{{ routes.all_products_collection_url }}">Shop all frames {% render 'icon', name: 'arrow' %}</a>
+      </div>
+      {%- if upsell_source != blank -%}
+        <div class="upsell">
+          <div class="upsell__head"><b>Bestsellers</b></div>
+          <div class="upsell__rail">
+            {%- for p in upsell_source.products limit: 8 -%}
+              {%- if p.available -%}{% render 'upsell-card', product: p %}{%- endif -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  {%- else -%}
+    <div class="drawer__body">
+      {%- if settings.bundle_enable -%}{% render 'bundle-tiers', count: cart.item_count, context: 'cart' %}{%- endif -%}
+
+      <ul class="cart-items">
+        {%- for item in cart.items -%}
+          <li class="citem">
+            <a class="citem__img" href="{{ item.url }}">
+              {%- if item.image -%}{{ item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: item.product.title }}{%- endif -%}
+            </a>
+            <div class="citem__info">
+              <div class="citem__top">
+                <a href="{{ item.url }}">
+                  <span class="citem__model">{% render 'ps-name', title: item.product.title, part: 'model' %}</span>
+                </a>
+                <span class="price">
+                  {%- if item.original_line_price > item.final_line_price -%}<s>{{ item.original_line_price | money_without_trailing_zeros }}</s>{%- endif -%}
+                  <span>{{ item.final_line_price | money_without_trailing_zeros }}</span>
+                </span>
+              </div>
+              <span class="citem__sub">
+                {% render 'ps-name', title: item.product.title, part: 'sub' %}
+                {%- unless item.product.has_only_default_variant %} · {{ item.variant.title }}{% endunless -%}
+              </span>
+              {%- for d in item.line_level_discount_allocations -%}
+                <span class="citem__disc">{{ d.discount_application.title }} · −{{ d.amount | money_without_trailing_zeros }}</span>
+              {%- endfor -%}
+              <div class="citem__row">
+                <div class="qty">
+                  <button type="button" data-line-change="{{ item.key }}" data-qty="{{ item.quantity | minus: 1 }}" aria-label="Remove one">{% render 'icon', name: 'minus' %}</button>
+                  <span>{{ item.quantity }}</span>
+                  <button type="button" data-line-change="{{ item.key }}" data-qty="{{ item.quantity | plus: 1 }}" aria-label="Add one">{% render 'icon', name: 'plus' %}</button>
+                </div>
+                <button class="citem__remove" type="button" data-line-change="{{ item.key }}" data-qty="0">Remove</button>
+              </div>
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      {%- if settings.cart_upsell_enable and upsell_source != blank -%}
+        {%- capture upsell_cards -%}
+          {%- assign shown = 0 -%}
+          {%- for p in upsell_source.products limit: 16 -%}
+            {%- assign key = ',' | append: p.id | append: ',' -%}
+            {%- if p.available and shown < 8 -%}
+              {%- unless in_cart contains key -%}
+                {% render 'upsell-card', product: p %}
+                {%- assign shown = shown | plus: 1 -%}
+              {%- endunless -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endcapture -%}
+        {%- if upsell_cards != blank -%}
+          <div class="upsell">
+            <div class="upsell__head">
+              <b>{% if cart.item_count < settings.bundle_tier2_qty and settings.bundle_enable %}Make it a pair. Save more.{% else %}Pairs well with{% endif %}</b>
+              <span class="label label--muted">Tap to add</span>
+            </div>
+            <div class="upsell__rail">{{ upsell_cards }}</div>
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+
+    <div class="drawer__foot">
+      <div class="cart-sum">
+        {%- if cart.total_discount > 0 -%}
+          <div class="cart-sum__row"><span>Subtotal</span><span>{{ cart.total_price | plus: cart.total_discount | money_without_trailing_zeros }}</span></div>
+          {%- for d in cart.cart_level_discount_applications -%}
+            <div class="cart-sum__row cart-sum__row--save"><span>{{ d.title }}</span><span>−{{ d.total_allocated_amount | money_without_trailing_zeros }}</span></div>
+          {%- endfor -%}
+          <div class="cart-sum__row cart-sum__row--save"><span>You save</span><span>{{ cart.total_discount | money_without_trailing_zeros }}</span></div>
+        {%- endif -%}
+        <div class="cart-sum__row cart-sum__row--total"><span>Total</span><span>{{ cart.total_price | money_without_trailing_zeros }}</span></div>
+        <span class="cart-sum__fine">{% render 'icon', name: 'truck' %} Free shipping · Cash on delivery available · <span data-eta-short>Dispatched in 24h</span></span>
+      </div>
+      {%- if settings.goEnable -%}
+        {% render 'gokwik-checkout' %}
+      {%- else -%}
+        <form action="{{ routes.cart_url }}" method="post">
+          <button class="btn btn--block btn-checkout" type="submit" name="checkout">Checkout {% render 'icon', name: 'lock' %}</button>
+        </form>
+      {%- endif -%}
+      <div class="pay-icons"><span>UPI</span><span>·</span><span>Cards</span><span>·</span><span>Wallets</span><span>·</span><span>COD</span></div>
+    </div>
+  {%- endif -%}
+</div>

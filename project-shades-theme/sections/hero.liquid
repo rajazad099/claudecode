@@ -1,0 +1,49 @@
+{%- assign s = section.settings -%}
+<section class="hero">
+  {%- if s.image_desktop != blank -%}
+    <div class="hero__media hero__media--desktop">
+      {{ s.image_desktop | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '1000, 1400, 1800, 2400', alt: s.image_desktop.alt }}
+    </div>
+  {%- endif -%}
+  <div class="hero__media hero__media--mobile{% if s.image_desktop != blank %} has-desktop{% endif %}">
+    {%- if s.video != blank -%}
+      {{ s.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false, image_size: '1100x', data-autoplay: '' }}
+    {%- elsif s.image != blank -%}
+      {{ s.image | image_url: width: 1200 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '600, 800, 1000, 1200', alt: s.image.alt }}
+    {%- endif -%}
+  </div>
+
+  <div class="wrap hero__content">
+    {%- if s.kicker != blank -%}<span class="hero__kicker label"><span class="announce__dot"></span>{{ s.kicker }}</span>{%- endif -%}
+    <h1 class="display hero__title">{{ s.heading }}</h1>
+    {%- if s.text != blank -%}<p class="hero__sub">{{ s.text }}</p>{%- endif -%}
+    <div class="hero__ctas">
+      {%- if s.btn1_label != blank -%}<a class="btn btn--sun" href="{{ s.btn1_link }}">{{ s.btn1_label }} {% render 'icon', name: 'arrow' %}</a>{%- endif -%}
+      {%- if s.btn2_label != blank -%}<a class="btn btn--paper" href="{{ s.btn2_link }}">{{ s.btn2_label }}</a>{%- endif -%}
+    </div>
+    <div class="hero__proof">
+      {%- if settings.store_review_count != blank -%}<span>{% render 'icon', name: 'star' %} {{ settings.store_rating }} · {{ settings.store_review_count }} verified reviews</span>{%- endif -%}
+      <span>{% render 'icon', name: 'cash' %} Cash on delivery</span>
+      <span>{% render 'icon', name: 'bolt' %} Ships in 24h</span>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image (mobile)" },
+    { "type": "image_picker", "id": "image_desktop", "label": "Image (desktop)" },
+    { "type": "video", "id": "video", "label": "Video (mobile, replaces image)" },
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Autumn '26 drop is live" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shades with a point of view." },
+    { "type": "text", "id": "text", "label": "Text", "default": "Frames for people who don't do boring. UV400 on every pair." },
+    { "type": "text", "id": "btn1_label", "label": "Primary button", "default": "Shop the drop" },
+    { "type": "url", "id": "btn1_link", "label": "Primary link" },
+    { "type": "text", "id": "btn2_label", "label": "Secondary button", "default": "Bestsellers" },
+    { "type": "url", "id": "btn2_link", "label": "Secondary link" }
+  ],
+  "presets": [ { "name": "Hero" } ]
+}
+{% endschema %}

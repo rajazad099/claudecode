@@ -1,0 +1,29 @@
+{%- assign s = section.settings -%}
+<section class="{% if s.ink %}section--ink{% endif %}">
+  <div class="wrap page-hero">
+    <span class="label{% unless s.ink %} label--muted{% endunless %}"{% if s.ink %} style="color:var(--sun)"{% endif %}>{{ s.label | default: page.title }}</span>
+    <h1 class="display" style="max-width:12ch">{{ s.heading | default: page.title }}</h1>
+    {%- if s.text != blank -%}<p class="lede" style="font-size:19px;max-width:52ch">{{ s.text }}</p>{%- endif -%}
+  </div>
+  {%- if s.image != blank -%}
+    <div class="wrap" style="padding-bottom:{% if s.ink %}48px{% else %}0{% endif %}">
+      <div style="aspect-ratio:16/10;overflow:hidden;background:var(--tile)">
+        {{ s.image | image_url: width: 2000 | image_tag: loading: 'eager', sizes: '100vw', widths: '800, 1200, 1600, 2000', alt: s.image.alt, style: 'width:100%;height:100%;object-fit:cover' }}
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Page hero",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Label" },
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "textarea", "id": "text", "label": "Text" },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "checkbox", "id": "ink", "label": "Dark background", "default": false }
+  ],
+  "presets": [ { "name": "Page hero" } ]
+}
+{% endschema %}

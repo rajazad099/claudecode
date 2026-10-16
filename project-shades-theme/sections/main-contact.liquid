@@ -1,0 +1,27 @@
+<div class="wrap" style="padding:48px var(--gutter) 80px;display:grid;gap:40px">
+  <div style="display:grid;gap:14px">
+    <span class="label label--muted">Talk to a human</span>
+    <h1 class="h1">{{ page.title }}</h1>
+    {%- if page.content != blank -%}<div class="lede rte">{{ page.content }}</div>{%- endif -%}
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      {%- if settings.whatsapp_number != blank -%}<a class="btn" href="https://wa.me/{{ settings.whatsapp_number | remove: '+' | remove: ' ' }}" target="_blank" rel="noopener">{% render 'icon', name: 'whatsapp' %} WhatsApp us</a>{%- endif -%}
+      {%- if settings.support_email != blank -%}<a class="btn btn--ghost" href="mailto:{{ settings.support_email }}">{{ settings.support_email }}</a>{%- endif -%}
+    </div>
+  </div>
+  <div style="max-width:560px">
+    {%- form 'contact', id: 'ContactForm' -%}
+      {%- if form.posted_successfully? -%}<p class="notice">Got it — we'll get back to you shortly.</p>{%- endif -%}
+      {%- if form.errors -%}<p class="notice notice--error">{{ form.errors | default_errors }}</p>{%- endif -%}
+      <div class="field"><label for="ContactName">Name</label><input id="ContactName" name="contact[name]" autocomplete="name" value="{{ form.name }}"></div>
+      <div class="field"><label for="ContactEmail">Email *</label><input id="ContactEmail" type="email" name="contact[email]" autocomplete="email" required value="{{ form.email }}"></div>
+      <div class="field"><label for="ContactPhone">Phone</label><input id="ContactPhone" type="tel" name="contact[phone]" autocomplete="tel" value="{{ form.phone }}"></div>
+      <div class="field"><label for="ContactOrder">Order number (if any)</label><input id="ContactOrder" name="contact[order]"></div>
+      <div class="field"><label for="ContactBody">Message</label><textarea id="ContactBody" name="contact[body]" rows="5">{{ form.body }}</textarea></div>
+      <button class="btn" type="submit">Send message</button>
+    {%- endform -%}
+  </div>
+</div>
+
+{% schema %}
+{ "name": "Contact", "settings": [] }
+{% endschema %}

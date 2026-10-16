@@ -1,0 +1,77 @@
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__top">
+      <div class="footer__news">
+        <p class="h2">{{ section.settings.heading }}</p>
+        <p style="opacity:.7;max-width:40ch">{{ section.settings.subheading }}</p>
+        {%- form 'customer', id: 'FooterNewsletter' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          {%- if form.posted_successfully? -%}
+            <p class="label" style="color:var(--sun);padding:14px 0">You're in. Watch your inbox.</p>
+          {%- else -%}
+            <label class="visually-hidden" for="FooterEmail">Email</label>
+            <input id="FooterEmail" type="email" name="contact[email]" placeholder="Your email" autocomplete="email" required>
+            <button type="submit">Join {% render 'icon', name: 'arrow' %}</button>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+
+      <div class="footer__cols">
+        <div class="footer__col">
+          <span class="label">Shop</span>
+          {%- for link in section.settings.menu.links -%}<a href="{{ link.url }}">{{ link.title | strip }}</a>{%- endfor -%}
+        </div>
+        <div class="footer__col">
+          <span class="label">Help</span>
+          {%- for link in section.settings.help_menu.links -%}<a href="{{ link.url }}">{{ link.title }}</a>{%- endfor -%}
+          {%- for policy in shop.policies -%}
+            {%- if policy.title != blank -%}<a href="{{ policy.url }}">{{ policy.title }}</a>{%- endif -%}
+          {%- endfor -%}
+        </div>
+        <div class="footer__col">
+          <span class="label">Talk to us</span>
+          {%- if settings.whatsapp_number != blank -%}<a href="https://wa.me/{{ settings.whatsapp_number | remove: '+' | remove: ' ' }}" target="_blank" rel="noopener">WhatsApp {{ settings.whatsapp_number }}</a>{%- endif -%}
+          {%- if settings.support_email != blank -%}<a href="mailto:{{ settings.support_email }}">{{ settings.support_email }}</a>{%- endif -%}
+          {%- if section.settings.hours != blank -%}<span style="opacity:.6">{{ section.settings.hours }}</span>{%- endif -%}
+        </div>
+        <div class="footer__col">
+          <span class="label">Follow</span>
+          <div class="footer__social">
+            {%- if settings.social_instagram_link != blank -%}<a href="{{ settings.social_instagram_link }}" target="_blank" rel="noopener" aria-label="Instagram">{% render 'icon', name: 'instagram' %}</a>{%- endif -%}
+            {%- if settings.social_facebook_link != blank -%}<a href="{{ settings.social_facebook_link }}" target="_blank" rel="noopener" aria-label="Facebook">{% render 'icon', name: 'facebook' %}</a>{%- endif -%}
+            {%- if settings.social_youtube_link != blank -%}<a href="{{ settings.social_youtube_link }}" target="_blank" rel="noopener" aria-label="YouTube">{% render 'icon', name: 'youtube' %}</a>{%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__logo">
+      {%- if section.settings.logo != blank -%}
+        {{ section.settings.logo | image_url: width: 1600 | image_tag: loading: 'lazy', alt: shop.name, widths: '600, 1000, 1600', sizes: '100vw' }}
+      {%- else -%}
+        <span class="footer__logo-text">{{ shop.name }}</span>
+      {%- endif -%}
+    </div>
+
+    <div class="footer__base">
+      <span>© {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ section.settings.signoff }}</span>
+      <span>UPI · Cards · Wallets · Cash on delivery</span>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "section-footer",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Newsletter heading", "default": "First dibs on every drop." },
+    { "type": "text", "id": "subheading", "label": "Newsletter text", "default": "New drops and restocks, straight to your inbox. No spam, ever." },
+    { "type": "link_list", "id": "menu", "label": "Shop menu", "default": "footer" },
+    { "type": "link_list", "id": "help_menu", "label": "Help menu", "info": "Shown above your store policies." },
+    { "type": "text", "id": "hours", "label": "Support hours", "info": "e.g. Mon–Sat, 10am–7pm" },
+    { "type": "image_picker", "id": "logo", "label": "Big footer logo", "info": "Dark logo on transparent background; it is inverted to white." },
+    { "type": "text", "id": "signoff", "label": "Sign-off", "default": "Born in India, worn loud." }
+  ]
+}
+{% endschema %}

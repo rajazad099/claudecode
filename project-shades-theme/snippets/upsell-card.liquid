@@ -1,0 +1,13 @@
+{%- assign v = product.selected_or_first_available_variant -%}
+<div class="ucard">
+  <a class="ucard__img" href="{{ product.url }}">
+    {%- if product.featured_media -%}{{ product.featured_media.preview_image | image_url: width: 280 | image_tag: loading: 'lazy', alt: product.title }}{%- endif -%}
+  </a>
+  <span class="ucard__name">{% render 'ps-name', title: product.title, part: 'model' %}</span>
+  {% render 'price', price: product.price, compare: product.compare_at_price %}
+  {%- if product.has_only_default_variant -%}
+    <button class="btn btn--ghost btn--sm" type="button" data-quick-add="{{ v.id }}"><span>+ Add</span><span class="spinner"></span></button>
+  {%- else -%}
+    <a class="btn btn--ghost btn--sm" href="{{ product.url }}">Choose</a>
+  {%- endif -%}
+</div>

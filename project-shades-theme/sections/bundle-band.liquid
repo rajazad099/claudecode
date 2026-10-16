@@ -1,0 +1,38 @@
+{%- assign s = section.settings -%}
+<section class="section section--sun">
+  <div class="wrap bundle-band">
+    <div style="display:grid;gap:16px" data-reveal>
+      <span class="label">{{ s.label }}</span>
+      <h2 class="h1">{{ s.heading }}</h2>
+      <p style="max-width:40ch;font-size:16px">{{ s.text }}</p>
+      {%- if s.btn_label != blank -%}<div><a class="btn" href="{{ s.btn_link }}">{{ s.btn_label }} {% render 'icon', name: 'arrow' %}</a></div>{%- endif -%}
+    </div>
+    <div class="bundle-band__tiers" data-reveal>
+      <div class="tier">
+        <span class="label">Buy</span>
+        <span class="tier__qty">{{ settings.bundle_tier1_qty }}</span>
+        <span class="tier__off">Get {{ settings.bundle_tier1_label }}</span>
+      </div>
+      <div class="tier" style="background:var(--ink);color:var(--paper)">
+        <span class="label" style="color:var(--sun)">Buy</span>
+        <span class="tier__qty">{{ settings.bundle_tier2_qty }}</span>
+        <span class="tier__off">Get {{ settings.bundle_tier2_label }}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Bundle offer",
+  "settings": [
+    { "type": "paragraph", "content": "Tiers come from Theme settings → Bundle offer, so the bar, cart and this band always agree." },
+    { "type": "text", "id": "label", "label": "Label", "default": "The more the merrier" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "One for you. One for the group chat." },
+    { "type": "text", "id": "text", "label": "Text", "default": "Mix any frames. The discount applies automatically in your bag — no code needed." },
+    { "type": "text", "id": "btn_label", "label": "Button", "default": "Build your pair" },
+    { "type": "url", "id": "btn_link", "label": "Button link" }
+  ],
+  "presets": [ { "name": "Bundle offer" } ]
+}
+{% endschema %}

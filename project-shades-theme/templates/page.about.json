@@ -1,0 +1,148 @@
+{
+  "sections": {
+    "hero": {
+      "type": "page-hero",
+      "settings": {
+        "label": "About us",
+        "heading": "A parenthesis of all things disruptive.",
+        "text": "Project Shades was born in 2022 out of a simple itch: eyewear in India was predictable. We decided to make the pairs we couldn't find — bold, unordinary, and priced for real life.",
+        "image": "shopify://shop_images/DSC09307_9790c474-f772-4939-bb8d-7d6424d7cba2.jpg",
+        "ink": false
+      }
+    },
+    "stats": {
+      "type": "stats",
+      "blocks": {
+        "s1": {
+          "type": "stat",
+          "settings": {
+            "number": "2022",
+            "caption": "Founded"
+          }
+        },
+        "s2": {
+          "type": "stat",
+          "settings": {
+            "number": "10K+",
+            "caption": "People wearing PS"
+          }
+        },
+        "s3": {
+          "type": "stat",
+          "settings": {
+            "number": "684+",
+            "caption": "Verified reviews"
+          }
+        },
+        "s4": {
+          "type": "stat",
+          "settings": {
+            "number": "UV400",
+            "caption": "On every single pair"
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4"
+      ],
+      "settings": {
+        "heading": ""
+      }
+    },
+    "philosophy": {
+      "type": "image-with-text",
+      "settings": {
+        "image": "shopify://shop_images/Model_F2_PS_Jsstudio_Final-50.jpg",
+        "flip": false,
+        "tone": "paper",
+        "label": "Our philosophy",
+        "heading": "Experimentation isn't a method. It's the point.",
+        "text": "<p>We take cues from fashion scenes around the world and run them through our own lens. We refuse to settle into one category — every collection explores a new idea, and every pair gets its own name and personality.</p><p>Futuristic one season, vintage the next. Never boring.</p>",
+        "btn_label": "See the latest drop",
+        "btn_link": "shopify://collections/autumn-2026"
+      }
+    },
+    "promise": {
+      "type": "image-with-text",
+      "settings": {
+        "image": "shopify://shop_images/Model_M1_PS_Jsstudio_Final-29.jpg",
+        "flip": true,
+        "tone": "raise",
+        "label": "What we promise",
+        "heading": "More than an accessory.",
+        "text": "<p>Good design is only half the job. Every order ships within 24 hours, cash on delivery works everywhere in India, and a real person answers on WhatsApp.</p><p>Quality, customer experience and meticulous design — that's the whole brief.</p>",
+        "btn_label": "Talk to us",
+        "btn_link": "shopify://pages/contact"
+      }
+    },
+    "manifesto": {
+      "type": "manifesto",
+      "settings": {
+        "tone": "ink",
+        "label": "What's next",
+        "heading": "Coming soon to a street near you.",
+        "text": "<p>We're building an offline home for Project Shades — a space where you can try every frame on and see the brand the way we see it. Until then, the whole store fits in your pocket.</p>",
+        "btn_label": "Shop all frames",
+        "btn_link": "shopify://collections/all"
+      }
+    },
+    "press": {
+      "type": "press",
+      "blocks": {
+        "p1": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/logo-grazia.png",
+            "name": "Grazia",
+            "link": ""
+          }
+        },
+        "p2": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/images_1.png",
+            "name": "",
+            "link": ""
+          }
+        },
+        "p3": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Untitled_2_01.png",
+            "name": "",
+            "link": ""
+          }
+        },
+        "p4": {
+          "type": "logo",
+          "settings": {
+            "image": "shopify://shop_images/Beige_and_White_Be_Yourself_Square_Pillow.png",
+            "name": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4"
+      ],
+      "settings": {
+        "label": "As seen in",
+        "speed": 28
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "stats",
+    "philosophy",
+    "promise",
+    "manifesto",
+    "press"
+  ]
+}
