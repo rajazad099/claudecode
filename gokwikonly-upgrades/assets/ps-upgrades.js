@@ -94,10 +94,10 @@
       ? `<b>${full(from)}</b>`
       : `<b>${from.getUTCMonth() === to.getUTCMonth() ? short(from).replace(',', '') : full(from)} – ${full(to)}</b>`;
 
-    // Minimal: nothing until a pincode is entered, then one line with the estimated range.
+    // Minimal: a prompt until a pincode is entered, then one line with the estimated range.
     $$('[data-ps-eta]').forEach((el) => {
       const line = el.closest('.ps-ship__eta');
-      if (!pin) { if (line) line.hidden = true; el.innerHTML = ''; return; }
+      if (!pin) { if (line) line.hidden = false; el.textContent = 'Enter your pincode to check estimated delivery'; return; }
       if (line) line.hidden = false;
       el.innerHTML = `Estimated delivery to ${pin}: ${arrive}`;
     });
