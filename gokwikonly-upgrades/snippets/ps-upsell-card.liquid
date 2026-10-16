@@ -1,15 +1,17 @@
 {%- assign v = product.selected_or_first_available_variant -%}
 <div class="ps-ucard">
-  <a class="ps-ucard__img" href="{{ product.url }}">
-    {%- if product.featured_media -%}{{ product.featured_media.preview_image | image_url: width: 280 | image_tag: loading: 'lazy', alt: product.title, widths: '140, 280' }}{%- endif -%}
+  <a class="ps-ucard__img" href="{{ product.url }}" tabindex="-1">
+    {%- if product.featured_media -%}{{ product.featured_media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: product.title, widths: '80, 160' }}{%- endif -%}
   </a>
-  <a class="ps-ucard__name" href="{{ product.url }}">{% render 'ps-name', title: product.title, part: 'model' %}</a>
-  <span class="ps-ucard__price">
-    {{- product.price | money_without_trailing_zeros -}}
-    {%- if product.compare_at_price > product.price -%}<s>{{ product.compare_at_price | money_without_trailing_zeros }}</s>{%- endif -%}
-  </span>
+  <div class="ps-ucard__body">
+    <a class="ps-ucard__name" href="{{ product.url }}">{% render 'ps-name', title: product.title, part: 'model' %}</a>
+    <span class="ps-ucard__price">
+      {{- product.price | money_without_trailing_zeros -}}
+      {%- if product.compare_at_price > product.price -%}<s>{{ product.compare_at_price | money_without_trailing_zeros }}</s>{%- endif -%}
+    </span>
+  </div>
   {%- if product.has_only_default_variant -%}
-    <button class="ps-ucard__btn" type="button" data-ps-add="{{ v.id }}">+ Add</button>
+    <button class="ps-ucard__btn" type="button" data-ps-add="{{ v.id }}" aria-label="Add {{ product.title | escape }}">+ Add</button>
   {%- else -%}
     <a class="ps-ucard__btn" href="{{ product.url }}">Choose</a>
   {%- endif -%}
