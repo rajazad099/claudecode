@@ -24,15 +24,12 @@
 -%}
 {%- if fit_small or fit_medium or fit_large -%}
   <div class="ps ps-fit" {{ block.shopify_attributes }}>
-    <div class="ps-fit__left">
-      <span class="ps-fit__title">Fits{% if width != blank %} <span>· {{ width }}mm wide</span>{% endif %}</span>
-      <span class="ps-fit__faces">
-        <span class="ps-label ps-fit__face{% if fit_small %} is-on{% endif %}">Small</span>
-        <span class="ps-label ps-fit__face{% if fit_medium %} is-on{% endif %}">Medium</span>
-        <span class="ps-label ps-fit__face{% if fit_large %} is-on{% endif %}">Large</span>
-        <span class="ps-label ps-fit__word">faces</span>
-      </span>
-    </div>
+    <span class="ps-fit__title">Fits{% if width != blank %} · {{ width }}mm{% endif %}</span>
+    <span class="ps-fit__faces">
+      <span class="ps-fit__face{% if fit_small %} is-on{% endif %}">Small</span>
+      <span class="ps-fit__face{% if fit_medium %} is-on{% endif %}">Medium</span>
+      <span class="ps-fit__face{% if fit_large %} is-on{% endif %}">Large</span>
+    </span>
     <button class="ps-fit__open" type="button" data-ps-open="PsFit-{{ section.id }}">Find my fit</button>
   </div>
 

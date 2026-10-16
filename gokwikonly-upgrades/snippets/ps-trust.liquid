@@ -1,4 +1,4 @@
-{%- comment -%} 2x2 trust grid. Titles and lines come from the block settings. {%- endcomment -%}
+{%- comment -%} Compact 2x2 trust strip: icon + short title. (The 'line' settings are kept but not shown.) {%- endcomment -%}
 <div class="ps ps-trust" {{ block.shopify_attributes }}>
   {%- liquid
     assign icons = 'people,clock,sun,return' | split: ','
@@ -16,7 +16,7 @@
             {%- when 'return' -%}<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>
           {%- endcase -%}
         </svg>
-        <span><span class="ps-trust__t">{{ block.settings[tkey] }}</span><span class="ps-trust__s">{{ block.settings[skey] }}</span></span>
+        <span class="ps-trust__t">{{ block.settings[tkey] }}</span>
       </div>
     {%- endif -%}
   {%- endfor -%}

@@ -15,16 +15,13 @@
 }
 .ps svg { display: block; flex: none; }
 
-/* 1. Face fit */
-.ps-fit { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 1px solid var(--ps-line); background: var(--ps-soft); margin: 4px 0 16px; }
-.ps-fit__left { display: grid; gap: 8px; }
-.ps-fit__title { font-size: 14px; font-weight: 600; }
-.ps-fit__title span { font-weight: 400; color: var(--ps-mute); }
-.ps-fit__faces { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
-.ps-fit__face { padding: 4px 7px; border: 1px solid var(--ps-line); color: var(--ps-mute); opacity: .7; }
-.ps-fit__face.is-on { border-color: var(--ps-ink); color: var(--ps-ink); background: var(--ps-paper); opacity: 1; }
-.ps-fit__word { color: var(--ps-mute); margin-left: 3px; }
-.ps-fit__open { font-size: 13px; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; background: none; border: 0; padding: 0; cursor: pointer; color: var(--ps-ink); }
+/* 1. Face fit: one quiet line */
+.ps-fit { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 2px 0 14px; font-size: 12.5px; line-height: 1.3; }
+.ps-fit__title { font-weight: 600; }
+.ps-fit__faces { display: inline-flex; gap: 4px; }
+.ps-fit__face { padding: 2px 6px; border: 1px solid var(--ps-line); color: var(--ps-mute); font-size: 11px; letter-spacing: .02em; opacity: .6; }
+.ps-fit__face.is-on { border-color: var(--ps-ink); color: var(--ps-ink); opacity: 1; }
+.ps-fit__open { margin-left: auto; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; background: none; border: 0; padding: 0; cursor: pointer; color: var(--ps-mute); }
 
 .ps-sheet { border: 0; padding: 0; max-width: 560px; width: 100%; background: var(--ps-paper); color: var(--ps-ink); }
 .ps-sheet::backdrop { background: rgba(0, 0, 0, .45); }
@@ -74,12 +71,11 @@
 .ps-ship__pin input:focus { outline: none; border-color: var(--ps-ink); }
 .ps-ship__pin button { height: 42px; padding: 0 16px; border: 1px solid var(--ps-ink); background: var(--ps-paper); color: var(--ps-ink); font-weight: 600; font-size: 13.5px; cursor: pointer; }
 
-/* 5. Trust grid */
-.ps-trust { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--ps-line); border-left: 1px solid var(--ps-line); margin: 0 0 16px; }
-.ps-trust__item { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; padding: 12px; border-right: 1px solid var(--ps-line); border-bottom: 1px solid var(--ps-line); }
-.ps-trust__item svg { width: 22px; height: 22px; margin-top: 1px; }
-.ps-trust__t { display: block; font-size: 13px; font-weight: 600; line-height: 1.3; }
-.ps-trust__s { display: block; font-size: 12px; line-height: 1.35; color: var(--ps-mute); margin-top: 2px; }
+/* 5. Trust strip: compact 2x2, icon + short title */
+.ps-trust { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; padding: 10px 0; margin: 0 0 14px; border-top: 1px solid var(--ps-line); border-bottom: 1px solid var(--ps-line); }
+.ps-trust__item { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.ps-trust__item svg { width: 16px; height: 16px; flex: none; opacity: .85; }
+.ps-trust__t { font-size: 12px; line-height: 1.25; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* 3. Cart: pairs well with (compact row in the fixed footer) + trust */
 .ps-upsell { padding: 12px 0; border-bottom: 1px solid var(--ps-line); margin-bottom: 12px; }
