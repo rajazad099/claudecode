@@ -373,7 +373,9 @@
             
             {%- when 'title' -%}
               <div class="product__title" {{ block.shopify_attributes }}>
-                <h1 class="{{ block.settings.title_size }}">{{ product.title }}</h1>
+                {%- capture ps_model -%}{% render 'ps-name', title: product.title, part: 'model' %}{%- endcapture -%}
+                {%- capture ps_sub -%}{% render 'ps-name', title: product.title, part: 'sub' %}{%- endcapture -%}
+                <h1 class="{{ block.settings.title_size }} ps-title"><span class="ps-title__model">{{ ps_model | strip }}</span>{% if ps_sub != blank %}<span class="ps-title__sub">{{ ps_sub | strip }}</span>{% endif %}</h1>
               </div>
 
             {%- when 'icon_grid' -%}
