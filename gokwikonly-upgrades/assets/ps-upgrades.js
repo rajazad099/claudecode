@@ -88,28 +88,23 @@
     const from = addTransit(ship, range.min);
     const to = addTransit(ship, range.max);
     const shipTxt = sameDay(ship, now) ? 'today' : fmt(ship);
-    const arrive = sameDay(from, to) ? `<b>${fmt(from)}</b>` : `<b>${fmt(from)} – ${fmt(to)}</b>`;
+    const short = (d) => d.toLocaleDateString('en-IN', { timeZone: 'UTC', weekday: 'short', day: 'numeric' });
+    const full = (d) => fmt(d).replace(',', '');
+    const arrive = sameDay(from, to)
+      ? `<b>${full(from)}</b>`
+      : `<b>${from.getUTCMonth() === to.getUTCMonth() ? short(from).replace(',', '') : full(from)} – ${full(to)}</b>`;
 
+    // Minimal: nothing until a pincode is entered, then one line with the estimated range.
     $$('[data-ps-eta]').forEach((el) => {
-      el.innerHTML = pin && zone
-        ? `Ships ${shipTxt === 'today' ? '<b>today</b>' : `<b>${shipTxt}</b>`} · Delivery to ${pin}: ${arrive}`
-        : pin
-          ? `Ships ${shipTxt === 'today' ? '<b>today</b>' : `<b>${shipTxt}</b>`} · Arrives ${arrive}. Exact date confirmed at checkout.`
-          : `Ships ${shipTxt === 'today' ? '<b>today</b>' : `<b>${shipTxt}</b>`} · Arrives ${arrive} across India. Enter your pincode for your date.`;
+      const line = el.closest('.ps-ship__eta');
+      if (!pin) { if (line) line.hidden = true; el.innerHTML = ''; return; }
+      if (line) line.hidden = false;
+      el.innerHTML = `Estimated delivery to ${pin}: ${arrive}`;
     });
 
     // Countdown only when dispatch is less than 8 hours away.
     const mins = Math.floor((ship - now) / 60000);
-    $$('[data-ps-countdown]').forEach((el) => {
-      if (mins > 0 && mins < 8 * 60) {
-        const h = Math.floor(mins / 60);
-        const m = mins % 60;
-        el.innerHTML = `Order in <b>${[h ? `${h}h` : '', m ? `${m}m` : ''].filter(Boolean).join(' ')}</b> to ship ${sameDay(ship, now) ? 'today' : fmt(ship)}`;
-        el.hidden = false;
-      } else {
-        el.hidden = true;
-      }
-    });
+    $$('[data-ps-countdown]').forEach((el) => { el.hidden = true; });
     $$('[data-ps-ship-short]').forEach((el) => { el.textContent = sameDay(ship, now) ? 'Ships today' : `Ships ${fmt(ship)}`; });
     $$('[data-ps-pin] input').forEach((i) => { if (pin && !i.value) i.value = pin; });
   };
