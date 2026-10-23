@@ -24,6 +24,27 @@
 .ps-colours__swatch.is-soldout img { opacity: .4; }
 .ps-colours__swatch.is-soldout::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top right, transparent calc(50% - .5px), var(--ps-mute) 50%, transparent calc(50% + .5px)); }
 
+/* Face fit: one quiet line + bottom sheet */
+.ps-fit { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0 0 16px; font-size: 12.5px; line-height: 1.3; }
+.ps-fit__title { font-weight: 600; }
+.ps-fit__faces { display: inline-flex; gap: 4px; }
+.ps-fit__face { padding: 2px 7px; border: 1px solid var(--ps-line); color: var(--ps-mute); font-size: 11px; opacity: .6; }
+.ps-fit__face.is-on { border-color: var(--ps-ink); color: var(--ps-ink); opacity: 1; }
+.ps-fit__open { margin-left: auto; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; background: none; border: 0; padding: 0; cursor: pointer; color: var(--ps-mute); white-space: nowrap; }
+.ps-sheet { border: 0; padding: 0; max-width: 520px; width: 100%; background: var(--ps-paper); color: var(--ps-ink); }
+.ps-sheet::backdrop { background: rgba(0, 0, 0, .45); }
+@media (max-width: 749px) { .ps-sheet { margin: auto 0 0; max-width: 100vw; max-height: 88vh; animation: ps-up .3s cubic-bezier(.2,.7,.2,1); } }
+@keyframes ps-up { from { transform: translateY(100%); } }
+.ps-sheet__inner { padding: 8px 20px calc(24px + env(safe-area-inset-bottom)); display: grid; gap: 14px; font-size: 14px; line-height: 1.5; }
+.ps-sheet__head { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; }
+.ps-sheet__head h3 { margin: 0; font-family: var(--font-heading-family, inherit); font-size: 22px; }
+.ps-sheet__close { width: 44px; height: 44px; display: grid; place-items: center; background: none; border: 0; cursor: pointer; color: var(--ps-ink); margin-right: -10px; }
+.ps-sheet ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.ps-sheet table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ps-sheet th, .ps-sheet td { text-align: left; padding: 9px 8px 9px 0; border-bottom: 1px solid var(--ps-line); }
+.ps-sheet th { color: var(--ps-mute); font-weight: 500; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+@media (prefers-reduced-motion: reduce) { .ps-sheet { animation: none; } }
+
 /* Offers: mix & match */
 .ps-offers { margin: 6px 0 20px; }
 .ps-offers__tiers { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }

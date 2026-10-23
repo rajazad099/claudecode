@@ -1,6 +1,19 @@
-/* Project Shades product page: delivery-date check only.
+/* Project Shades product page: fit sheet and delivery-date check.
    Runs once on load and on pincode submit. It never observes or touches the cart drawer or checkout. */
 (() => {
+  /* Fit sheet (native <dialog>): open, close on the X or a tap on the backdrop. */
+  document.addEventListener('click', (e) => {
+    const opener = e.target.closest('[data-ps-open]');
+    if (opener) {
+      const d = document.getElementById(opener.dataset.psOpen);
+      if (d && d.showModal) d.showModal();
+      return;
+    }
+    const closer = e.target.closest('[data-ps-close]');
+    const dlg = closer ? closer.closest('dialog') : (e.target.tagName === 'DIALOG' ? e.target : null);
+    if (dlg) dlg.close();
+  });
+
   const boxes = Array.from(document.querySelectorAll('[data-ps-ship]'));
   if (!boxes.length) return;
 

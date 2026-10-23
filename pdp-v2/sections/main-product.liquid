@@ -683,6 +683,7 @@
               </p>
               {% endif %}
             
+            {%- when 'ps_fit' -%}{%- render 'ps-fit', product: product, block: block, section: section -%}
             {%- when 'ps_colours' -%}{%- render 'ps-colours', product: product, block: block -%}
             {%- when 'ps_offers' -%}{%- render 'ps-offers', product: product, block: block -%}
             {%- when 'ps_trust' -%}{%- render 'ps-trust', block: block -%}
@@ -2166,6 +2167,14 @@
           ],
           "default": "center"
         }
+      ]
+    },
+    {
+      "type": "ps_fit",
+      "name": "PS: Face fit",
+      "limit": 1,
+      "settings": [
+        { "type": "paragraph", "content": "Reads the small / medium / large face-type collections. Hidden if a product is in none." }
       ]
     },
     {
