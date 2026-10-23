@@ -9,21 +9,11 @@
   assign p2 = block.settings.tier2_pct | default: 15
 -%}
 <div class="ps ps-offers" {{ block.shopify_attributes }}>
-  <p class="ps-label-sm">{{ block.settings.heading | default: 'Mix & match' }}</p>
   <div class="ps-offers__tiers">
-    <div class="ps-offers__tier">
-      <b>{{ p1 }}% off</b>
-      <span>any {{ q1 }} pairs</span>
-    </div>
-    <div class="ps-offers__tier ps-offers__tier--hero">
-      <b>{{ p2 }}% off</b>
-      <span>any {{ q2 }} pairs</span>
-    </div>
+    <p class="ps-offers__tier"><b>{{ p1 }}% off</b><span>any {{ q1 }} pairs</span></p>
+    <p class="ps-offers__tier"><b>{{ p2 }}% off</b><span>any {{ q2 }} pairs</span></p>
   </div>
   {%- if block.settings.show_shipping -%}
-    <p class="ps-offers__ship">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.2 4.2L19 7"/></svg>
-      {{ block.settings.ship_title | default: 'Free shipping on prepaid orders' }}
-    </p>
+    <p class="ps-offers__ship">{{ block.settings.heading | default: 'Mix & match' }} · {{ block.settings.ship_title | default: 'Free shipping on prepaid orders' }}</p>
   {%- endif -%}
 </div>

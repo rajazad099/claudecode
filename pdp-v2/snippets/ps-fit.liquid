@@ -21,15 +21,33 @@
   assign model = product.title | split: ']' | first | remove_first: '[' | strip
 -%}
 {%- if fit_small or fit_medium or fit_large -%}
-  <div class="ps ps-fit" {{ block.shopify_attributes }}>
-    <span class="ps-fit__title">Fits{% if width != blank %} · {{ width }}mm{% endif %}</span>
-    <span class="ps-fit__faces">
-      <span class="ps-fit__face{% if fit_small %} is-on{% endif %}">Small</span>
-      <span class="ps-fit__face{% if fit_medium %} is-on{% endif %}">Medium</span>
-      <span class="ps-fit__face{% if fit_large %} is-on{% endif %}">Large</span>
-    </span>
+  {%- liquid
+    assign sizes = ''
+    if fit_small
+      assign sizes = 'small'
+    endif
+    if fit_medium
+      if sizes != ''
+        assign sizes = sizes | append: ', '
+      endif
+      assign sizes = sizes | append: 'medium'
+    endif
+    if fit_large
+      if sizes != ''
+        assign sizes = sizes | append: ', '
+      endif
+      assign sizes = sizes | append: 'large'
+    endif
+    assign last_comma = sizes | split: ', ' | last
+    if sizes contains ', '
+      assign head = sizes | remove_last: last_comma | remove_last: ', '
+      assign sizes = head | append: ' & ' | append: last_comma
+    endif
+  -%}
+  <p class="ps ps-fit" {{ block.shopify_attributes }}>
+    <span>Fits {{ sizes }} faces{% if width != blank %} · {{ width }}mm{% endif %}</span>
     <button class="ps-fit__open" type="button" data-ps-open="PsFit-{{ section.id }}">Find my fit</button>
-  </div>
+  </p>
 
   <dialog class="ps ps-sheet" id="PsFit-{{ section.id }}" aria-labelledby="PsFitTitle-{{ section.id }}">
     <div class="ps-sheet__inner">
