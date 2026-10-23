@@ -683,8 +683,7 @@
               </p>
               {% endif %}
             
-            {%- when 'ps_fit' -%}{%- render 'ps-fit', product: product, block: block, section: section -%}
-            {%- when 'ps_colours' -%}{%- render 'ps-colours', product: product, block: block -%}
+            {%- when 'ps_colours' -%}{%- render 'ps-colours', product: product, block: block -%}{%- render 'ps-fit', product: product, block: block, section: section -%}
             {%- when 'ps_offers' -%}{%- render 'ps-offers', product: product, block: block -%}
             {%- when 'ps_trust' -%}{%- render 'ps-trust', block: block -%}
             {%- when 'ps_delivery' -%}{%- render 'ps-delivery', block: block -%}
@@ -2170,20 +2169,12 @@
       ]
     },
     {
-      "type": "ps_fit",
-      "name": "PS: Face fit",
-      "limit": 1,
-      "settings": [
-        { "type": "paragraph", "content": "Reads the small / medium / large face-type collections. Hidden if a product is in none." }
-      ]
-    },
-    {
       "type": "ps_colours",
       "name": "PS: Colourways",
       "limit": 1,
       "settings": [
         { "type": "text", "id": "label", "label": "Label", "default": "Colour" },
-        { "type": "paragraph", "content": "Links every colourway of this model. Filled from the product field custom.siblings." }
+        { "type": "paragraph", "content": "Links every colourway of this model (Products → Colourways). The face-fit row and Find my fit sheet sit underneath." }
       ]
     },
     {

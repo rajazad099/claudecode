@@ -163,10 +163,6 @@
             "t4": "3-day returns",
             "s4": ""
           }
-        },
-        "ps_fit": {
-          "type": "ps_fit",
-          "settings": {}
         }
       },
       "block_order": [
@@ -175,7 +171,6 @@
         "text_qGrmcN",
         "rating_jbjXFm",
         "ps_colours",
-        "ps_fit",
         "d397b53e-d0be-4717-805f-6ee8a8d247bf",
         "buy_buttons",
         "ps_offers",
