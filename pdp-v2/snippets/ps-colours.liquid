@@ -6,13 +6,26 @@
 {%- assign siblings = product.metafields.custom.siblings.value -%}
 {%- assign sibling_count = siblings | size -%}
 {%- if siblings != blank and sibling_count > 1 -%}
-  {%- assign current_colour = product.title | split: ' : ' | last | strip -%}
-  {%- unless product.title contains ' : ' -%}{%- assign current_colour = '' -%}{%- endunless -%}
+  {%- liquid
+    assign current_colour = ''
+    if product.title contains ' : '
+      assign current_colour = product.title | split: ' : ' | last | strip
+    elsif product.title contains ' - '
+      assign current_colour = product.title | split: ' - ' | last | strip
+    endif
+  -%}
   <div class="ps ps-colours" {{ block.shopify_attributes }}>
     <p class="ps-colours__label">{{ block.settings.label | default: 'Colour' }}{% if current_colour != '' %}: <span>{{ current_colour }}</span>{% endif %}</p>
     <div class="ps-colours__row" role="list">
       {%- for s in siblings -%}
-        {%- assign s_colour = s.title | split: ' : ' | last | strip -%}
+        {%- liquid
+          assign s_colour = s.title
+          if s.title contains ' : '
+            assign s_colour = s.title | split: ' : ' | last | strip
+          elsif s.title contains ' - '
+            assign s_colour = s.title | split: ' - ' | last | strip
+          endif
+        -%}
         <a
           class="ps-colours__swatch{% if s.id == product.id %} is-active{% endif %}{% unless s.available %} is-soldout{% endunless %}"
           href="{{ s.url }}"

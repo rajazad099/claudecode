@@ -135,15 +135,13 @@
         "ps_offers": {
           "type": "ps_offers",
           "settings": {
-            "heading": "Offers & savings",
+            "heading": "Mix & match",
             "show_shipping": true,
             "ship_title": "Free shipping on prepaid orders",
-            "ship_sub": "Pay online at checkout",
             "tier1_qty": 2,
             "tier1_pct": 10,
             "tier2_qty": 3,
-            "tier2_pct": 15,
-            "note": "Mix and match any styles. Discount applies automatically at checkout."
+            "tier2_pct": 15
           }
         },
         "ps_delivery": {
