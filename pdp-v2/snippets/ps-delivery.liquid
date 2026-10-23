@@ -8,6 +8,7 @@
   {%- if shop.metafields.ps_ops.delivery != blank -%}
     <script type="application/json" data-ps-delivery>{{ shop.metafields.ps_ops.delivery.value | json }}</script>
   {%- endif -%}
+  <p class="ps-label-sm">{{ block.settings.heading | default: 'Delivery' }}</p>
   <form class="ps-ship__pin" data-ps-pin novalidate>
     <label class="visually-hidden" for="PsPin-{{ block.id }}">Pincode</label>
     <input id="PsPin-{{ block.id }}" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" placeholder="Enter pincode" autocomplete="postal-code">

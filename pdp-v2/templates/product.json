@@ -147,20 +147,21 @@
         "ps_delivery": {
           "type": "ps_delivery",
           "settings": {
-            "holidays": "2026-11-08\n2027-01-26\n2027-08-15\n2027-10-02"
+            "holidays": "2026-11-08\n2027-01-26\n2027-08-15\n2027-10-02",
+            "heading": "Delivery"
           }
         },
         "ps_trust": {
           "type": "ps_trust",
           "settings": {
-            "t1": "10,000+ customers",
-            "s1": "Worn across India",
+            "t1": "100,000+ customers",
+            "s1": "",
             "t2": "Ships in 24 hours",
-            "s2": "On working days",
-            "t3": "UV400 protection",
-            "s3": "Blocks 100% UVA + UVB",
-            "t4": "Easy returns",
-            "s4": "Within 3 days of delivery"
+            "s2": "",
+            "t3": "UV400 lenses",
+            "s3": "",
+            "t4": "3-day returns",
+            "s4": ""
           }
         }
       },
