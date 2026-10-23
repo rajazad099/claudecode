@@ -1,0 +1,31 @@
+{%- comment -%}
+  Colour row: links every colourway of the same model (kept as separate products).
+  Siblings come from the product metafield custom.siblings (list of products, current one included).
+  Renders nothing when a product has no other colourways.
+{%- endcomment -%}
+{%- assign siblings = product.metafields.custom.siblings.value -%}
+{%- assign sibling_count = siblings | size -%}
+{%- if siblings != blank and sibling_count > 1 -%}
+  {%- assign current_colour = product.title | split: ' : ' | last | strip -%}
+  {%- unless product.title contains ' : ' -%}{%- assign current_colour = '' -%}{%- endunless -%}
+  <div class="ps ps-colours" {{ block.shopify_attributes }}>
+    <p class="ps-colours__label">{{ block.settings.label | default: 'Colour' }}{% if current_colour != '' %}: <span>{{ current_colour }}</span>{% endif %}</p>
+    <div class="ps-colours__row" role="list">
+      {%- for s in siblings -%}
+        {%- assign s_colour = s.title | split: ' : ' | last | strip -%}
+        <a
+          class="ps-colours__swatch{% if s.id == product.id %} is-active{% endif %}{% unless s.available %} is-soldout{% endunless %}"
+          href="{{ s.url }}"
+          role="listitem"
+          title="{{ s_colour | escape }}{% unless s.available %} (sold out){% endunless %}"
+          aria-label="{{ s_colour | escape }}{% unless s.available %}, sold out{% endunless %}"
+          {% if s.id == product.id %}aria-current="true"{% endif %}
+        >
+          {%- if s.featured_image -%}
+            {{ s.featured_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '', width: 80, height: 80 }}
+          {%- endif -%}
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}

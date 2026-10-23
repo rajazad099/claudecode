@@ -1,0 +1,49 @@
+{%- comment -%}
+  Offers & savings box. Discounts are applied automatically at checkout (bundle + prepaid shipping);
+  this block only explains them. The "2 x this pair" maths uses the current variant price.
+{%- endcomment -%}
+{%- liquid
+  assign price = product.selected_or_first_available_variant.price
+  assign q1 = block.settings.tier1_qty | default: 2
+  assign q2 = block.settings.tier2_qty | default: 3
+  assign p1 = block.settings.tier1_pct | default: 10
+  assign p2 = block.settings.tier2_pct | default: 15
+  assign k1 = 100 | minus: p1
+  assign k2 = 100 | minus: p2
+  assign t1 = price | times: q1 | times: k1 | divided_by: 10000 | floor | times: 100
+  assign t2 = price | times: q2 | times: k2 | divided_by: 10000 | floor | times: 100
+  assign s1 = price | times: q1 | minus: t1
+  assign s2 = price | times: q2 | minus: t2
+-%}
+<div class="ps ps-offers" {{ block.shopify_attributes }}>
+  <div class="ps-offers__head">
+    <p class="ps-offers__title">{{ block.settings.heading | default: 'Offers & savings' }}</p>
+    <span class="ps-offers__tag">Auto-applied</span>
+  </div>
+
+  {%- if block.settings.show_shipping -%}
+    <div class="ps-offers__ship">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v10H3zM14 9h4l3 3v4h-7"/><circle cx="7" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/></svg>
+      <div class="ps-offers__ship-text">
+        <b>{{ block.settings.ship_title | default: 'Free shipping on prepaid orders' }}</b>
+        <span>{{ block.settings.ship_sub | default: 'Pay online at checkout' }}</span>
+      </div>
+      <span class="ps-offers__pill">Active</span>
+    </div>
+  {%- endif -%}
+
+  <div class="ps-offers__tiers">
+    <div class="ps-offers__tier">
+      <p class="ps-offers__off">{{ p1 }}% off</p>
+      <p class="ps-offers__rule">Buy any {{ q1 }}</p>
+      <p class="ps-offers__math">{{ q1 }} of these: <b>{{ t1 | money_without_trailing_zeros }}</b><br><span>You save {{ s1 | money_without_trailing_zeros }}</span></p>
+    </div>
+    <div class="ps-offers__tier ps-offers__tier--hero">
+      <span class="ps-offers__best">Best value</span>
+      <p class="ps-offers__off">{{ p2 }}% off</p>
+      <p class="ps-offers__rule">Buy any {{ q2 }}</p>
+      <p class="ps-offers__math">{{ q2 }} of these: <b>{{ t2 | money_without_trailing_zeros }}</b><br><span>You save {{ s2 | money_without_trailing_zeros }}</span></p>
+    </div>
+  </div>
+  {%- if block.settings.note != blank -%}<p class="ps-offers__note">{{ block.settings.note }}</p>{%- endif -%}
+</div>

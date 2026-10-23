@@ -78,7 +78,8 @@
             "bg_color": "bg-body",
             "padding": 0,
             "border_radius": 0
-          }
+          },
+          "disabled": true
         },
         "inventory_zeVG83": {
           "type": "inventory",
@@ -124,6 +125,45 @@
             "use_metafield_data": false,
             "enable_slide_animation": false
           }
+        },
+        "ps_colours": {
+          "type": "ps_colours",
+          "settings": {
+            "label": "Colour"
+          }
+        },
+        "ps_offers": {
+          "type": "ps_offers",
+          "settings": {
+            "heading": "Offers & savings",
+            "show_shipping": true,
+            "ship_title": "Free shipping on prepaid orders",
+            "ship_sub": "Pay online at checkout",
+            "tier1_qty": 2,
+            "tier1_pct": 10,
+            "tier2_qty": 3,
+            "tier2_pct": 15,
+            "note": "Mix and match any styles. Discount applies automatically at checkout."
+          }
+        },
+        "ps_delivery": {
+          "type": "ps_delivery",
+          "settings": {
+            "holidays": "2026-11-08\n2027-01-26\n2027-08-15\n2027-10-02"
+          }
+        },
+        "ps_trust": {
+          "type": "ps_trust",
+          "settings": {
+            "t1": "10,000+ customers",
+            "s1": "Worn across India",
+            "t2": "Ships in 24 hours",
+            "s2": "On working days",
+            "t3": "UV400 protection",
+            "s3": "Blocks 100% UVA + UVB",
+            "t4": "Easy returns",
+            "s4": "Within 3 days of delivery"
+          }
         }
       },
       "block_order": [
@@ -131,8 +171,12 @@
         "price",
         "text_qGrmcN",
         "rating_jbjXFm",
+        "ps_colours",
         "d397b53e-d0be-4717-805f-6ee8a8d247bf",
         "buy_buttons",
+        "ps_offers",
+        "ps_delivery",
+        "ps_trust",
         "text_zMdxCt",
         "inventory_zeVG83",
         "text_HEKQR4",
@@ -245,12 +289,6 @@
       "block_order": [
         "judge_me_reviews_review_widget_7wR6e9"
       ],
-      "settings": {
-        "include_margins": true
-      }
-    },
-    "1756147618f3e9475c": {
-      "type": "apps",
       "settings": {
         "include_margins": true
       }
@@ -724,13 +762,51 @@
       "settings": {
         "include_margins": true
       }
+    },
+    "ps_in_the_box": {
+      "type": "ps-in-the-box",
+      "blocks": {
+        "box_gift": {
+          "type": "item",
+          "settings": {
+            "fallback": "ps-box-giftbox.webp",
+            "title": "Gift box",
+            "text": "Ready to gift"
+          }
+        },
+        "box_case": {
+          "type": "item",
+          "settings": {
+            "fallback": "ps-box-case.webp",
+            "title": "Carry case",
+            "text": "Snap-shut, slim"
+          }
+        },
+        "box_cloth": {
+          "type": "item",
+          "settings": {
+            "fallback": "ps-box-cloth.webp",
+            "title": "Microfiber cloth",
+            "text": "Lens-safe cleaning"
+          }
+        }
+      },
+      "block_order": [
+        "box_gift",
+        "box_case",
+        "box_cloth"
+      ],
+      "settings": {
+        "heading": "In the box",
+        "subheading": "Every pair ships with"
+      }
     }
   },
   "order": [
     "main",
+    "ps_in_the_box",
     "1792645323ed54cc6e",
     "1790232120ce4ee305",
-    "1756147618f3e9475c",
     "1750927034e91d5f73",
     "1750358437eec0b6ed",
     "17901630877d2927d4",
