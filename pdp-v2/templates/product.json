@@ -1,0 +1,756 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {
+            "title_size": "h2"
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {
+            "price_size": "price--xl",
+            "price_show_taxes": false,
+            "show_discounts": true,
+            "show_shoppay_banner": false
+          }
+        },
+        "text_qGrmcN": {
+          "type": "text",
+          "settings": {
+            "text": "",
+            "text_color": "fg-body",
+            "bg_color": "bg-body",
+            "padding": 0,
+            "border_radius": 0
+          }
+        },
+        "rating_jbjXFm": {
+          "type": "rating",
+          "settings": {}
+        },
+        "d397b53e-d0be-4717-805f-6ee8a8d247bf": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button",
+            "show_labels": true,
+            "show_puncuation": true,
+            "swatch_label_position": "below",
+            "border_top": false,
+            "border_bottom": false,
+            "use_variant_images": true,
+            "thumbnail_variants_label": "Color",
+            "use_color_swatches": false,
+            "color_swatches_style": "round",
+            "color_swatch_size": "normal",
+            "visual_variants_array": "Colour, Color",
+            "color_swatches_array": "White - #f2f2f2\nBlack - #000000\nNavy - #233756\nRed - #912014\nDark Grey - #333333"
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "button_style": "solid",
+            "show_dynamic_checkout": true,
+            "show_payment_methods": false,
+            "show_pickup": false,
+            "pickup_alignment": "center",
+            "show_gift_card_recipient": true
+          }
+        },
+        "text_zMdxCt": {
+          "type": "text",
+          "settings": {
+            "text": "<p>100% UV protected sunglasses. Carry case & Microfiber cloth included. &nbsp;3-7 day pan-India Delivery.&nbsp;Free prepaid shipping. 100k+ customers</p>",
+            "text_color": "fg-body",
+            "bg_color": "bg-body",
+            "padding": 0,
+            "border_radius": 0
+          }
+        },
+        "inventory_zeVG83": {
+          "type": "inventory",
+          "settings": {
+            "inventory_display": "status",
+            "inventory_threshold": 5,
+            "inventory-color-coded": true
+          }
+        },
+        "text_HEKQR4": {
+          "type": "text",
+          "disabled": true,
+          "settings": {
+            "text": "<p><strong>VALENTINE'S SALE : ADD 2 SUNGLASSES TO CART, GET FLAT 500/- OFF. DISCOUNT AUTOMATICALLY APPLIES TO CART.</strong></p>",
+            "text_color": "fg-body",
+            "bg_color": "bg-body",
+            "padding": 0,
+            "border_radius": 0
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {
+            "display_type": "accordion",
+            "accordion_open_default": false,
+            "text_indent": false
+          }
+        },
+        "5c65d55b-9f21-4d69-b50a-6219b616bb68": {
+          "type": "collapsible_tab",
+          "settings": {
+            "heading": "Shipping & Returns",
+            "content": "<p>We Ship within 24 working hours. Please allow 3-7 days for your order to reach you once shipped. We accept returns on all orders within 3 days of delivery. Read our return policy <a href=\"/policies/refund-policy\" title=\"Refund Policy\">here.</a></p>",
+            "page": ""
+          }
+        },
+        "lensadvisor_select_lenses_app_app_block_ETFPh4": {
+          "type": "shopify://apps/lensadvisor-prescription-lens/blocks/app-block/86552bcb-0c5c-439e-b59c-d8577012ea59",
+          "settings": {
+            "hide_add_to_cart": true,
+            "button_label": "Customize Your Lenses",
+            "use_quick_view": false,
+            "use_metafield_data": false,
+            "enable_slide_animation": false
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "price",
+        "text_qGrmcN",
+        "rating_jbjXFm",
+        "d397b53e-d0be-4717-805f-6ee8a8d247bf",
+        "buy_buttons",
+        "text_zMdxCt",
+        "inventory_zeVG83",
+        "text_HEKQR4",
+        "description",
+        "5c65d55b-9f21-4d69-b50a-6219b616bb68",
+        "lensadvisor_select_lenses_app_app_block_ETFPh4"
+      ],
+      "custom_css": [],
+      "settings": {
+        "section_desktop_layout": "image-left",
+        "enable_sticky_info": true,
+        "enable_sticky_buttons": false,
+        "sticky_buttons_padding": 10,
+        "sticky_buttons_padding_horizontal": 20,
+        "sticky_buttons_border": true,
+        "sticky_buttons_shadow": 0,
+        "media_bg_col": "#ffffff",
+        "gallery_aspect_ratio": "square",
+        "gallery_media_scale": "default",
+        "gallery_height_limit_desktop": false,
+        "media_section_width": "wide",
+        "mobile_media_nav": "bullets",
+        "mobile_media_nav_position": "below-media",
+        "gallery_layout": "stack",
+        "desktop_media_nav": "thumbnails",
+        "desktop_media_thumbnail_size": "normal",
+        "desktop_media_thumbnail_position": "left",
+        "desktop_media_thumbnail_placement": "overlay",
+        "arrow_style": "solid-inverted",
+        "desktop_arrow_vis": "visible",
+        "product_section_width": "full-width",
+        "media_mobile_width": "full-width",
+        "gallery_grid_spacing": 0,
+        "balance_grid": true,
+        "media_video_autoplay": true,
+        "zoom_enable": false,
+        "gallery_mega_zoom": "normal",
+        "zoom_enable_in_out": true,
+        "zoom_thumbnail_position_mobile": "bottom",
+        "zoom_thumbnail_position_desktop": "left",
+        "zoom_fg_color": "fg-body",
+        "zoom_bg_color": "bg-body",
+        "info_txt_alignment": "left",
+        "text_section_position": "center",
+        "text_section_vertical_position": "top",
+        "text_section_max_width": 400,
+        "text_section_padding": 60,
+        "blocks_vertical_spacing": 20,
+        "description_split_keyword": "INFOBREAK",
+        "padding_top_mobile": 0,
+        "padding_bottom_mobile": 0,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "bottom_border": false,
+        "border_width": "full",
+        "border_color": "dark"
+      }
+    },
+    "1792645323ed54cc6e": {
+      "type": "apps",
+      "blocks": {
+        "judge_me_reviews_store_summary_XUfrGk": {
+          "type": "shopify://apps/judge-me-reviews/blocks/store_summary/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+            "data_source": "real",
+            "theme": "expanded",
+            "button_theme_color": "#ffffff",
+            "button_theme_text_color": "#000000",
+            "show_keywords": true,
+            "keywords_visibility": "shown",
+            "show_button": false,
+            "button_visibility": "shown",
+            "alignment": "left",
+            "title_size": "default",
+            "text_size": "default",
+            "corner_styling": "soft",
+            "widget_color": "#f9f9f9",
+            "text_color": "#000000",
+            "lighter_text_color": "#787878",
+            "button_color": "#000000",
+            "button_text_color": "#ffffff",
+            "show_sentiment_colors": true,
+            "max_width": 1100,
+            "heading_text": "Customers rate this store",
+            "button_text": "See AI reviews summary"
+          }
+        }
+      },
+      "block_order": [
+        "judge_me_reviews_store_summary_XUfrGk"
+      ],
+      "disabled": true,
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "1790232120ce4ee305": {
+      "type": "apps",
+      "blocks": {
+        "judge_me_reviews_review_widget_7wR6e9": {
+          "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+            "review_data": "real_data",
+            "max_width": 1200,
+            "show_shop_reviews": false,
+            "empty_state": "hide_widget"
+          }
+        }
+      },
+      "block_order": [
+        "judge_me_reviews_review_widget_7wR6e9"
+      ],
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "1756147618f3e9475c": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "1750927034e91d5f73": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "1750358437eec0b6ed": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "17901630877d2927d4": {
+      "type": "apps",
+      "blocks": {
+        "judge_me_reviews_medals_diycdR": {
+          "type": "shopify://apps/judge-me-reviews/blocks/medals/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "judge_me_reviews_medals_diycdR"
+      ],
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "1790163148bfa6fda1": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "section_product_collection_links_Uc944h": {
+      "type": "section-product-collection-links",
+      "disabled": true,
+      "settings": {
+        "heading": "Browse more",
+        "heading_size": "h2",
+        "alignment": "center",
+        "list_layout": "vertical",
+        "link_style": "text",
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "padding_top": 60,
+        "padding_bottom": 0,
+        "top_border": false,
+        "bottom_border": false,
+        "border_width": "normal",
+        "border_color": "dark"
+      }
+    },
+    "complementary-products": {
+      "type": "complementary-products",
+      "disabled": true,
+      "settings": {
+        "heading": "Pair it with",
+        "heading_size": "h2",
+        "heading_alignment": "left",
+        "products_to_show": 6,
+        "arrow_style": "solid-inverted",
+        "card_image_display": "second_image_hover",
+        "pagination_color_scheme": "body",
+        "show_price": true,
+        "show_vendor": false,
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "top_border": false,
+        "bottom_border": false,
+        "border_width": "normal",
+        "border_color": "dark"
+      }
+    },
+    "related-products": {
+      "type": "related-products",
+      "settings": {
+        "heading": "You May Also Like",
+        "heading_size": "h2",
+        "heading_alignment": "center",
+        "products_to_show": 12,
+        "columns_tablet": 4,
+        "columns_desktop": 4,
+        "arrow_style": "solid-inverted",
+        "card_image_display": "second_image_hover",
+        "pagination_color_scheme": "body",
+        "show_price": true,
+        "show_vendor": false,
+        "show_rating": true,
+        "enable_quick_add": false,
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "padding_top": 30,
+        "padding_bottom": 30,
+        "top_border": false,
+        "border_width": "full",
+        "border_color": "dark"
+      }
+    },
+    "logo_wall_pwPHVt": {
+      "type": "logo-wall",
+      "blocks": {
+        "image_CkB6NC": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Beige_and_White_Be_Yourself_Square_Pillow.png",
+            "title": "",
+            "link": ""
+          }
+        },
+        "image_gQBGLj": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/images_1.png",
+            "title": "",
+            "link": ""
+          }
+        },
+        "image_JjKnWK": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/Untitled_2_01.png",
+            "title": "",
+            "link": ""
+          }
+        },
+        "image_DxihEF": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/logo-grazia.png",
+            "title": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "image_CkB6NC",
+        "image_gQBGLj",
+        "image_JjKnWK",
+        "image_DxihEF"
+      ],
+      "name": "t:sections.logo_wall.presets.name",
+      "settings": {
+        "section_label": "",
+        "heading": "Featured in",
+        "subheading": "",
+        "btn_enable": false,
+        "btn_txt": "",
+        "btn_link": "",
+        "btn_style": "solid",
+        "grid_style": "ticker",
+        "content_width": "page-width",
+        "content_alignment": "center",
+        "animation_speed": 24,
+        "logo_size_mobile": 80,
+        "logo_size_tablet": 80,
+        "logo_size": 80,
+        "grid_columns_mobile": "auto",
+        "grid_columns_tablet": "auto",
+        "grid_columns_desktop": "auto",
+        "logo_spacing_mobile": 32,
+        "logo_spacing_tablet": 60,
+        "logo_spacing": 60,
+        "logo_colour": "colour",
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "btn_color_scheme": "default",
+        "top_padding": 50,
+        "bottom_padding": 50,
+        "top_border": true,
+        "bottom_border": true,
+        "border_width": "normal",
+        "border_color": "dark"
+      }
+    },
+    "collapsible_content_ibVtmy": {
+      "type": "collapsible-content",
+      "blocks": {
+        "collapsible_row_tTALcV": {
+          "type": "collapsible_row",
+          "settings": {
+            "title": "Are these sunglasses UV protected?",
+            "content": "<p>Yes. Every pair offers UV400 protection — meaning 100% shield from UVA & UVB rays.</p>"
+          }
+        },
+        "collapsible_row_qDpVAE": {
+          "type": "collapsible_row",
+          "settings": {
+            "title": "How long will my order take to arrive?",
+            "content": "<p>3–7 working days in India. We ship all orders next day, except Sundays. Tentative delivery timeline once shipped for Mumbai & Pune : 2 days, Delhi & Ahmedabad 3-4 days, Bangalore & Hyderabad 4-5 days.</p>"
+          }
+        },
+        "collapsible_row_fLH68E": {
+          "type": "collapsible_row",
+          "settings": {
+            "title": "How can I track my order?",
+            "content": "<p>Once shipped, you’ll receive a tracking link via email and WhatsApp. You can also check status anytime on our website.</p>"
+          }
+        },
+        "collapsible_row_YVB8Pw": {
+          "type": "collapsible_row",
+          "settings": {
+            "title": "Can I change my order after placing it?",
+            "content": "<p>Only if it hasn’t shipped. We move fast — like your new shades will. reach out on support@projectshades.com, whatsapp : +91 7558544365 or DM @project.shades.</p>"
+          }
+        },
+        "collapsible_row_FJQYUF": {
+          "type": "collapsible_row",
+          "settings": {
+            "title": "What if my product arrives damaged or not as expected?",
+            "content": "<p>Rare, but we’ve got you. <a href=\"https://returns.logisy.tech/returns?encipherencode=gAAAAABodNVtF_Ir8odNhpD6RRc9cqW00HTTYRbjMzR3BJDlSTh1oEY3zyQHpGyTR0lPl0fHtjxxWrFUT24j0rPNVbGCfQtQuA==\" title=\"https://returns.logisy.tech/returns?encipherencode=gAAAAABodNVtF_Ir8odNhpD6RRc9cqW00HTTYRbjMzR3BJDlSTh1oEY3zyQHpGyTR0lPl0fHtjxxWrFUT24j0rPNVbGCfQtQuA==\">Raise a return request</a> within 3 days of delivery. </p>"
+          }
+        }
+      },
+      "block_order": [
+        "collapsible_row_tTALcV",
+        "collapsible_row_qDpVAE",
+        "collapsible_row_fLH68E",
+        "collapsible_row_YVB8Pw",
+        "collapsible_row_FJQYUF"
+      ],
+      "name": "t:sections.collapsible_content.presets.name",
+      "settings": {
+        "section_label": "",
+        "heading": "FAQ's",
+        "subheading": "",
+        "btn_enable": false,
+        "btn_txt": "",
+        "btn_url": "",
+        "btn_style": "solid",
+        "btn_color_scheme": "default",
+        "content_alignment": "center",
+        "content_width": "standard",
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "padding_top": 30,
+        "padding_bottom": 30,
+        "top_border": false,
+        "bottom_border": false,
+        "border_width": "normal",
+        "border_color": "dark"
+      }
+    },
+    "rich_text_3k3rmb": {
+      "type": "rich-text",
+      "blocks": {
+        "heading_a4Tpk7": {
+          "type": "heading",
+          "disabled": true,
+          "settings": {
+            "heading": "Shop The Look",
+            "heading_size": "h2",
+            "alignment": "center"
+          }
+        }
+      },
+      "block_order": [
+        "heading_a4Tpk7"
+      ],
+      "name": "t:sections.rich-text.presets.name",
+      "settings": {
+        "content_width": "page-width",
+        "bg_image_darken": 0,
+        "bg_image_blur": 0,
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "padding_top": 10,
+        "padding_bottom": 0,
+        "top_border": false,
+        "bottom_border": false,
+        "border_width": "normal",
+        "border_color": "dark"
+      }
+    },
+    "17856889772e82506f": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "1787676052ad830f27": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_532460a_Ecix6m": {
+          "type": "ai_gen_block_532460a",
+          "settings": {
+            "title": "Shop the look",
+            "intro": "Discover the products featured in our latest videos.",
+            "heading_font": "system_ui_n4",
+            "alignment": "center",
+            "columns": "4",
+            "mobile_columns": "2",
+            "desktop_width_percent": 100,
+            "heading_size": 28,
+            "mobile_heading_size": 22,
+            "padding": 40,
+            "radius": 0,
+            "background_color": "#ffffff",
+            "media_background": "#eeeeee",
+            "text_color": "#000000",
+            "muted_color": "#444444",
+            "button_color": "#000000",
+            "button_text_color": "#ffffff",
+            "video_1_url": "",
+            "video_1_product": "",
+            "video_2_url": "",
+            "video_2_product": "",
+            "video_3_url": "",
+            "video_3_product": "",
+            "video_4_url": "",
+            "video_4_product": ""
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_532460a_Ecix6m"
+      ],
+      "disabled": true,
+      "settings": {}
+    },
+    "17822081751b45bdbd": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "rich_text_4hcEey": {
+      "type": "rich-text",
+      "blocks": {
+        "caption_C8imPx": {
+          "type": "caption",
+          "disabled": true,
+          "settings": {
+            "caption": "Add a tagline",
+            "alignment": "left",
+            "opacity": 100
+          }
+        },
+        "heading_AhbH6Q": {
+          "type": "heading",
+          "settings": {
+            "heading": "No loud logos, just good taste.",
+            "heading_size": "h2",
+            "alignment": "center"
+          }
+        },
+        "text_RBTpJa": {
+          "type": "text",
+          "disabled": true,
+          "settings": {
+            "text": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.</p>",
+            "text_size": "text-std",
+            "alignment": "left",
+            "text_indent": "noindent"
+          }
+        }
+      },
+      "block_order": [
+        "caption_C8imPx",
+        "heading_AhbH6Q",
+        "text_RBTpJa"
+      ],
+      "disabled": true,
+      "name": "t:sections.rich-text.presets.name",
+      "settings": {
+        "content_width": "page-width",
+        "bg_image_darken": 0,
+        "bg_image_blur": 0,
+        "text_color": "fg-body",
+        "bg_color": "bg-body",
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "top_border": false,
+        "bottom_border": false,
+        "border_width": "normal",
+        "border_color": "dark"
+      }
+    },
+    "17876769882b706ccf": {
+      "type": "apps",
+      "disabled": true,
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "1790158253b457a8a3": {
+      "type": "apps",
+      "blocks": {
+        "instafeed_app_block_Kc3tfc": {
+          "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
+          "settings": {
+            "title": "",
+            "title_color": "",
+            "title_size_v2": 0,
+            "alignment": "center",
+            "instafeed_margin_top": 0,
+            "instafeed_margin_bottom": 0,
+            "instafeed_margin_sides": 0,
+            "show_instagram_link": false,
+            "link_alignment": "left",
+            "link_color": "#000000",
+            "background_color": "",
+            "feed_id": "",
+            "html_area": ""
+          }
+        }
+      },
+      "block_order": [
+        "instafeed_app_block_Kc3tfc"
+      ],
+      "disabled": true,
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "17901628854e2cbee0": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "179016293290778ed0": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "17901630509889187a": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "1790163201e1911f54": {
+      "type": "apps",
+      "settings": {
+        "include_margins": true
+      }
+    },
+    "179276624260f8442a": {
+      "type": "apps",
+      "blocks": {
+        "instafeed_app_block_AHUjHk": {
+          "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
+          "settings": {
+            "title": "",
+            "title_color": "",
+            "title_size_v2": 0,
+            "alignment": "center",
+            "instafeed_margin_top": 0,
+            "instafeed_margin_bottom": 0,
+            "instafeed_margin_sides": 0,
+            "show_instagram_link": false,
+            "link_alignment": "left",
+            "link_color": "#000000",
+            "background_color": "",
+            "feed_id": "",
+            "html_area": ""
+          }
+        }
+      },
+      "block_order": [
+        "instafeed_app_block_AHUjHk"
+      ],
+      "settings": {
+        "include_margins": true
+      }
+    }
+  },
+  "order": [
+    "main",
+    "1792645323ed54cc6e",
+    "1790232120ce4ee305",
+    "1756147618f3e9475c",
+    "1750927034e91d5f73",
+    "1750358437eec0b6ed",
+    "17901630877d2927d4",
+    "1790163148bfa6fda1",
+    "section_product_collection_links_Uc944h",
+    "complementary-products",
+    "related-products",
+    "logo_wall_pwPHVt",
+    "collapsible_content_ibVtmy",
+    "rich_text_3k3rmb",
+    "17856889772e82506f",
+    "1787676052ad830f27",
+    "17822081751b45bdbd",
+    "rich_text_4hcEey",
+    "17876769882b706ccf",
+    "1790158253b457a8a3",
+    "17901628854e2cbee0",
+    "179016293290778ed0",
+    "17901630509889187a",
+    "1790163201e1911f54",
+    "179276624260f8442a"
+  ]
+}
