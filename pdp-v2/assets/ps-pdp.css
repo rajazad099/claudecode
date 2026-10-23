@@ -55,9 +55,9 @@
 .ps-ship__eta b { font-weight: 600; }
 
 /* In the box */
-.ps-box { padding-top: 40px; padding-bottom: 40px; }
-@media (min-width: 990px) { .ps-box { padding-top: 64px; padding-bottom: 64px; } }
-.ps-box__head { text-align: center; margin-bottom: 20px; }
+.ps-box { padding-top: 20px; padding-bottom: 20px; }
+@media (min-width: 990px) { .ps-box { padding-top: 36px; padding-bottom: 36px; } }
+.ps-box__head { text-align: center; margin-bottom: 14px; }
 .ps-box__title { margin: 0; font-family: var(--font-heading-family, inherit); font-size: clamp(22px, 4vw, 32px); line-height: 1.1; }
 .ps-box__sub { font-size: 13px; color: var(--ps-mute); margin-top: 6px !important; }
 .ps-box__grid { list-style: none; padding: 0; margin: 0 auto; max-width: 960px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
