@@ -79,6 +79,36 @@
     }
   ];
 
+  /* A drawn mark per persona, animated by the stylesheet. Each one behaves
+     the way its persona does rather than depicting anything: Maximalist pushes
+     outward, High Finance holds three steady rules, Explorer runs a sun up over
+     a horizon, After Dark strobes a grid, the Archive drifts scan lines. They
+     are inline SVG, so they inherit the theme's colour, stay sharp at any size
+     and cost nothing to load. */
+  var SIGNATURE = {
+    max:       '<g class="sig sig--max"><rect x="20" y="20" width="24" height="24"/>' +
+               '<rect x="12" y="12" width="40" height="40"/><rect x="4" y="4" width="56" height="56"/></g>',
+    finance:   '<g class="sig sig--finance"><path d="M8 22h48"/><path d="M8 32h48"/><path d="M8 42h48"/></g>',
+    explorer:  '<g class="sig sig--explorer"><path d="M6 42h52"/><circle cx="32" cy="42" r="13"/></g>',
+    afterdark: '<g class="sig sig--afterdark"><path d="M14 14v36"/><path d="M26 14v36"/>' +
+               '<path d="M38 14v36"/><path d="M50 14v36"/></g>',
+    archive:   '<g class="sig sig--archive"><path d="M8 18h48"/><path d="M8 26h48"/><path d="M8 34h48"/>' +
+               '<path d="M8 42h48"/><path d="M8 50h48"/></g>'
+  };
+  PERSONAS.forEach(function (p) { p.sig = SIGNATURE[p.v]; });
+
+  /* Three faces at the widths the question is asking about, each wearing the
+     same frame, so the choice is made by comparing pictures rather than by
+     deciding what "medium" means. */
+  var SIZE_GLYPH = {
+    small:  '<ellipse cx="32" cy="30" rx="12" ry="20"/><rect x="22" y="25" width="9" height="7" rx="2"/>' +
+            '<rect x="33" y="25" width="9" height="7" rx="2"/><path d="M31 28h2M22 27l-4-1M42 27l4-1"/>',
+    medium: '<ellipse cx="32" cy="30" rx="17" ry="21"/><rect x="18" y="24" width="12" height="9" rx="2"/>' +
+            '<rect x="34" y="24" width="12" height="9" rx="2"/><path d="M30 28h4M18 26l-5-2M46 26l5-2"/>',
+    large:  '<ellipse cx="32" cy="30" rx="22" ry="22"/><rect x="13" y="23" width="16" height="11" rx="2"/>' +
+            '<rect x="35" y="23" width="16" height="11" rx="2"/><path d="M29 28h6M13 25l-6-2M51 25l6-2"/>'
+  };
+
   var SHELVES = PERSONAS.map(function (p) { return p.lead; });
 
   function personaFor(v) {
@@ -160,31 +190,43 @@
       /* The aesthetic. Built from PERSONAS above so the options, their scoring
          and the shelf the result is drawn from can never drift apart.
 
-         Each option carries live product photography pulled from its own shelf
-         rather than an illustration: it shows the customer what the persona
-         actually looks like in this season's stock, it needs no art commission,
-         and it cannot go stale. */
+         Each option is drawn, not photographed. Thumbnails of three frames per
+         persona were tried and looked like a contact sheet: five rows of tiny
+         product cut-outs, all of them roughly black, none of them legible at
+         that size, and the aesthetic — which is the actual question — buried
+         under them. Each persona now has a signature instead: a small animated
+         mark that behaves the way the persona does. Nothing to photograph,
+         nothing to go stale, and it reads at a glance. */
       id: 'persona',
       q: 'Which one is you?',
       hint: 'Go with your gut. This decides the shelf the first four come from.',
-      shots: true,
+      figures: 'persona',
       options: PERSONAS.map(function (p) {
-        return { v: p.v, l: p.l, s: p.s, score: p.score, shelf: p.lead };
+        return { v: p.v, l: p.l, s: p.s, score: p.score, shelf: p.lead, sig: p.sig };
       }),
       apply: function (a, v) { a.persona = v; }
     },
     {
-      /* Reads straight onto the small / medium / large face-type collections.
-         Nobody knows their frame width in millimetres, but everyone knows how
-         their last pair sat. */
+      /* Asked outright, because the roundabout version was worse.
+
+         It used to ask how sunglasses currently sit on your nose — slide down,
+         press on the temples — on the theory that nobody knows their own frame
+         width. But everybody knows whether their face is small, medium or
+         large, nobody enjoys being asked about their nose, and the indirect
+         version made the customer do arithmetic to answer a question they
+         already knew the answer to.
+
+         Three options, not four. The old "they look small on me" was a fourth
+         size that really meant a taste for big frames, and that is what the
+         Maximalist persona is for. */
       id: 'size',
-      q: 'How do sunglasses usually sit on you?',
-      hint: 'This is the measurement that actually matters, and nobody owns a pupillometer.',
+      q: 'Your face — honestly?',
+      hint: 'Across the cheekbones, not up and down. Pick the one you would call yourself.',
+      figures: 'size',
       options: [
-        { v: 'small',  l: 'They slide down my nose',  s: 'Most frames are too wide for you', score: { small: 10, medium: 2, large: -6 } },
-        { v: 'medium', l: 'They sit about right',     s: 'Standard width suits you',         score: { medium: 10, small: 2, large: 2 } },
-        { v: 'large',  l: 'They press on my temples', s: 'You need width you’re not getting', score: { large: 10, medium: 2, small: -6 } },
-        { v: 'statement', l: 'They look small on me', s: 'You have the face for a big frame', score: { large: 9, ovsz: 5, medium: 1, small: -5 } }
+        { v: 'small',  l: 'Small',  s: 'Narrow across. Most frames swamp you.',  score: { small: 10, medium: 2, large: -6 } },
+        { v: 'medium', l: 'Medium', s: 'Standard. Most things sit right.',       score: { medium: 10, small: 2, large: 2 } },
+        { v: 'large',  l: 'Large',  s: 'Broad across. You need the width.',      score: { large: 10, medium: 2, small: -6 } }
       ],
       apply: function (a, v) { a.size = v; }
     },
@@ -862,6 +904,11 @@
     this.products = [];
     this.count = parseInt(root.dataset.results, 10) || 10;
     this.askTint = root.dataset.askTint === 'true';
+    /* The theatre is the question phase: full bleed, dark, the drawing behind
+       the type. The result leaves it — products need daylight and the theme's
+       own cards, and a shelf of ten on a black stage reads as a different
+       website. */
+    if (root.dataset.theatre !== 'false') root.classList.add('is-theatre');
     this.hideOOS = root.dataset.hideOos === 'true';
     this.persist = root.dataset.persist === 'true';
     this.themeCards = root.dataset.themeCards === 'true';
@@ -1043,7 +1090,8 @@
     /* Six face outlines read as six outlines in a grid and as a wall of text in
        a list. The question the quiz is built around gets the grid. */
     this.el.options.className = 'psq__options' +
-      (q.id === 'face' ? ' is-figures' : '') + (q.shots ? ' is-shots' : '');
+      (q.id === 'face' ? ' is-figures' : '') +
+      (q.figures ? ' is-' + q.figures : '');
     this.el.options.setAttribute('aria-label', q.q);
     q.options.forEach(function (opt, i) {
       var b = document.createElement('button');
@@ -1052,17 +1100,23 @@
       b.setAttribute('role', 'radio');
       b.setAttribute('aria-checked', self.answers[q.id] === opt.v ? 'true' : 'false');
       b.tabIndex = i === 0 ? 0 : -1;
-      var glyph = q.id === 'face' ? FACE_GLYPH[opt.v] : null;
-      b.innerHTML =
-        (glyph
-          ? '<svg class="psq__opt-fig" viewBox="0 0 48 60" aria-hidden="true">' + glyph + '</svg>'
-          : '') +
-        (q.shots ? '<span class="psq__opt-shots" aria-hidden="true"></span>' : '') +
+      b.style.setProperty('--i', i);   /* staggers the entrance */
+      var art = '';
+      if (q.id === 'face') {
+        art = '<svg class="psq__opt-fig" viewBox="0 0 48 60" aria-hidden="true">' +
+              FACE_GLYPH[opt.v] + '</svg>';
+      } else if (q.figures === 'size') {
+        art = '<svg class="psq__opt-fig psq__opt-fig--size" viewBox="0 0 64 60" aria-hidden="true">' +
+              SIZE_GLYPH[opt.v] + '</svg>';
+      } else if (q.figures === 'persona') {
+        art = '<svg class="psq__opt-sig" viewBox="0 0 64 64" aria-hidden="true">' +
+              (opt.sig || '') + '</svg>';
+      }
+      b.innerHTML = art +
         '<span class="psq__opt-txt"><span class="psq__opt-l"></span>' +
         '<span class="psq__opt-s"></span></span>';
       b.querySelector('.psq__opt-l').textContent = opt.l;
       b.querySelector('.psq__opt-s').textContent = opt.s || '';
-      if (q.shots) self.shots(b.querySelector('.psq__opt-shots'), opt.shelf);
       b.addEventListener('click', function () { self.answer(opt.v); });
       /* Preview the consequence on the stage before they commit. */
       b.addEventListener('mouseenter', function () { self.preview(q, opt); });
@@ -1073,49 +1127,6 @@
     this.rail();
     this.el.question.focus();
     if (this.el.caption) this.el.caption.textContent = 'Step ' + (this.at + 1) + ' of ' + this.order.length;
-  };
-
-  /* THE PERSONA'S OWN PHOTOGRAPHY.
-
-     Each aesthetic shows three frames pulled live from its shelf rather than an
-     illustration of what that aesthetic might look like. Three consequences,
-     all of them good: the customer sees what the persona means in this season's
-     actual stock, there is no art to commission or re-shoot, and it cannot go
-     stale — put a frame in Techno and it can appear on the After Dark card
-     tomorrow.
-
-     Picked on stock depth, one per line so three colourways of one frame never
-     stand in for a whole aesthetic. */
-  Quiz.prototype.shots = function (el, shelf) {
-    if (!el || !shelf) return;
-    var pool = [], lines = Object.create(null), i, p;
-    for (i = 0; i < this.products.length; i++) {
-      p = this.products[i];
-      if (!p.i || !p.a) continue;
-      if (read(p)[shelf] !== true) continue;
-      var key = parseTitle(p.t).alias.toUpperCase();
-      if (lines[key]) continue;
-      lines[key] = true;
-      pool.push(p);
-    }
-    pool.sort(function (a, b) { return (b.iv || 0) - (a.iv || 0); });
-    for (i = 0; i < Math.min(3, pool.length); i++) {
-      var img = document.createElement('img');
-      img.className = 'psq__opt-shot';
-      img.loading = 'lazy';
-      img.decoding = 'async';
-      img.alt = '';
-      img.style.setProperty('--i', i);
-      /* A frame whose photograph has been deleted, or a CDN that is having a
-         bad morning, must not leave a broken-image glyph sitting on the
-         persona. Two frames read as well as three; none reads as a plain
-         card, which is still a card. */
-      img.addEventListener('error', function () {
-        if (img.parentNode) img.parentNode.removeChild(img);
-      });
-      img.src = pool[i].i;
-      el.appendChild(img);
-    }
   };
 
   /* Hovering a face-shape option morphs the silhouette; hovering anything else

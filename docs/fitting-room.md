@@ -13,6 +13,51 @@ end the drawn pair resolves into real products from the store.
 **No app, no subscription, no monthly fee.** One section, one stylesheet, one
 script. Nothing leaves the browser.
 
+## The theatre
+
+The questions run **full bleed on a dark stage**, edge to edge, with the drawing
+behind the type rather than boxed beside it. The result steps back out into the
+page, in daylight, on the theme's own product cards — ten products on a black
+stage read as a different website, and the cards are the thing the customer is
+actually meant to click.
+
+What that changed, concretely:
+
+- **No boxes.** An answer is a line of type with a rule under it. The rule
+  sweeps left-to-right when the answer is live. The hit area is the full column,
+  which is a bigger target than the bordered button it replaced, not a smaller
+  one.
+- **No step counter.** A two-pixel rail across the top says the same thing
+  without asking anyone to read `02 / 05`.
+- **The question is the screen.** Set at `clamp(28px, 5.2vw, 56px)`; everything
+  else on the stage is an answer.
+- **Each question arrives from below** rather than cross-fading in place, with
+  the answers staggered behind it, so the quiz reads as moving forward through
+  something.
+- **The backdrop owns the right 42%** on wide screens and is hidden below
+  1000px, where there is no room for scenery beside the type.
+
+It is a setting — **Full-bleed theatre** — so it can be turned off without
+touching code, and the quiz falls back inside the page's own margins.
+
+Nothing here introduces a colour. The stage is the theme's own foreground at
+full strength with its own background used as ink, which is why it still looks
+like Project Shades with the lights off.
+
+### The persona signatures
+
+The aesthetic question used to show three product photographs per persona,
+fanned like a hand of cards. It looked like a contact sheet: fifteen tiny
+cut-outs, nearly all of them black, none legible at that size, and the
+aesthetic — which is the actual question — buried underneath them.
+
+Each persona now has a **drawn signature** that behaves the way the persona
+does. Maximalist pushes outward. High Finance holds three steady rules and
+barely moves, which is the point of it. Explorer runs a sun up over a horizon.
+After Dark strobes. The Archive drifts like a tape tracking. They animate only
+under the cursor, so the screen is still rather than a fairground, and they are
+inline SVG — sharp at any size, themed by inheritance, nothing to load.
+
 ## It looks like the rest of the store, by construction
 
 The quiz declares almost no colours, typefaces or spacing of its own. It reads
@@ -419,6 +464,15 @@ how sunglasses *currently sit*:
 
 Each option reads straight onto the shop's own size collections, so re-filing a
 frame in Shopify moves it in the quiz on the next page load.
+
+**The size question is asked outright** — *"Your face — honestly?"*, answered by
+comparing three faces at three widths wearing the same frame. It used to ask how
+sunglasses currently sit on your nose, on the theory that nobody knows their own
+frame width; but everybody knows whether their face is small, medium or large,
+nobody enjoys being asked about their nose, and the indirect version made the
+customer do arithmetic to answer a question they already knew. Three options
+rather than four: the old *"they look small on me"* was a taste for big frames
+wearing a size's clothes, and that is what the Maximalist persona is for.
 
 **Size is a gate.** A frame in none of the three size collections has no stated
 width, and is not recommended at all — the shop's instruction, and the right

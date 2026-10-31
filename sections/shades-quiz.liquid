@@ -235,6 +235,12 @@
 ]
 {%- endcapture -%}
 
+{%- comment -%}
+  The wrapper exists only to clip the full-bleed theatre. Shopify adds the
+  section's own class to a parent in the theme, but the standalone preview has
+  no such parent, so the quiz carries its own.
+{%- endcomment -%}
+<div class="psq__bleed-guard">
 <section
   id="ShadesQuiz--{{ uid }}"
   class="psq"
@@ -247,6 +253,7 @@
   data-use-learned="{{ s.use_learned_rank }}"
   data-utm-campaign="{{ s.utm_campaign | default: 'fitting-room' }}"
   data-ask-tint="{{ s.ask_tint }}"
+  data-theatre="{{ s.theatre }}"
   data-collect-phone="{{ s.collect_phone }}"
   data-phone-required="{{ s.phone_required }}"
   data-dial-code="{{ s.dial_code | default: '+91' }}"
@@ -257,7 +264,12 @@
   <div class="psq__inner">
     <div class="psq__layout">
 
-      {%- comment -%} ---------- THE STAGE: face + lenses, drawn, never photographed ---------- {%- endcomment -%}
+      {%- comment -%}
+        THE STAGE. No longer a boxed illustration sitting beside the questions —
+        it is the backdrop they are asked over. The drawing fills the frame at
+        low contrast and the type sits on top of it, which is why the panel
+        below has no background of its own.
+      {%- endcomment -%}
       <div class="psq__stage" aria-hidden="true">
         <svg class="psq__rig" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g class="psq__faces" stroke-width="1.5" fill="none">
@@ -415,6 +427,7 @@
 
   <script type="application/json" data-psq-products>{{ products_json }}</script>
 </section>
+</div>
 
 {% schema %}
 {
@@ -592,6 +605,13 @@
       "step": 1,
       "label": "Frames to recommend",
       "default": 10
+    },
+    {
+      "type": "checkbox",
+      "id": "theatre",
+      "label": "Full-bleed theatre",
+      "default": true,
+      "info": "Runs the questions edge to edge on a dark stage with the drawing behind the type. Turn off to keep the quiz inside the page's own margins."
     },
     {
       "type": "checkbox",

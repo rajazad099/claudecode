@@ -24,6 +24,8 @@ products = (ROOT / "preview" / "quiz-products.json").read_text()
 # it exercises the built-in fallback card instead.
 SETTINGS = {
     "result_count": "10",
+    "theatre": "true",
+    "ask_tint": "false",
     "hide_sold_out": "true",
     "remember_result": "true",
     "use_theme_cards": "false",
