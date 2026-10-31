@@ -113,7 +113,10 @@ def resolve(markup: str) -> str:
     def blank_guard(m):
         return m.group(2) if m.group(1) in KEEP_IF_SET else ""
 
-    markup = re.sub(r"\{%\s*if s\.(\w+) != blank\s*%\}(.*?)\{%\s*endif\s*%\}",
+    # Tolerates the whitespace-control form, {%- if ... -%}, as well as the plain
+    # one; the section uses both and a missed guard leaves raw Liquid in the
+    # preview, which the assertion at the end of this file then catches.
+    markup = re.sub(r"\{%-?\s*if s\.(\w+) != blank\s*-?%\}(.*?)\{%-?\s*endif\s*-?%\}",
                     blank_guard, markup, flags=re.S)
     markup = markup.replace("{{ s.fallback_collection.url }}",
                             "https://www.projectshades.com/collections/all")

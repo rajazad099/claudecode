@@ -210,9 +210,9 @@ the right shape.
 
 The rule is contrast, not echo: you give a face the geometry it hasn't got.
 
-The four questions, in order: who we're fitting, how frames currently sit, what
-they're for, and face shape — plus a jawline question that only appears if the
-face-shape question is skipped.
+The five questions, in order: **who we're fitting**, **which persona**, **how
+frames currently sit**, **what mood today**, and **face shape** — plus a jawline
+question that only appears if the face-shape question is skipped.
 
 **Face shape is deliberately last.** It is the only question people hesitate
 over — most cannot name their own face shape, which is why it is answered with
@@ -311,6 +311,46 @@ Fit is weighted **3×** above aesthetic and popularity. That matters: without it
 a bestseller in the wrong shape outranks the right shape, which is the one
 failure a fitting quiz cannot afford. Bestsellers now only break near-ties.
 
+### Persona and mood
+
+**The persona is the aesthetic, and it is a real shelf.** Five of them, each one
+a collection on the store, so the option the customer picks and the frames they
+get back cannot drift apart:
+
+| Persona | Shelf | Also leans toward |
+| --- | --- | --- |
+| Maximalist | Oversized | cat-eye, techno |
+| High Finance | Daily Luxe | rectangular, round |
+| Explorer | Summer Is Coming | rimless, oval |
+| After Dark | Techno | wraparound, oversized |
+| The Archive | Vintage | round, cat-eye |
+
+The brief asked for four. **The Archive** is the fifth, added because Vintage is
+the biggest aesthetic shelf in the store — 57 lines in stock against Daily
+Luxe's five — and without a persona pointing at it most of the catalogue is
+unreachable. There is deliberately **no "not sure"**: five personas cover the
+range, every one has stock behind it, and forcing the choice is what makes the
+result read as written about you rather than averaged across everyone.
+
+**The mood is what kind of day it is**, and it is deliberately light — a tenth
+of the persona's weight. The persona picks the shelf; the mood only re-weights
+inside it and tilts which way the six alternates lean.
+
+The brief asked for chic / classy / rager / chill / timeless. Chic, classy and
+timeless are three words for one axis — how dressed-up — and offering all three
+makes the customer arbitrate between synonyms, which is the quickest way to make
+a fun question feel like a form. Four moods instead, each clearly a different
+day: **Sharp**, **Quiet**, **Loud**, **Easy**.
+
+### The name
+
+Persona × mood gives **twenty archetypes**, each written for the pair rather
+than stitched from two halves. Maximalist and Loud is THE HEADLINER; After Dark
+and Quiet is THE GHOST; High Finance and Easy is THE SILENT PARTNER. A name that
+only read off the persona would be the same five results the shop already sells,
+and the customer would notice — the whole point of asking a second taste
+question is that the answer has to change what comes back.
+
 ### The shelf comes in two halves
 
 Ten frames ranked in one column read as ten answers to the same question, and
@@ -333,6 +373,16 @@ has more to give. Four techno frames answer a techno question; the fifth through
 tenth techno frame is a longer list of the same idea. And it is spread one frame
 per aesthetic before any aesthetic gets a second, so the six read as a tour of
 the range rather than six of whatever ranked next.
+
+Each aesthetic's representative is taken at a **rotating offset** rather than
+always its best frame. Always taking the best made one frame the face of a whole
+aesthetic: Sterling is the strongest frame in Daily Luxe, so it took the luxe
+slot on every shelf that was not High Finance — 583 of 1,440 fittings on top of
+the 430 it legitimately led, putting it on seven shelves in ten. The offset is
+derived from the answers, so a given fitting always returns the same shelf —
+this is a rotation, not randomness — while different fittings meet different
+faces of the same aesthetic. Sterling now appears on 56%, and the luxe slot
+rotates between Sterling, Nero and Oslo.
 
 When no aesthetic was named there is nothing to differ from, so the second half
 is simply spread across the shelves — *"A wider look: one from each corner of

@@ -29,8 +29,62 @@
      mode a fitting quiz cannot have. */
   var FIT_WEIGHT = 3;
 
-  /* The vibe question's shelves, in collection-trait form. */
-  var SHELVES = ['luxe', 'summer', 'tech', 'vint', 'sport'];
+  /* THE FIVE PERSONAS.
+
+     Each is one collection on the store, and that collection is the persona's
+     shelf: the thing the first four recommendations are drawn from. `lead` is
+     the trait that defines the shelf; `score` is what the answer is worth,
+     including the secondary shapes that belong to the look.
+
+     Deliberately no "not sure" option. Five personas cover the catalogue, every
+     one of them is a real shelf with stock behind it, and forcing the choice is
+     what makes the result feel like it was written about you rather than
+     averaged across everyone. */
+  var PERSONAS = [
+    {
+      v: 'max', lead: 'ovsz',
+      l: 'Maximalist',
+      s: 'Big frames, loud colour, seen from across the room',
+      score: { ovsz: 10, cate: 4, tech: 3, small: -2 }
+    },
+    {
+      v: 'finance', lead: 'luxe',
+      l: 'High Finance',
+      s: 'Quiet money. The good acetate, the colours that never date',
+      score: { luxe: 10, rect: 3, round: 2 }
+    },
+    {
+      v: 'explorer', lead: 'summer',
+      l: 'Explorer',
+      s: 'Holiday pairs — rimless, metal, built for glare and salt',
+      score: { summer: 10, riml: 5, oval: 2 }
+    },
+    {
+      v: 'afterdark', lead: 'tech',
+      /* "Party people" in the brief. Named for the hour rather than the
+         activity, because the frames read the same at a rave, a set and a
+         night out, and nobody describes themselves as a party person. */
+      l: 'After Dark',
+      s: 'Futuristic wraps and chrome, for rooms with no daylight',
+      score: { tech: 10, wrap: 5, ovsz: 2 }
+    },
+    {
+      /* Added to the brief's four. Vintage is the biggest aesthetic shelf in
+         the store — 57 lines in stock against Daily Luxe's five — and without
+         a persona pointing at it most of the catalogue is unreachable. */
+      v: 'archive', lead: 'vint',
+      l: 'The Archive',
+      s: '90s metal, tortoise, frames that already had a life',
+      score: { vint: 10, round: 2, cate: 2 }
+    }
+  ];
+
+  var SHELVES = PERSONAS.map(function (p) { return p.lead; });
+
+  function personaFor(v) {
+    for (var i = 0; i < PERSONAS.length; i++) if (PERSONAS[i].v === v) return PERSONAS[i];
+    return null;
+  }
 
   /* If the shelf would come up short, neutral-fit frames are allowed back in
      to fill it rather than showing the customer a half-empty result. The
@@ -98,9 +152,26 @@
       options: [
         { v: 'women', l: 'Women’s',            s: 'The women’s range leads',        score: { women: 9, men: -3 } },
         { v: 'men',   l: 'Men’s',              s: 'The men’s range leads',          score: { men: 9, women: -3 } },
-        { v: 'any',   l: 'Show me everything', s: 'No steer — fit and taste only',  score: {} }
+        { v: 'any',   l: 'Doesn’t matter',     s: 'Unisex — fit and taste decide it', score: {} }
       ],
       apply: function (a, v) { a.gender = v; }
+    },
+    {
+      /* The aesthetic. Built from PERSONAS above so the options, their scoring
+         and the shelf the result is drawn from can never drift apart.
+
+         Each option carries live product photography pulled from its own shelf
+         rather than an illustration: it shows the customer what the persona
+         actually looks like in this season's stock, it needs no art commission,
+         and it cannot go stale. */
+      id: 'persona',
+      q: 'Which one is you?',
+      hint: 'Go with your gut. This decides the shelf the first four come from.',
+      shots: true,
+      options: PERSONAS.map(function (p) {
+        return { v: p.v, l: p.l, s: p.s, score: p.score, shelf: p.lead };
+      }),
+      apply: function (a, v) { a.persona = v; }
     },
     {
       /* Reads straight onto the small / medium / large face-type collections.
@@ -118,25 +189,26 @@
       apply: function (a, v) { a.size = v; }
     },
     {
-      /* One question per real collection, described the way the shop describes
-         them. Sport is a use case rather than a taste, so it narrows outright. */
-      id: 'vibe',
-      q: 'What are you buying them for?',
-      hint: 'Pick the closest — it decides which shelf we pull from.',
+      /* The brief asked for chic / classy / rager / chill / timeless. Chic,
+         classy and timeless are three words for one axis — how dressed-up —
+         and offering all three makes the customer arbitrate between synonyms,
+         which is the fastest way to make a fun question feel like a form. Four
+         moods, each clearly a different day.
+
+         Deliberately light. The persona picks the shelf; the mood only
+         re-weights inside it and decides which direction the six alternates
+         lean. At a tenth of the persona's weight it can colour a shelf without
+         ever overturning it. */
+      id: 'mood',
+      q: 'And today?',
+      hint: 'Same person, different day. This tilts the picks rather than changing the shelf.',
       options: [
-        { v: 'luxe',   l: 'Everyday quality',   s: 'Daily Luxe — the essentials you wear constantly', score: { luxe: 10 } },
-        { v: 'summer', l: 'Beach and vacation', s: 'Summer Is Coming — sun, water, long days out',    score: { summer: 10 } },
-        { v: 'tech',   l: 'Party and rave',     s: 'Techno — futuristic, loud, after dark',           score: { tech: 10 } },
-        { v: 'vint',   l: 'Retro and archive',  s: 'Vintage — 90s frames, tortoise, classic metal',   score: { vint: 10 } },
-        /* Sport used to narrow outright. There are ten polarised frames in
-           stock and four of the six face shapes rule some of them out, so the
-           filter left 216 of the 1,296 fittings with a shelf of seven or fewer.
-           It leads hard instead: a sports frame outscores anything else on the
-           same face, and the shelf still fills. */
-        { v: 'sport',  l: 'Sport and active',   s: 'Polarised, wrapped, built to stay on',            score: { sport: 16, wrap: 3 } },
-        { v: 'any',    l: 'Not sure yet',       s: 'Show me the best of everything',                  score: {} }
+        { v: 'sharp', l: 'Sharp',    s: 'Dressed, considered, somewhere good',      score: { cate: 3, rect: 2, luxe: 2 } },
+        { v: 'quiet', l: 'Quiet',    s: 'Nothing shouting. Nothing to regret',      score: { luxe: 3, round: 2, vint: 2 } },
+        { v: 'loud',  l: 'Loud',     s: 'Out late, and happy to be looked at',      score: { tech: 3, ovsz: 3, wrap: 2 } },
+        { v: 'easy',  l: 'Easy',     s: 'Errands, sun, nothing to prove',           score: { summer: 3, riml: 2, oval: 2 } }
       ],
-      apply: function (a, v) { a.vibe = v; }
+      apply: function (a, v) { a.mood = v; }
     },
     {
       /* Last, and deliberately so. The three questions before it are ones
@@ -149,7 +221,14 @@
       id: 'face',
       skip: 'I honestly can’t tell — ask me something else',
       q: 'Last one — which of these is closest to your face?',
-      hint: 'Pull your hair back, look straight on, and pick the outline that matches. Most people are between two — go with the closer one, or skip and we’ll work it out from your jaw.',
+      hint: 'Most people are between two. Go with the closer one.',
+      /* Shown as a short numbered method rather than a paragraph. The question
+         is only hard because nobody has ever been told how to answer it. */
+      guide: [
+        'Hair back, straight on to a mirror — or the selfie camera, not held above you.',
+        'Find the widest part: forehead, cheekbones or jaw.',
+        'Then ask whether the chin comes to a point or squares off.'
+      ],
       options: [
         { v: 'oval',    l: 'Oval',    s: 'Longer than wide, tapering gently to the chin' },
         { v: 'round',   l: 'Round',   s: 'Full cheeks, soft chin, about as wide as it is long' },
@@ -180,15 +259,42 @@
 
   /* -------------------------------------------------------------- archetypes */
 
-  /* One per shelf on the vibe question, so the name the customer is given is
-     the name of the range they just picked. */
-  var ARCHETYPES = [
-    { k: 'sport',  n: 'THE SPRINTER',  d: 'Built to stay on. Wrapped, polarised, unbothered.' },
-    { k: 'tech',   n: 'THE OPERATOR',  d: 'Y2K metal and future-tense geometry. You dress like the year after next.' },
-    { k: 'vint',   n: 'THE ARCHIVIST', d: 'You buy the frame that already had a life. Tortoise, acetate, ninety-something.' },
-    { k: 'luxe',   n: 'THE ICON',      d: 'Nothing shouting. The most expensive-looking thing you own is a silhouette.' },
-    { k: 'summer', n: 'THE ESCAPIST',  d: 'Salt, glare and a long way from the office. Built for the light out there.' }
-  ];
+  /* THE NAME.
+
+     Twenty of them: one for every persona crossed with every mood. A name that
+     only read off the persona would be the same five results the shop already
+     sells, and the customer would know it — the point of asking a second taste
+     question is that the answer has to change what comes back.
+
+     Keyed persona:mood. The description is written for the pair, not stitched
+     together from two halves, because "THE RAINMAKER. Quiet money. Out late."
+     reads like a template and "THE RAINMAKER" with its own line does not. */
+  var ARCHETYPES = {
+    'max:sharp':       { n: 'THE SPECTACLE',      d: 'Big frame, sharp edge. You dress for the room you are about to walk into.' },
+    'max:quiet':       { n: 'THE SLOW BURN',      d: 'Scale without noise. The frame is large; nothing else about you is.' },
+    'max:loud':        { n: 'THE HEADLINER',      d: 'You are the brightest thing in every photograph and that is the plan.' },
+    'max:easy':        { n: 'THE NATURAL',        d: 'Oversized, unbothered. It looks thrown on because you threw it on.' },
+
+    'finance:sharp':   { n: 'THE CLOSER',         d: 'Quiet money, sharpened. Nothing here is trying — it is just correct.' },
+    'finance:quiet':   { n: 'THE PRINCIPAL',      d: 'The most expensive-looking thing you own is a silhouette. No logo required.' },
+    'finance:loud':    { n: 'THE RAINMAKER',      d: 'Good taste with the volume up. You can afford to be noticed.' },
+    'finance:easy':    { n: 'THE SILENT PARTNER', d: 'Understated to the point of invisible, which is the whole trick.' },
+
+    'explorer:sharp':  { n: 'THE NAVIGATOR',      d: 'Holiday frames with a plan. Metal, light, nothing that creaks in salt.' },
+    'explorer:quiet':  { n: 'THE DRIFTER',        d: 'Somewhere warm, nobody expecting you back. Rimless and almost weightless.' },
+    'explorer:loud':   { n: 'THE DEPARTURE',      d: 'Sun, colour, and no intention of blending in with the locals.' },
+    'explorer:easy':   { n: 'THE CASTAWAY',       d: 'Barefoot energy. The pair you lose and immediately buy again.' },
+
+    'afterdark:sharp': { n: 'THE OPERATOR',       d: 'Future-tense geometry, cut clean. You dress like the year after next.' },
+    'afterdark:quiet': { n: 'THE GHOST',          d: 'Dark, wrapped, unreadable. People remember the frame, not the face.' },
+    'afterdark:loud':  { n: 'THE RINGLEADER',     d: 'Chrome, shields, no daylight. You are the reason the room is loud.' },
+    'afterdark:easy':  { n: 'THE REGULAR',        d: 'You were there before it was busy and you will be there after.' },
+
+    'archive:sharp':   { n: 'THE CURATOR',        d: 'You buy the archive piece and wear it better than it was worn first.' },
+    'archive:quiet':   { n: 'THE ARCHIVIST',      d: 'Tortoise, acetate, ninety-something. Nothing you own was made this year.' },
+    'archive:loud':    { n: 'THE BOOTLEG',        d: 'Retro turned up past where retro was ever meant to go.' },
+    'archive:easy':    { n: 'THE HEIRLOOM',       d: 'Worn in, handed down, a bit scratched. That is the point of it.' }
+  };
   var DEFAULT_ARCHETYPE = { n: 'THE PURIST', d: 'Fit first, fashion second. We picked on shape alone.' };
 
   /* ------------------------------------------------------ title -> traits */
@@ -425,7 +531,7 @@
        polarised wraps, ranked worst-fit-last, not a shelf of round luxe frames
        because every sports frame in stock is a wrap and a square face reads
        wraps as a mild negative. */
-    var shelf = SHELVES.indexOf(answers.vibe) >= 0 ? answers.vibe : null;
+    var shelf = (personaFor(answers.persona) || {}).lead || null;
 
     /* Pooled over every product, including sold-out colourways: a line's depth
        is the line's depth regardless of which colours are showing today. */
@@ -540,8 +646,8 @@
 
   /* How the shelf reads back to the customer, per shelf they could have named. */
   var SHELF_LABEL = {
-    luxe: 'everyday luxe', summer: 'beach', tech: 'techno',
-    vint: 'vintage', sport: 'sports'
+    ovsz: 'Maximalist', luxe: 'High Finance', summer: 'Explorer',
+    tech: 'After Dark', vint: 'The Archive'
   };
 
   /* THE SHELF, IN TWO HALVES.
@@ -560,10 +666,17 @@
      When the customer named no aesthetic there is nothing to differ from, so
      the second half is spread across the shelves instead — one per aesthetic
      before any shelf gets a second — which turns it into a tour of the range. */
-  function splitShelf(results, count, vibe) {
+  function splitShelf(results, count, persona, answers) {
     var primaryCount = Math.min(4, count);
-    var shelf = SHELF_LABEL[vibe] ? vibe : null;
+    /* The persona names the shelf; the shelf is a collection trait. */
+    var shelf = (personaFor(persona) || {}).lead || null;
     var i, j;
+
+    /* A small stable number derived from the fitting, used to rotate which
+       frame represents each aesthetic in the second half. Same answers, same
+       number, same shelf. */
+    var seed = 0, key = JSON.stringify(answers || {}) + '|' + persona;
+    for (i = 0; i < key.length; i++) seed = (seed * 31 + key.charCodeAt(i)) % 100003;
 
     /* First half: the answer to the question they asked. */
     var primary = [], rest = [];
@@ -595,13 +708,41 @@
       else offShelf.push(rest[i]);
     }
 
-    var used = Object.create(null), spread = [], spare = [], tag;
+    /* Group the off-shelf frames by which aesthetic they belong to, so one can
+       be taken from each. */
+    var groups = Object.create(null), order = [], spare = [], tag;
     for (i = 0; i < offShelf.length; i++) {
       tag = null;
       for (j = 0; j < SHELVES.length; j++) if (offShelf[i].traits[SHELVES[j]]) { tag = SHELVES[j]; break; }
-      if (tag && !used[tag]) { used[tag] = true; spread.push(offShelf[i]); }
-      else spare.push(offShelf[i]);
+      if (!tag) { spare.push(offShelf[i]); continue; }
+      if (!groups[tag]) { groups[tag] = []; order.push(tag); }
+      groups[tag].push(offShelf[i]);
     }
+
+    /* Take the group's representative at a rotating offset rather than always
+       its best frame.
+
+       Always taking the best made one frame the face of a whole aesthetic:
+       Sterling is the strongest frame in Daily Luxe, so it took the luxe slot
+       on every shelf that was not High Finance — 583 of 1,440 fittings, on top
+       of the 430 where it legitimately led. It was on seven shelves in ten,
+       which is the opposite of a result that feels written about you.
+
+       The offset is derived from the answers, so a given fitting always returns
+       the same shelf — this is a rotation, not randomness, and retaking the
+       quiz with the same answers gives the same ten — while different fittings
+       see different faces of the same aesthetic. Limited to the top three of
+       each group so the rotation never reaches down into frames that do not
+       deserve the slot. */
+    var spread = [];
+    for (i = 0; i < order.length; i++) {
+      var g = groups[order[i]];
+      var pick = g.length > 1 ? seed % Math.min(3, g.length) : 0;
+      spread.push(g[pick]);
+      for (j = 0; j < g.length; j++) if (j !== pick) spare.push(g[j]);
+    }
+    spread.sort(function (a, b) { return b.score - a.score; });
+    spare.sort(function (a, b) { return b.score - a.score; });
     var alternates = spread.concat(spare).slice(0, wantAlt);
 
     /* Only if the catalogue genuinely cannot fill six other aesthetics. */
@@ -620,10 +761,8 @@
     return { primary: primary, alternates: alternates, shelf: shelf, pure: pure };
   }
 
-  function archetypeFor(answers, top) {
-    var key = answers.vibe;
-    for (var i = 0; i < ARCHETYPES.length; i++) if (ARCHETYPES[i].k === key) return ARCHETYPES[i];
-    return DEFAULT_ARCHETYPE;
+  function archetypeFor(answers) {
+    return ARCHETYPES[answers.persona + ':' + answers.mood] || DEFAULT_ARCHETYPE;
   }
 
   /* Which drawn frame best represents the recommendation so far. */
@@ -688,7 +827,9 @@
       phoneErr: root.querySelector('[data-psq-phone-error]'),
       phoneSkip: root.querySelector('[data-psq-phone-skip]'),
       caption: root.querySelector('[data-psq-caption]'),
-      stat: root.querySelector('[data-psq-stat]')
+      stat: root.querySelector('[data-psq-stat]'),
+      guide: root.querySelector('[data-psq-guide]'),
+      roll: root.querySelector('[data-psq-roll]')
     };
 
     this.bind();
@@ -779,8 +920,8 @@
     this.phoneDone = false;
     this.at = 0;
     this.plan();
-    this.root.classList.remove('is-result', 'is-lead', 'is-revealing');
-    if (this.revealTimer) clearTimeout(this.revealTimer);
+    this.root.classList.remove('is-result', 'is-lead');
+    this.clearReveal();
     this.emit('start', {});
     this.show('question');
     this.render();
@@ -805,6 +946,17 @@
     this.el.total.textContent = String(this.order.length).padStart(2, '0');
     this.el.question.textContent = q.q;
     this.el.hint.textContent = q.hint || '';
+    if (this.el.guide) {
+      this.el.guide.innerHTML = '';
+      if (q.guide) {
+        q.guide.forEach(function (step) {
+          var li = document.createElement('li');
+          li.textContent = step;
+          self.el.guide.appendChild(li);
+        });
+      }
+      this.el.guide.hidden = !q.guide;
+    }
     this.el.back.hidden = this.at === 0;
     this.el.skip.hidden = !q.skip;
     /* "Not sure — skip" is a dead end phrased as a shrug. The face question has
@@ -814,7 +966,8 @@
     this.el.options.innerHTML = '';
     /* Six face outlines read as six outlines in a grid and as a wall of text in
        a list. The question the quiz is built around gets the grid. */
-    this.el.options.className = 'psq__options' + (q.id === 'face' ? ' is-figures' : '');
+    this.el.options.className = 'psq__options' +
+      (q.id === 'face' ? ' is-figures' : '') + (q.shots ? ' is-shots' : '');
     this.el.options.setAttribute('aria-label', q.q);
     q.options.forEach(function (opt, i) {
       var b = document.createElement('button');
@@ -828,10 +981,12 @@
         (glyph
           ? '<svg class="psq__opt-fig" viewBox="0 0 48 60" aria-hidden="true">' + glyph + '</svg>'
           : '') +
+        (q.shots ? '<span class="psq__opt-shots" aria-hidden="true"></span>' : '') +
         '<span class="psq__opt-txt"><span class="psq__opt-l"></span>' +
         '<span class="psq__opt-s"></span></span>';
       b.querySelector('.psq__opt-l').textContent = opt.l;
       b.querySelector('.psq__opt-s').textContent = opt.s || '';
+      if (q.shots) self.shots(b.querySelector('.psq__opt-shots'), opt.shelf);
       b.addEventListener('click', function () { self.answer(opt.v); });
       /* Preview the consequence on the stage before they commit. */
       b.addEventListener('mouseenter', function () { self.preview(q, opt); });
@@ -842,6 +997,49 @@
     this.rail();
     this.el.question.focus();
     if (this.el.caption) this.el.caption.textContent = 'Step ' + (this.at + 1) + ' of ' + this.order.length;
+  };
+
+  /* THE PERSONA'S OWN PHOTOGRAPHY.
+
+     Each aesthetic shows three frames pulled live from its shelf rather than an
+     illustration of what that aesthetic might look like. Three consequences,
+     all of them good: the customer sees what the persona means in this season's
+     actual stock, there is no art to commission or re-shoot, and it cannot go
+     stale — put a frame in Techno and it can appear on the After Dark card
+     tomorrow.
+
+     Picked on stock depth, one per line so three colourways of one frame never
+     stand in for a whole aesthetic. */
+  Quiz.prototype.shots = function (el, shelf) {
+    if (!el || !shelf) return;
+    var pool = [], lines = Object.create(null), i, p;
+    for (i = 0; i < this.products.length; i++) {
+      p = this.products[i];
+      if (!p.i || !p.a) continue;
+      if (read(p)[shelf] !== true) continue;
+      var key = parseTitle(p.t).alias.toUpperCase();
+      if (lines[key]) continue;
+      lines[key] = true;
+      pool.push(p);
+    }
+    pool.sort(function (a, b) { return (b.iv || 0) - (a.iv || 0); });
+    for (i = 0; i < Math.min(3, pool.length); i++) {
+      var img = document.createElement('img');
+      img.className = 'psq__opt-shot';
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.alt = '';
+      img.style.setProperty('--i', i);
+      /* A frame whose photograph has been deleted, or a CDN that is having a
+         bad morning, must not leave a broken-image glyph sitting on the
+         persona. Two frames read as well as three; none reads as a plain
+         card, which is still a card. */
+      img.addEventListener('error', function () {
+        if (img.parentNode) img.parentNode.removeChild(img);
+      });
+      img.src = pool[i].i;
+      el.appendChild(img);
+    }
   };
 
   /* Hovering a face-shape option morphs the silhouette; hovering anything else
@@ -972,7 +1170,8 @@
         ' | face: ' + (this.answers.face || 'not given') +
         ' | fit: ' + (this.answers.fit || '-') +
         ' | styling: ' + (this.answers.gender || '-') +
-        ' | aesthetic: ' + (this.answers.vibe || '-') +
+        ' | aesthetic: ' + (this.answers.persona || '-') +
+        ' | mood: ' + (this.answers.mood || '-') +
         ' | wear: ' + (this.answers.wear || '-') +
         ' | matched: ' + results;
 
@@ -999,7 +1198,7 @@
   Quiz.prototype.finish = function (restored) {
     var self = this;
     var results = rank(this.products, this.answers, { hideOOS: this.hideOOS, useLearned: this.useLearned, results: this.count });
-    var shelf = splitShelf(results, this.count, this.answers.vibe);
+    var shelf = splitShelf(results, this.count, this.answers.persona, this.answers);
     var top = shelf.primary.concat(shelf.alternates);
     var face = this.answers.face || 'oval';
     var arch = archetypeFor(this.answers, top);
@@ -1016,8 +1215,8 @@
       ['Width', { small: 'Narrower than standard', medium: 'Standard width',
                   large: 'Wider than standard', statement: 'Statement width' }[this.answers.size] || 'Standard width'],
       ['Frame', top.length ? (top[0].meta.desc || 'Best available fit') : '—'],
-      ['Looking for', { luxe: 'Everyday quality', summer: 'Beach and vacation', tech: 'Party and rave',
-                        vint: 'Retro and archive', sport: 'Sport and active' }[this.answers.vibe] || 'The best of everything']
+      ['Style', (personaFor(this.answers.persona) || {}).l || '—'],
+      ['Mood', { sharp: 'Sharp', quiet: 'Quiet', loud: 'Loud', easy: 'Easy' }[this.answers.mood] || '—']
     ];
     this.el.spec.innerHTML = spec.map(function (r) {
       return '<li><b>' + r[0] + '</b><span></span></li>';
@@ -1042,7 +1241,7 @@
     this.root.classList.add('is-result');
     if (this.el.caption) this.el.caption.textContent = 'Your fit';
     /* Restoring a saved result is not a reveal — they have seen it. */
-    if (restored) this.root.classList.remove('is-revealing'); else this.reveal();
+    if (restored) this.clearReveal(); else this.reveal();
     if (this.persist && !restored) this.save();
     this.emit('complete', {
       face: face, archetype: arch.n,
@@ -1066,28 +1265,80 @@
      being a flourish the second time you see it. Users who ask for reduced
      motion never see it at all — the stylesheet collapses every duration, and
      the timer below is the only thing that still has to be short-circuited. */
-  var REVEAL_MS = 1100;
+  var ROLL_MS   = 1500;   /* the drumroll, before anything is named */
+  var REVEAL_MS = 1100;   /* the staged arrival, after */
+
+  /* What the drumroll says it is doing. Each line is true — they are the four
+     things the engine actually does, in the order it does them — so the pause
+     is the work being shown rather than a spinner pretending. */
+  Quiz.prototype.rollLines = function () {
+    var a = this.answers;
+    var persona = (personaFor(a.persona) || {}).l || 'your taste';
+    var n = this.products.length;
+    return [
+      'Reading a ' + (FACE_LABEL[a.face] || 'your').toLowerCase() + ' face…',
+      'Ruling out the shapes that fight it…',
+      'Searching ' + n + ' frames for ' + persona + '…',
+      'Picking your ten.'
+    ];
+  };
 
   Quiz.prototype.reveal = function () {
     var self = this;
-    if (this.revealTimer) clearTimeout(this.revealTimer);
+    this.clearReveal();
 
     var reduced = typeof matchMedia === 'function' &&
                   matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduced) { this.root.classList.remove('is-revealing'); return; }
+    if (reduced) {
+      this.root.classList.remove('is-rolling', 'is-revealing');
+      if (this.el.roll) this.el.roll.textContent = '';
+      return;
+    }
 
-    this.root.classList.add('is-revealing');
+    /* Beat one: the drumroll. Nothing is named yet — not the archetype, not a
+       single frame — because a result you can already read is not a reveal. */
+    var lines = this.rollLines(), at = 0;
+    this.root.classList.add('is-rolling');
+    if (this.el.roll) this.el.roll.textContent = lines[0];
+    this.rollTimer = setInterval(function () {
+      at++;
+      if (at >= lines.length) return;
+      if (self.el.roll) {
+        self.el.roll.textContent = lines[at];
+        /* restart the fade on each line */
+        self.el.roll.classList.remove('is-in');
+        void self.el.roll.offsetWidth;
+        self.el.roll.classList.add('is-in');
+      }
+    }, ROLL_MS / lines.length);
 
-    var end = function () {
-      if (!self.root.classList.contains('is-revealing')) return;
-      self.root.classList.remove('is-revealing');
-      clearTimeout(self.revealTimer);
-      document.removeEventListener('keydown', end, true);
-      self.root.removeEventListener('click', end, true);
+    /* Beat two: the frame lands, the name resolves, the shelf arrives. */
+    var settle = function () {
+      self.root.classList.remove('is-rolling');
+      self.root.classList.add('is-revealing');
+      self.revealTimer = setTimeout(done, REVEAL_MS);
     };
-    document.addEventListener('keydown', end, true);
-    this.root.addEventListener('click', end, true);
-    this.revealTimer = setTimeout(end, REVEAL_MS);
+    var done = function () { self.clearReveal(); };
+
+    /* Any tap or key takes the whole thing away — a beat you cannot skip stops
+       being a flourish the second time you see it. */
+    this.skipReveal = function () { done(); };
+    document.addEventListener('keydown', this.skipReveal, true);
+    this.root.addEventListener('click', this.skipReveal, true);
+    this.rollTo = setTimeout(settle, ROLL_MS);
+  };
+
+  Quiz.prototype.clearReveal = function () {
+    clearInterval(this.rollTimer);
+    clearTimeout(this.rollTo);
+    clearTimeout(this.revealTimer);
+    this.root.classList.remove('is-rolling', 'is-revealing');
+    if (this.el.roll) this.el.roll.textContent = '';
+    if (this.skipReveal) {
+      document.removeEventListener('keydown', this.skipReveal, true);
+      this.root.removeEventListener('click', this.skipReveal, true);
+      this.skipReveal = null;
+    }
   };
 
   /* Results are rendered twice over: a built-in card goes in immediately so the
@@ -1101,7 +1352,7 @@
      of its own, and the shop's existing analytics already reports it. */
   Quiz.prototype.tag = function (url) {
     var a = this.answers;
-    var profile = [a.gender || 'any', a.face || 'na', a.size || 'na', a.vibe || 'any'].join('-');
+    var profile = [a.gender || 'any', a.face || 'na', a.size || 'na', a.persona || 'na', a.mood || 'na'].join('-');
     var q = 'utm_source=fitting-room&utm_medium=quiz' +
             '&utm_campaign=' + encodeURIComponent(this.utmCampaign) +
             '&utm_content=' + encodeURIComponent(profile);

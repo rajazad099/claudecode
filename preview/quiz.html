@@ -202,6 +202,8 @@
             <p class="psq__eyebrow"><span data-psq-step>01</span> <i>/</i> <span data-psq-total>06</span></p>
             <h2 class="psq__q" data-psq-question tabindex="-1"></h2>
             <p class="psq__hint" data-psq-hint></p>
+            
+            <ol class="psq__guide" data-psq-guide hidden></ol>
             <div class="psq__options" role="radiogroup" data-psq-options></div>
             <div class="psq__nav">
               <button type="button" class="psq__link" data-psq-back>Back</button>
@@ -244,13 +246,18 @@
 
       <article class="psq__screen psq__screen--result" data-screen="result" hidden>
         <p class="psq__eyebrow">Your fitting</p>
+        
+        <p class="psq__roll" data-psq-roll aria-live="polite"></p>
         <h2 class="psq__alias" data-psq-alias></h2>
         <p class="psq__verdict" data-psq-verdict></p>
         <ul class="psq__spec" data-psq-spec></ul>
         <div class="psq__grid" data-psq-grid></div>
         <p class="psq__empty" data-psq-empty hidden></p>
         <div class="psq__nav psq__nav--result">
-          <button type="button" class="psq__link" data-psq-retake>Retake the fitting</button>
+          <button type="button" class="psq__link" data-psq-retake>Take it again</button>
+          
+            <a class="psq__link" href="https://www.projectshades.com/collections/all">Explore the full collection</a>
+          
           <button type="button" class="psq__link" data-psq-share>Copy my result</button>
         </div>
       </article>

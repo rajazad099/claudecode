@@ -2,7 +2,7 @@
   PROJECT SHADES — THE FITTING ROOM
   PS-003 // a frame-finder quiz that answers in the storefront's own voice.
 
-  The customer answers four questions. A face silhouette and a pair of lenses,
+  The customer answers five questions. A face silhouette and a pair of lenses,
   drawn in SVG, morph as they answer — the face becomes their face shape, the
   lenses become the frame being recommended. The results are the theme's own
   product cards.
@@ -326,6 +326,8 @@
             <p class="psq__eyebrow"><span data-psq-step>01</span> <i>/</i> <span data-psq-total>06</span></p>
             <h2 class="psq__q" data-psq-question tabindex="-1"></h2>
             <p class="psq__hint" data-psq-hint></p>
+            {%- comment -%} Filled only for questions that ship a method. {%- endcomment -%}
+            <ol class="psq__guide" data-psq-guide hidden></ol>
             <div class="psq__options" role="radiogroup" data-psq-options></div>
             <div class="psq__nav">
               <button type="button" class="psq__link" data-psq-back>Back</button>
@@ -368,13 +370,21 @@
 
       <article class="psq__screen psq__screen--result" data-screen="result" hidden>
         <p class="psq__eyebrow">{{ s.result_eyebrow | default: 'Your fitting' }}</p>
+        {%- comment -%}
+          The drumroll. Occupies the archetype's own line so nothing moves when
+          the name replaces it.
+        {%- endcomment -%}
+        <p class="psq__roll" data-psq-roll aria-live="polite"></p>
         <h2 class="psq__alias" data-psq-alias></h2>
         <p class="psq__verdict" data-psq-verdict></p>
         <ul class="psq__spec" data-psq-spec></ul>
         <div class="psq__grid" data-psq-grid></div>
         <p class="psq__empty" data-psq-empty hidden></p>
         <div class="psq__nav psq__nav--result">
-          <button type="button" class="psq__link" data-psq-retake>{{ s.retake_label | default: 'Retake the fitting' }}</button>
+          <button type="button" class="psq__link" data-psq-retake>{{ s.retake_label | default: 'Take it again' }}</button>
+          {%- if s.fallback_collection != blank -%}
+            <a class="psq__link" href="{{ s.fallback_collection.url }}">{{ s.browse_label | default: 'Explore the full collection' }}</a>
+          {%- endif -%}
           <button type="button" class="psq__link" data-psq-share>{{ s.share_label | default: 'Copy my result' }}</button>
         </div>
       </article>
@@ -416,6 +426,13 @@
       "id": "intro",
       "label": "Intro",
       "default": "Six questions. About a minute. We read your face shape, how frames sit on you and what you actually wear — then pull the frames that match."
+    },
+    {
+      "type": "text",
+      "id": "browse_label",
+      "label": "Browse-everything link",
+      "default": "Explore the full collection",
+      "info": "Shown on the result next to Take it again. Needs a fallback collection set below."
     },
     {
       "type": "text",

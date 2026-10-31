@@ -143,6 +143,34 @@
 .psq__features { stroke: rgba(var(--psq-fg-rgb), .3); transition: opacity .45s ease; }
 .psq.is-faceless .psq__features { opacity: 0; }
 
+/* The drumroll line. Sits on the archetype's own baseline so that when the
+   name arrives nothing below it moves. */
+.psq__roll {
+  margin: 0;
+  font-family: var(--psq-accent-font);
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--psq-faint);
+  min-height: 1.2em;
+}
+.psq__roll.is-in { animation: psq-in .3s ease both; }
+.psq:not(.is-rolling) .psq__roll { display: none; }
+
+/* While the drumroll runs, nothing is named yet — not the archetype, not one
+   frame. A result you can already read is not a reveal. */
+.psq.is-rolling .psq__alias,
+.psq.is-rolling .psq__verdict,
+.psq.is-rolling .psq__spec,
+.psq.is-rolling .psq__grid,
+.psq.is-rolling .psq__nav--result { opacity: 0; }
+.psq.is-rolling .psq__frames > g.is-on { animation: psq-hover 1.1s ease-in-out infinite; }
+
+@keyframes psq-hover {
+  0%, 100% { transform: translateY(-3px); }
+  50%      { transform: translateY(3px); }
+}
+
 /* ------------------------------------------------------------- the reveal */
 
 /* Three beats, not one. The frame lowers onto the silhouette that has been
@@ -287,6 +315,61 @@
   text-transform: uppercase;
   color: var(--psq-faint);
 }
+
+/* THE METHOD.
+
+   A numbered how-to under the face question. Nobody can name their own face
+   shape because nobody has ever been told how to work it out; three steps is
+   the whole of it. Set small and quiet so it reads as help, not as homework. */
+.psq__guide {
+  margin: 0 0 18px;
+  padding: 0 0 0 1.4em;
+  display: grid;
+  gap: 4px;
+  font-size: var(--psq-size-ui);
+  line-height: 1.45;
+  color: var(--psq-faint);
+}
+.psq__guide li { padding-left: 2px; }
+
+/* THE PERSONA CARDS.
+
+   Each aesthetic is shown in its own stock rather than described. Three frames,
+   overlapped like a hand of cards, pulled live from that persona's shelf — so
+   the picture is always this season's and never needs re-shooting. */
+.psq__options.is-shots { gap: 10px; }
+.psq__options.is-shots .psq__opt {
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px 12px 12px;
+}
+.psq__opt-shots {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  width: 96px;
+  height: 56px;
+  position: relative;
+}
+.psq__opt-shot {
+  position: absolute;
+  top: 50%;
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  border-radius: 2px;
+  background: var(--psq-panel);
+  transform: translateY(-50%) translateX(calc(var(--i, 0) * 25px)) rotate(calc((var(--i, 0) - 1) * 4deg));
+  transition: transform .3s cubic-bezier(.2, .7, .2, 1);
+  z-index: calc(3 - var(--i, 0));
+}
+/* Fan the hand out on hover — the frames separate so all three read. */
+.psq__opt:hover .psq__opt-shot,
+.psq__opt:focus-visible .psq__opt-shot {
+  transform: translateY(-50%) translateX(calc(var(--i, 0) * 30px)) rotate(calc((var(--i, 0) - 1) * 7deg));
+}
+.psq__options.is-shots .psq__opt-txt { flex: 1 1 auto; }
 
 /* THE FACE QUESTION.
 
@@ -663,4 +746,7 @@
   /* The reveal is pure animation, so with animations off there is nothing to
      wait for — every part of the result is simply present. */
   .psq.is-revealing .psq__nav--result { opacity: 1; }
+  .psq.is-rolling .psq__alias, .psq.is-rolling .psq__verdict,
+  .psq.is-rolling .psq__spec, .psq.is-rolling .psq__grid,
+  .psq.is-rolling .psq__nav--result { opacity: 1; }
 }
