@@ -1,0 +1,13 @@
+{
+  "name": "project-shades-fitting-room",
+  "private": true,
+  "description": "Theme code for THE FITTING ROOM, the Project Shades frame-finder quiz. The dependencies here are test-only: nothing in the theme loads a package.",
+  "scripts": {
+    "test": "node preview/liquid-test.js",
+    "preview": "python3 preview/build-preview.py"
+  },
+  "devDependencies": {
+    "liquidjs": "^10.29.0",
+    "playwright": "^1.63.0"
+  }
+}

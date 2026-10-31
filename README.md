@@ -1,3 +1,14 @@
+# Project Shades — storefront sections
+
+Drop-in Online Store 2.0 sections. No apps, no subscriptions, no build step.
+
+| Section | |
+| --- | --- |
+| **[The Fitting Room](docs/fitting-room.md)** | `PS-003` — a six-question frame finder that recommends real products by face shape, fit and aesthetic |
+| **Encore storefront hero** | `EW-002` — the shop drawn entirely in CSS and SVG (below) |
+
+---
+
 # ENCORE WORLDWIDE — storefront hero
 
 `EW-002 // DROP 001`
