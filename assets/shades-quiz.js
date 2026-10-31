@@ -211,6 +211,33 @@
       apply: function (a, v) { a.mood = v; }
     },
     {
+      /* LENS TINT.
+
+         Off by default, and that is not timidity — it is what the catalogue
+         can currently support. Lens darkness is recorded nowhere: not in the
+         collections, not in the variant options (those are frame colour, one
+         is literally named "Frame color"), and in only 39 of 271 descriptions,
+         38 of which read as strong. Asked today the question would cost a tap
+         and move almost nothing, which is exactly why the first tint question
+         was removed.
+
+         So the plumbing ships and the question waits. Fill custom.lens_tint on
+         the catalogue and switch "Ask about lens tint" on, and it starts
+         working immediately. A frame with no value is never excluded by the
+         answer — only un-boosted — so the question degrades honestly while the
+         data is still going in. */
+      id: 'tint',
+      q: 'How dark do you like them?',
+      hint: 'Only the frames we have a lens on record for will shift — the rest stay in the running.',
+      when: function (a, opts) { return !!(opts && opts.askTint); },
+      options: [
+        { v: 'mild',   l: 'Mild',   s: 'You can still see my eyes',          score: { 'tint-mild': 8 } },
+        { v: 'strong', l: 'Strong', s: 'Dark. I am hiding back here',        score: { 'tint-strong': 8 } },
+        { v: 'either', l: 'Either', s: 'Fit matters more than the lens',     score: {} }
+      ],
+      apply: function (a, v) { a.tint = v; }
+    },
+    {
       /* Last, and deliberately so. The three questions before it are ones
          anybody can answer without thinking — who it is for, how frames sit,
          what it is for — so the quiz is already three-quarters done and the
@@ -366,10 +393,30 @@
 
      One documented exception below, and it is a fallback rather than a source:
      JUDGED, for the handful of frames that sit in no shape collection at all. */
+  /* Frame width in millimetres, banded against this catalogue's own spread:
+     widths run 130-156, with the middle half between 142 and 147. A measured
+     width is a fact about the frame; a size collection is somebody's judgement
+     about it. Where both exist they mostly agree — 96% on medium — and where
+     they disagree the collection still wins, because a person looked at it. */
+  function widthBand(mm) {
+    if (!mm) return null;
+    if (mm <= 141) return 'small';
+    if (mm <= 147) return 'medium';
+    return 'large';
+  }
+
   function read(p) {
     var traits = Object.create(null);
     var i, c = p.c || [];
     for (i = 0; i < c.length; i++) traits[c[i]] = true;
+
+    /* A stated width fills in the size the shop never filed. It never
+       overrules a size collection — only covers for a missing one. */
+    if (!traits.small && !traits.medium && !traits.large) {
+      var b = widthBand(p.fw);
+      if (b) { traits[b] = true; traits.fromWidth = true; }
+    }
+    if (p.tn) traits['tint-' + p.tn] = true;
     /* Only when the collections did not say what shape it is. */
     var shaped = false;
     for (i = 0; i < FITTABLE.length; i++) if (traits[FITTABLE[i]]) shaped = true;
@@ -406,8 +453,9 @@
     for (i = 0; i < products.length; i++) {
       var p = products[i];
       var key = parseTitle(p.t).alias.toUpperCase();
-      var g = pool[key] || (pool[key] = { iv: 0, rc: 0, weighted: 0, rt: 0, qr: null, qrn: 0 });
+      var g = pool[key] || (pool[key] = { iv: 0, rc: 0, weighted: 0, rt: 0, qr: null, qrn: 0, sv: 0 });
       g.iv += p.iv || 0;
+      g.sv += p.sv || 0;
       g.rc += p.rc || 0;
       g.weighted += (p.rt || 0) * (p.rc || 0);
       if (p.qr != null && isFinite(Number(p.qr))) {
@@ -464,6 +512,14 @@
 
   function performance(line) {
     var s = 0;
+
+    /* What actually sold, over ninety days, pooled across the line's
+       colourways. Stock depth below is a proxy for this — what the shop bought
+       into — and where the real number exists it should lead rather than
+       follow. Log-scaled and capped, like everything else here, so a runaway
+       bestseller reorders frames that already suit the face and never drags one
+       onto a face it does not. */
+    if (line.sv > 0) s += Math.min(Math.log(line.sv) / Math.LN10, 2.7) * 1.4;
 
     /* Reviews. Credit scales with how many people actually said it, saturating
        at 40, so a single five-star review cannot outrank a line with eighty.
@@ -569,6 +625,21 @@
         if (v > best) best = v;
       }
       fitScore = best + (fitScore - best) * 0.5 + penalty;
+
+      /* WHAT THE PRODUCT COPY SAYS.
+
+         Fifty-seven frames state, in their own description, which face shapes
+         they suit — "Suits: Round, oval and heart-shaped faces, where the
+         angled edges add a little sharpness to soft features." That sentence
+         was written by someone holding the frame. It beats anything this file
+         can infer from which collection the frame sits in, so where it exists
+         it decides: a match is worth more than the best shape trait can score,
+         and a frame whose copy lists three faces and omits this one is not
+         being recommended for this face. */
+      if (p.fc && p.fc.length) {
+        fitScore = p.fc.indexOf(face) > -1 ? 6 : -6;
+        traits.stated = true;
+      }
 
       /* A shape read off a product description is a good guess, not a fact.
          Discounting it keeps these frames reachable — which is the whole point
@@ -790,6 +861,7 @@
     this.at = 0;
     this.products = [];
     this.count = parseInt(root.dataset.results, 10) || 10;
+    this.askTint = root.dataset.askTint === 'true';
     this.hideOOS = root.dataset.hideOos === 'true';
     this.persist = root.dataset.persist === 'true';
     this.themeCards = root.dataset.themeCards === 'true';
@@ -882,6 +954,10 @@
     }
   };
 
+  Quiz.prototype.opts = function () {
+    return { askTint: this.askTint };
+  };
+
   Quiz.prototype.plan = function () {
     var self = this;
     this.order = QUESTIONS.filter(function (q) {
@@ -890,7 +966,7 @@
          which would otherwise drop the jaw question out from under the cursor and
          skip whatever came next. Position is identity, not index. */
       if (self.asked.indexOf(q.id) > -1) return true;
-      return !q.when || q.when(self.answers);
+      return !q.when || q.when(self.answers, self.opts());
     });
   };
 

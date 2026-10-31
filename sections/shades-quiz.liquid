@@ -197,6 +197,22 @@
         {%- if product.metafields.custom.quiz_rank != blank -%}
           "qr":{{ product.metafields.custom.quiz_rank | times: 1.0 }},
         {%- endif -%}
+        {%- comment -%}
+          What the shop's own product copy says about this frame, read once and
+          written back to custom.quiz_data: which face shapes the description
+          says it suits, the frame width in millimetres where the copy states
+          it, and ninety days of units sold. Collections say which shelf a frame
+          belongs on; this says whether it will actually fit the person asking.
+        {%- endcomment -%}
+        {%- assign qd = product.metafields.custom.quiz_data.value -%}
+        {%- if qd != blank -%}
+          {%- if qd.faces != blank %}"fc":{{ qd.faces | json }},{% endif -%}
+          {%- if qd.width != blank %}"fw":{{ qd.width | times: 1 }},{% endif -%}
+          {%- if qd.sold != blank %}"sv":{{ qd.sold | times: 1 }},{% endif -%}
+        {%- endif -%}
+        {%- if product.metafields.custom.lens_tint != blank -%}
+          "tn":{{ product.metafields.custom.lens_tint | json }},
+        {%- endif -%}
         {%- if product.compare_at_price > product.price %}"cp":{{ product.compare_at_price | money | strip_html | json }},{% endif -%}
         {%- if product.featured_image -%}
           "i":{{ product.featured_image | image_url: width: 700 | json }},"ia":{{ product.featured_image.alt | default: product.title | json }},
@@ -230,6 +246,7 @@
   data-theme-cards="{{ s.use_theme_cards }}"
   data-use-learned="{{ s.use_learned_rank }}"
   data-utm-campaign="{{ s.utm_campaign | default: 'fitting-room' }}"
+  data-ask-tint="{{ s.ask_tint }}"
   data-collect-phone="{{ s.collect_phone }}"
   data-phone-required="{{ s.phone_required }}"
   data-dial-code="{{ s.dial_code | default: '+91' }}"
@@ -575,6 +592,13 @@
       "step": 1,
       "label": "Frames to recommend",
       "default": 10
+    },
+    {
+      "type": "checkbox",
+      "id": "ask_tint",
+      "label": "Ask about lens tint",
+      "default": false,
+      "info": "Adds a mild/strong lens question. Only worth switching on once enough products carry a Lens tint value — a frame with none is never excluded by the answer, so until then the question changes almost nothing."
     },
     {
       "type": "checkbox",

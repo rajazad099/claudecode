@@ -17,7 +17,8 @@
    "rect",
    "small",
    "women"
-  ]
+  ],
+  "sv": 36
  },
  {
   "h": "asteria-yellow-aesthetic-sunglasses",
@@ -36,7 +37,8 @@
    "rect",
    "small",
    "women"
-  ]
+  ],
+  "sv": 12
  },
  {
   "h": "hecate-slim-black-metal-sunglasses",
@@ -56,7 +58,8 @@
    "rect",
    "small",
    "women"
-  ]
+  ],
+  "sv": 456
  },
  {
   "h": "calypso-gold-rectangular-club-sunglasses",
@@ -94,7 +97,8 @@
    "rect",
    "sale",
    "women"
-  ]
+  ],
+  "sv": 23
  },
  {
   "h": "hecate-3-0-slim-metal-sunglasses",
@@ -113,7 +117,8 @@
    "rect",
    "small",
    "women"
-  ]
+  ],
+  "sv": 28
  },
  {
   "h": "popsicle-rimless-party-sunglasses",
@@ -134,7 +139,9 @@
    "riml",
    "small",
    "women"
-  ]
+  ],
+  "fw": 134,
+  "sv": 36
  },
  {
   "h": "hephaestus-vintage-metal-sunglasses",
@@ -155,7 +162,8 @@
    "rect",
    "small",
    "women"
-  ]
+  ],
+  "sv": 61
  },
  {
   "h": "the-idol-sleek-unisex-sunglasses",
@@ -174,7 +182,8 @@
    "rect",
    "small",
    "women"
-  ]
+  ],
+  "sv": 16
  },
  {
   "h": "athena-vintage-rimless-sunglasses",
@@ -214,7 +223,9 @@
    "men",
    "rect",
    "riml"
-  ]
+  ],
+  "fw": 148,
+  "sv": 15
  },
  {
   "h": "spectre-classic-rectangular-sunglasses",
@@ -233,7 +244,8 @@
    "men",
    "rect",
    "sale"
-  ]
+  ],
+  "sv": 80
  },
  {
   "h": "blanco-classic-rectangular-sunglasses",
@@ -253,7 +265,8 @@
    "men",
    "rect",
    "sale"
-  ]
+  ],
+  "sv": 31
  },
  {
   "h": "seychelles-vintage-metallic-sunglasses",
@@ -292,7 +305,8 @@
    "rect",
    "small",
    "women"
-  ]
+  ],
+  "sv": 43
  },
  {
   "h": "liberty-vintage-unisex-glasses",
@@ -311,7 +325,8 @@
    "men",
    "rect",
    "women"
-  ]
+  ],
+  "sv": 16
  },
  {
   "h": "serendipity-holiday-rimless-sunglasses",
@@ -331,7 +346,8 @@
    "men",
    "rect",
    "riml"
-  ]
+  ],
+  "sv": 27
  },
  {
   "h": "tranquility-vacation-aviator-sunglasses",
@@ -352,7 +368,8 @@
    "men",
    "ovsz",
    "rect"
-  ]
+  ],
+  "fw": 141
  },
  {
   "h": "noir-140-rectangular-polarized-sunglasses",
@@ -370,7 +387,8 @@
   "c": [
    "medium",
    "rect"
-  ]
+  ],
+  "fw": 140
  },
  {
   "h": "vancouver-unisex-aviator-sunglasses",
@@ -391,7 +409,8 @@
    "rect",
    "vint",
    "women"
-  ]
+  ],
+  "sv": 235
  },
  {
   "h": "ace-thick-matte-sunglasses",
@@ -410,7 +429,8 @@
    "men",
    "ovsz",
    "rect"
-  ]
+  ],
+  "sv": 26
  },
  {
   "h": "candies-retro-rectangular-sunglasses",
@@ -428,7 +448,8 @@
    "riml",
    "small",
    "women"
-  ]
+  ],
+  "sv": 13
  },
  {
   "h": "dallas",
@@ -449,7 +470,8 @@
    "rect",
    "sale",
    "women"
-  ]
+  ],
+  "sv": 23
  },
  {
   "h": "fargo-vintage-unisex-sunglasses",
@@ -470,7 +492,9 @@
    "rect",
    "small",
    "women"
-  ]
+  ],
+  "sv": 191,
+  "tn": "strong"
  },
  {
   "h": "jackstreet-sleek-futuristic-glasses",
@@ -490,7 +514,8 @@
    "small",
    "tech",
    "women"
-  ]
+  ],
+  "sv": 128
  },
  {
   "h": "krabi-retro-rectangular-sunglasses",
@@ -510,7 +535,9 @@
    "rect",
    "small",
    "women"
-  ]
+  ],
+  "sv": 58,
+  "tn": "strong"
  },
  {
   "h": "baltic-unisex-metal-sunglasses",
@@ -551,7 +578,8 @@
    "men",
    "rect",
    "women"
-  ]
+  ],
+  "sv": 13
  },
  {
   "h": "vanta-unisex-polarised-luxe-sunglasses",
@@ -571,7 +599,8 @@
    "rect",
    "small",
    "women"
-  ]
+  ],
+  "sv": 17
  },
  {
   "h": "axis-01-retro-rectangular-sunglasses",
@@ -591,7 +620,8 @@
    "men",
    "rect",
    "small"
-  ]
+  ],
+  "sv": 26
  },
  {
   "h": "festive-szn-spl-ethnic-rectangular-sunglasses",
@@ -630,7 +660,8 @@
    "men",
    "rect",
    "women"
-  ]
+  ],
+  "sv": 39
  },
  {
   "h": "nero-unisex-lux-sunglasses-clear-black",
@@ -672,7 +703,8 @@
    "men",
    "rect",
    "women"
-  ]
+  ],
+  "sv": 14
  },
  {
   "h": "vanta-luxe-unisex-sunglasses-clear-yellow",
@@ -757,7 +789,9 @@
    "rect",
    "riml",
    "summer"
-  ]
+  ],
+  "fw": 145,
+  "sv": 134
  },
  {
   "h": "serendipity-2-0-holiday-rimless-sunglasses-clear",
@@ -778,7 +812,9 @@
    "rect",
    "riml",
    "summer"
-  ]
+  ],
+  "fw": 145,
+  "sv": 155
  },
  {
   "h": "serendipity-2-0-holiday-rimless-sunglasses-black",
@@ -799,7 +835,9 @@
    "rect",
    "riml",
    "summer"
-  ]
+  ],
+  "fw": 145,
+  "sv": 22
  },
  {
   "h": "serendipity-2-0-holiday-rimless-sunglasses-yellow",
@@ -820,7 +858,9 @@
    "rect",
    "riml",
    "summer"
-  ]
+  ],
+  "fw": 145,
+  "sv": 89
  },
  {
   "h": "baltic-unisex-metal-sunglasses-black-silver",
@@ -895,7 +935,9 @@
    "rect",
    "summer",
    "women"
-  ]
+  ],
+  "fw": 143,
+  "sv": 30
  },
  {
   "h": "hera-everyday-rectangular-sunglasses-gray",
@@ -913,7 +955,8 @@
    "rect",
    "summer",
    "women"
-  ]
+  ],
+  "fw": 143
  },
  {
   "h": "hera-everyday-rectangular-sunglasses-brown",
@@ -931,7 +974,8 @@
    "rect",
    "summer",
    "women"
-  ]
+  ],
+  "fw": 143
  },
  {
   "h": "hera-everyday-rectangular-sunglasses-green",
@@ -951,7 +995,8 @@
    "rect",
    "summer",
    "women"
-  ]
+  ],
+  "sv": 68
  },
  {
   "h": "tideline-angular-metal-sunglasses-biege-silver",
@@ -971,7 +1016,8 @@
    "small",
    "summer",
    "women"
-  ]
+  ],
+  "sv": 53
  },
  {
   "h": "lagoon-rectangular-unisex-sunglasses-green",
@@ -990,7 +1036,9 @@
    "small",
    "summer",
    "women"
-  ]
+  ],
+  "fw": 144,
+  "sv": 49
  },
  {
   "h": "neo-vintage-oval-sunglasses",
@@ -1009,7 +1057,8 @@
    "oval",
    "small",
    "women"
-  ]
+  ],
+  "sv": 46
  },
  {
   "h": "luna",
@@ -1042,7 +1091,8 @@
    "men",
    "oval",
    "ovsz"
-  ]
+  ],
+  "fw": 149
  },
  {
   "h": "kingston-futuristic-unisex-sunglasses",
@@ -1064,7 +1114,9 @@
    "tech",
    "women",
    "wrap"
-  ]
+  ],
+  "fw": 148,
+  "sv": 638
  },
  {
   "h": "prague-retro-metal-sunglasses",
@@ -1084,7 +1136,8 @@
    "oval",
    "sale",
    "women"
-  ]
+  ],
+  "sv": 24
  },
  {
   "h": "apocalypse-futuristic-3d-sunglasses",
@@ -1105,7 +1158,8 @@
    "oval",
    "sale",
    "tech"
-  ]
+  ],
+  "sv": 41
  },
  {
   "h": "bali-retro-oval-sunglasses",
@@ -1125,7 +1179,8 @@
    "oval",
    "sale",
    "women"
-  ]
+  ],
+  "sv": 11
  },
  {
   "h": "florence-classy-unisex-sunglasses",
@@ -1144,7 +1199,8 @@
    "men",
    "oval",
    "women"
-  ]
+  ],
+  "sv": 10
  },
  {
   "h": "ammon-overized-devil-sunglasses",
@@ -1200,7 +1256,9 @@
    "oval",
    "small",
    "women"
-  ]
+  ],
+  "fw": 144,
+  "sv": 137
  },
  {
   "h": "model-vintage-oval-glasses",
@@ -1221,7 +1279,8 @@
    "sale",
    "vint",
    "women"
-  ]
+  ],
+  "sv": 55
  },
  {
   "h": "model-2-0-vintage-oval-glasses",
@@ -1242,7 +1301,8 @@
    "sale",
    "vint",
    "women"
-  ]
+  ],
+  "sv": 66
  },
  {
   "h": "fade-oval-polarised-sunglasses-biege",
@@ -1260,7 +1320,8 @@
    "oval",
    "summer",
    "women"
-  ]
+  ],
+  "tn": "strong"
  },
  {
   "h": "fade-oval-polarised-sunglasses-smoke",
@@ -1278,7 +1339,8 @@
    "oval",
    "summer",
    "women"
-  ]
+  ],
+  "tn": "strong"
  },
  {
   "h": "blockout-oversized-oval-sunglasses-brown",
@@ -1461,7 +1523,9 @@
    "small",
    "summer",
    "women"
-  ]
+  ],
+  "fw": 141,
+  "sv": 60
  },
  {
   "h": "orbit-oval-sleek-sunglasses-brown",
@@ -1497,7 +1561,8 @@
    "small",
    "summer",
    "women"
-  ]
+  ],
+  "sv": 20
  },
  {
   "h": "helios-oval-y2k-frames",
@@ -1516,7 +1581,9 @@
    "small",
    "tech",
    "women"
-  ]
+  ],
+  "fw": 148,
+  "sv": 13
  },
  {
   "h": "monarch-metal-oval-sunglasses-gold",
@@ -1531,7 +1598,8 @@
   "c": [
    "oval",
    "women"
-  ]
+  ],
+  "sv": 28
  },
  {
   "h": "miami-oval-aviator-sunglasses",
@@ -1568,7 +1636,8 @@
    "oval",
    "sale",
    "women"
-  ]
+  ],
+  "sv": 40
  },
  {
   "h": "miami-oval-aviator-sunglasses-black-silver",
@@ -1586,7 +1655,8 @@
    "oval",
    "sale",
    "women"
-  ]
+  ],
+  "sv": 29
  },
  {
   "h": "miami-oval-aviator-sunglasses-blue-silver",
@@ -1603,7 +1673,8 @@
    "medium",
    "oval",
    "women"
-  ]
+  ],
+  "sv": 18
  },
  {
   "h": "orbit-oval-sleek-sunglasses-black-black",
@@ -1623,7 +1694,8 @@
    "small",
    "summer",
    "women"
-  ]
+  ],
+  "sv": 15
  },
  {
   "h": "orbit-oval-sleek-sunglasses-black-silver",
@@ -1641,7 +1713,8 @@
    "small",
    "summer",
    "women"
-  ]
+  ],
+  "sv": 15
  },
  {
   "h": "echo-slim-oval-sunglasses-black-silver",
@@ -1660,6 +1733,11 @@
    "small",
    "vint",
    "women"
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "square"
   ]
  },
  {
@@ -1679,6 +1757,11 @@
    "small",
    "vint",
    "women"
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "square"
   ]
  },
  {
@@ -1698,6 +1781,11 @@
    "small",
    "vint",
    "women"
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "square"
   ]
  },
  {
@@ -1717,7 +1805,13 @@
    "riml",
    "small",
    "women"
-  ]
+  ],
+  "fc": [
+   "diamond",
+   "heart",
+   "square"
+  ],
+  "fw": 142
  },
  {
   "h": "aura-rimless-oval-sunglasses-black-gold-1",
@@ -1736,7 +1830,13 @@
    "riml",
    "small",
    "women"
-  ]
+  ],
+  "fc": [
+   "diamond",
+   "heart",
+   "square"
+  ],
+  "fw": 142
  },
  {
   "h": "aura-rimless-oval-sunglasses-black-black",
@@ -1755,7 +1855,13 @@
    "riml",
    "small",
    "women"
-  ]
+  ],
+  "fc": [
+   "diamond",
+   "heart",
+   "square"
+  ],
+  "fw": 142
  },
  {
   "h": "aura-rimless-oval-sunglasses-green",
@@ -1774,7 +1880,13 @@
    "riml",
    "small",
    "women"
-  ]
+  ],
+  "fc": [
+   "diamond",
+   "heart",
+   "square"
+  ],
+  "fw": 142
  },
  {
   "h": "aura-rimless-oval-sunglasses-biege",
@@ -1793,7 +1905,13 @@
    "riml",
    "small",
    "women"
-  ]
+  ],
+  "fc": [
+   "diamond",
+   "heart",
+   "square"
+  ],
+  "fw": 142
  },
  {
   "h": "aura-rimless-oval-sunglasses-purple",
@@ -1812,7 +1930,14 @@
    "riml",
    "small",
    "women"
-  ]
+  ],
+  "fc": [
+   "diamond",
+   "heart",
+   "square"
+  ],
+  "fw": 142,
+  "sv": 12
  },
  {
   "h": "thalassa-premium-unisex-sunglasses-brown-olive",
@@ -1833,7 +1958,9 @@
    "small",
    "summer",
    "women"
-  ]
+  ],
+  "fw": 138,
+  "sv": 364
  },
  {
   "h": "steampunk-retro-metal-sunglasses",
@@ -1852,7 +1979,8 @@
    "medium",
    "men",
    "round"
-  ]
+  ],
+  "fw": 138
  },
  {
   "h": "flippa-steampunk-flip-up-sunglasses",
@@ -1872,7 +2000,9 @@
    "medium",
    "men",
    "round"
-  ]
+  ],
+  "fw": 130,
+  "sv": 13
  },
  {
   "h": "denver-metallic-retro-sunglasses",
@@ -1891,7 +2021,8 @@
    "sale",
    "small",
    "women"
-  ]
+  ],
+  "sv": 14
  },
  {
   "h": "theia-2-0-y2k-jewel-sunglasses",
@@ -1910,7 +2041,8 @@
    "medium",
    "round",
    "women"
-  ]
+  ],
+  "sv": 17
  },
  {
   "h": "tara-2-0-vintage-round-sunglasses",
@@ -1946,7 +2078,8 @@
    "men",
    "round",
    "women"
-  ]
+  ],
+  "sv": 11
  },
  {
   "h": "orbit-unisex-round-sunglasses",
@@ -1995,7 +2128,9 @@
    "small",
    "vint",
    "women"
-  ]
+  ],
+  "sv": 18,
+  "tn": "strong"
  },
  {
   "h": "oslo-luxe-unisex-sunglasses-black",
@@ -2055,7 +2190,8 @@
    "round",
    "summer",
    "women"
-  ]
+  ],
+  "sv": 60
  },
  {
   "h": "sterling-luxe-round-sunglasses-black",
@@ -2077,7 +2213,8 @@
    "men",
    "round",
    "women"
-  ]
+  ],
+  "sv": 13
  },
  {
   "h": "sterling-luxe-round-sunglasses-forest",
@@ -2100,7 +2237,8 @@
    "round",
    "summer",
    "women"
-  ]
+  ],
+  "sv": 51
  },
  {
   "h": "sterling-luxe-round-sunglasses-gray",
@@ -2144,7 +2282,8 @@
    "round",
    "summer",
    "women"
-  ]
+  ],
+  "sv": 93
  },
  {
   "h": "sterling-luxe-round-sunglasses-brown",
@@ -2166,7 +2305,8 @@
    "men",
    "round",
    "women"
-  ]
+  ],
+  "sv": 112
  },
  {
   "h": "thalassa-premium-unisex-sunglasses-aqua-wine",
@@ -2186,7 +2326,8 @@
    "small",
    "summer",
    "women"
-  ]
+  ],
+  "sv": 14
  },
  {
   "h": "thalassa-premium-unisex-sunglasses-brown-ombre",
@@ -2248,7 +2389,8 @@
    "round",
    "summer",
    "women"
-  ]
+  ],
+  "sv": 10
  },
  {
   "h": "roundabout-everyday-round-sunglasses-black",
@@ -2286,7 +2428,8 @@
    "men",
    "round",
    "women"
-  ]
+  ],
+  "sv": 16
  },
  {
   "h": "icarus-retro-round-sunglasses",
@@ -2305,7 +2448,14 @@
    "small",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "diamond",
+   "oval",
+   "square"
+  ],
+  "fw": 142,
+  "sv": 29
  },
  {
   "h": "icarus-retro-round-sunglasses-black",
@@ -2324,7 +2474,14 @@
    "small",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "diamond",
+   "oval",
+   "square"
+  ],
+  "fw": 142,
+  "sv": 26
  },
  {
   "h": "icarus-retro-round-sunglasses-black-blue",
@@ -2343,7 +2500,14 @@
    "small",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "diamond",
+   "oval",
+   "square"
+  ],
+  "fw": 142,
+  "sv": 28
  },
  {
   "h": "icarus-retro-round-sunglasses-green-tortoise",
@@ -2362,7 +2526,14 @@
    "small",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "diamond",
+   "oval",
+   "square"
+  ],
+  "fw": 142,
+  "sv": 28
  },
  {
   "h": "icarus-retro-round-sunglasses-emerald",
@@ -2381,7 +2552,13 @@
    "small",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "diamond",
+   "oval",
+   "square"
+  ],
+  "fw": 142
  },
  {
   "h": "icarus-retro-round-sunglasses-caramel",
@@ -2400,7 +2577,13 @@
    "small",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "diamond",
+   "oval",
+   "square"
+  ],
+  "fw": 142
  },
  {
   "h": "euphoria-cateye-metal-sunglasses",
@@ -2437,7 +2620,8 @@
    "medium",
    "summer",
    "women"
-  ]
+  ],
+  "tn": "strong"
  },
  {
   "h": "aurora-cateye-90s-archive-glasses",
@@ -2455,7 +2639,9 @@
    "sale",
    "vint",
    "women"
-  ]
+  ],
+  "sv": 19,
+  "tn": "mild"
  },
  {
   "h": "luna-classic-cateye-sunglasses-black",
@@ -2473,7 +2659,8 @@
    "medium",
    "summer",
    "women"
-  ]
+  ],
+  "tn": "strong"
  },
  {
   "h": "luna-classic-cateye-sunglasses-leopard",
@@ -2491,7 +2678,8 @@
    "medium",
    "summer",
    "women"
-  ]
+  ],
+  "tn": "strong"
  },
  {
   "h": "luna-classic-cateye-sunglasses-black-brown",
@@ -2509,7 +2697,8 @@
    "medium",
    "summer",
    "women"
-  ]
+  ],
+  "tn": "strong"
  },
  {
   "h": "muse-oversized-cateye-sunglasses-black",
@@ -2653,7 +2842,13 @@
    "small",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "oval",
+   "round",
+   "square"
+  ],
+  "fw": 147
  },
  {
   "h": "helen-y2k-cateye-sunglasses-green",
@@ -2671,7 +2866,13 @@
    "small",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "oval",
+   "round",
+   "square"
+  ],
+  "fw": 147
  },
  {
   "h": "helen-y2k-cateye-sunglasses-pink",
@@ -2689,7 +2890,13 @@
    "small",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "oval",
+   "round",
+   "square"
+  ],
+  "fw": 147
  },
  {
   "h": "helen-y2k-cateye-sunglasses-cherry",
@@ -2707,7 +2914,13 @@
    "small",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "oval",
+   "round",
+   "square"
+  ],
+  "fw": 147
  },
  {
   "h": "matrix-y2k-wraparound-sunglasses",
@@ -2727,7 +2940,8 @@
    "small",
    "women",
    "wrap"
-  ]
+  ],
+  "sv": 36
  },
  {
   "h": "cosmopolitan-vintage-wraparound-sunglasses",
@@ -2762,7 +2976,9 @@
    "small",
    "women",
    "wrap"
-  ]
+  ],
+  "fw": 142,
+  "sv": 25
  },
  {
   "h": "zenith-oversized-y2k-sunglasses",
@@ -2822,7 +3038,8 @@
    "vint",
    "women",
    "wrap"
-  ]
+  ],
+  "fw": 148
  },
  {
   "h": "hagrid-vintage-biking-sunglasses",
@@ -2842,7 +3059,8 @@
    "men",
    "ovsz",
    "wrap"
-  ]
+  ],
+  "sv": 12
  },
  {
   "h": "eclipse-archive-metal-sunglasses",
@@ -2862,7 +3080,9 @@
    "medium",
    "men",
    "wrap"
-  ]
+  ],
+  "sv": 258,
+  "tn": "strong"
  },
  {
   "h": "salt-unisex-techno-sunglasses",
@@ -2882,7 +3102,9 @@
    "tech",
    "women",
    "wrap"
-  ]
+  ],
+  "fw": 145,
+  "sv": 30
  },
  {
   "h": "blade-futuristic-unisex-sunglasses",
@@ -2904,7 +3126,8 @@
    "tech",
    "women",
    "wrap"
-  ]
+  ],
+  "sv": 57
  },
  {
   "h": "kryptonite-polarised-sports-sunglasses-red",
@@ -2923,7 +3146,10 @@
    "men",
    "sport",
    "wrap"
-  ]
+  ],
+  "fw": 150,
+  "sv": 92,
+  "tn": "strong"
  },
  {
   "h": "kryptonite-polarised-sports-sunglasses-blue",
@@ -2943,7 +3169,9 @@
    "sport",
    "women",
    "wrap"
-  ]
+  ],
+  "fw": 150,
+  "tn": "strong"
  },
  {
   "h": "kryptonite-polarised-sports-sunglasses-photochromatic",
@@ -2963,7 +3191,9 @@
    "sport",
    "women",
    "wrap"
-  ]
+  ],
+  "fw": 150,
+  "tn": "strong"
  },
  {
   "h": "kryptonite-polarised-sports-sunglasses-black",
@@ -2983,7 +3213,10 @@
    "sport",
    "women",
    "wrap"
-  ]
+  ],
+  "fw": 150,
+  "sv": 39,
+  "tn": "strong"
  },
  {
   "h": "kryptonite-polarised-sports-sunglasses-pink",
@@ -3003,7 +3236,10 @@
    "sport",
    "women",
    "wrap"
-  ]
+  ],
+  "fw": 150,
+  "sv": 37,
+  "tn": "strong"
  },
  {
   "h": "tryst-wraparound-oversized-sunglasses-black",
@@ -3023,7 +3259,8 @@
    "vint",
    "women",
    "wrap"
-  ]
+  ],
+  "fw": 148
  },
  {
   "h": "tryst-wraparound-oversized-sunglasses-purple",
@@ -3083,7 +3320,8 @@
    "men",
    "ovsz",
    "women"
-  ]
+  ],
+  "sv": 13
  },
  {
   "h": "opx-oversized-high-street-sunglasses",
@@ -3120,7 +3358,8 @@
    "men",
    "ovsz",
    "tech"
-  ]
+  ],
+  "sv": 41
  },
  {
   "h": "quantum-chrome-oversized-sunglasses",
@@ -3155,7 +3394,8 @@
    "ovsz",
    "tech",
    "women"
-  ]
+  ],
+  "sv": 13
  },
  {
   "h": "typhon-oversized-visor-sunglasses",
@@ -3193,7 +3433,8 @@
    "men",
    "ovsz",
    "tech"
-  ]
+  ],
+  "sv": 13
  },
  {
   "h": "banshee-oversized-skii-sunglasses",
@@ -3274,7 +3515,8 @@
    "sale",
    "tech",
    "women"
-  ]
+  ],
+  "tn": "strong"
  },
  {
   "h": "toronto-oversized-y2k-sunglasses-blue",
@@ -3292,7 +3534,8 @@
    "medium",
    "ovsz",
    "women"
-  ]
+  ],
+  "sv": 12
  },
  {
   "h": "toronto-oversized-y2k-sunglasses-brown",
@@ -3310,7 +3553,8 @@
    "medium",
    "ovsz",
    "women"
-  ]
+  ],
+  "sv": 15
  },
  {
   "h": "toronto-oversized-y2k-sunglasses-black",
@@ -3328,7 +3572,8 @@
    "medium",
    "ovsz",
    "women"
-  ]
+  ],
+  "sv": 23
  },
  {
   "h": "toronto-oversized-y2k-sunglasses-orange",
@@ -3348,7 +3593,9 @@
    "medium",
    "ovsz",
    "women"
-  ]
+  ],
+  "fw": 147,
+  "sv": 169
  },
  {
   "h": "toronto-oversized-y2k-sunglasses-green",
@@ -3366,7 +3613,9 @@
    "medium",
    "ovsz",
    "women"
-  ]
+  ],
+  "fw": 147,
+  "sv": 133
  },
  {
   "h": "toronto-oversized-y2k-sunglasses-purple",
@@ -3384,7 +3633,9 @@
    "medium",
    "ovsz",
    "women"
-  ]
+  ],
+  "fw": 147,
+  "sv": 29
  },
  {
   "h": "toronto-oversized-y2k-sunglasses-leopard-purple",
@@ -3422,7 +3673,13 @@
    "ovsz",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "long",
+   "oval",
+   "square"
+  ],
+  "fw": 143
  },
  {
   "h": "ares-oversized-high-fashion-sunglasses-leopard-green",
@@ -3442,7 +3699,13 @@
    "ovsz",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "long",
+   "oval",
+   "square"
+  ],
+  "fw": 143
  },
  {
   "h": "ares-oversized-high-fashion-sunglasses-black",
@@ -3462,7 +3725,13 @@
    "ovsz",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "long",
+   "oval",
+   "square"
+  ],
+  "fw": 143
  },
  {
   "h": "ares-oversized-high-fashion-sunglasses-black-blue",
@@ -3482,7 +3751,13 @@
    "ovsz",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "long",
+   "oval",
+   "square"
+  ],
+  "fw": 143
  },
  {
   "h": "ares-oversized-high-fashion-sunglasses-purple",
@@ -3502,7 +3777,13 @@
    "ovsz",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "long",
+   "oval",
+   "square"
+  ],
+  "fw": 143
  },
  {
   "h": "prague-2-0-polygon-metal-sunglasses",
@@ -3541,7 +3822,8 @@
    "small",
    "vint",
    "women"
-  ]
+  ],
+  "sv": 10
  },
  {
   "h": "bolt-unisex-geometric-sunglasses-biege",
@@ -3564,7 +3846,9 @@
    "summer",
    "vint",
    "women"
-  ]
+  ],
+  "sv": 97,
+  "tn": "strong"
  },
  {
   "h": "bolt-unisex-geometric-sunglasses-smoke-purple",
@@ -3603,7 +3887,9 @@
    "summer",
    "vint",
    "women"
-  ]
+  ],
+  "fw": 141,
+  "sv": 27
  },
  {
   "h": "daedalus-slim-faceted-metal-sunglasses-black-silver",
@@ -3622,6 +3908,11 @@
    "small",
    "vint",
    "women"
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "round"
   ]
  },
  {
@@ -3641,6 +3932,11 @@
    "small",
    "vint",
    "women"
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "round"
   ]
  },
  {
@@ -3660,6 +3956,11 @@
    "small",
    "vint",
    "women"
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "round"
   ]
  },
  {
@@ -3679,6 +3980,11 @@
    "small",
    "vint",
    "women"
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "round"
   ]
  },
  {
@@ -3697,7 +4003,13 @@
    "small",
    "tech",
    "women"
-  ]
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "round"
+  ],
+  "fw": 138
  },
  {
   "h": "perseus-futuristic-metal-sunglasses-black-black",
@@ -3717,7 +4029,13 @@
    "small",
    "tech",
    "women"
-  ]
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "round"
+  ],
+  "fw": 138
  },
  {
   "h": "perseus-futuristic-metal-sunglasses-blue-silver",
@@ -3735,7 +4053,13 @@
    "small",
    "tech",
    "women"
-  ]
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "round"
+  ],
+  "fw": 138
  },
  {
   "h": "amber-y2k-unisex-sunglasses",
@@ -3756,7 +4080,8 @@
    "men",
    "vint",
    "women"
-  ]
+  ],
+  "sv": 13
  },
  {
   "h": "phantom-futuristic-unisex-sunglasses",
@@ -3770,7 +4095,9 @@
   "ia": "[ Phantom ] Futuristic Unisex Sunglasses - projectshades",
   "c": [
    "men"
-  ]
+  ],
+  "fw": 147,
+  "tn": "strong"
  },
  {
   "h": "fluff-masquerade-fur-sunglasses",
@@ -3802,7 +4129,8 @@
   "c": [
    "medium",
    "men"
-  ]
+  ],
+  "tn": "strong"
  },
  {
   "h": "katana-futuristic-techno-sunglasses",
@@ -3823,7 +4151,8 @@
    "small",
    "tech",
    "women"
-  ]
+  ],
+  "sv": 119
  },
  {
   "h": "akita-unisex-aviator-sunglasses",
@@ -3859,7 +4188,9 @@
    "men",
    "tech",
    "women"
-  ]
+  ],
+  "sv": 80,
+  "tn": "strong"
  },
  {
   "h": "grace-80s-vintage-sunglasses",
@@ -3897,7 +4228,8 @@
    "small",
    "tech",
    "women"
-  ]
+  ],
+  "sv": 47
  },
  {
   "h": "contour-sleek-cutline-sunglasses-green-leopard",
@@ -3917,7 +4249,9 @@
    "small",
    "summer",
    "women"
-  ]
+  ],
+  "fw": 145,
+  "sv": 11
  },
  {
   "h": "contour-sleek-cutline-sunglasses-purple",
@@ -3937,7 +4271,9 @@
    "small",
    "summer",
    "women"
-  ]
+  ],
+  "fw": 145,
+  "sv": 43
  },
  {
   "h": "contour-sleek-cutline-sunglasses-green-pink",
@@ -3957,7 +4293,9 @@
    "small",
    "summer",
    "women"
-  ]
+  ],
+  "fw": 145,
+  "sv": 32
  },
  {
   "h": "riptide-compact-squared-sunglasses-brown",
@@ -3976,7 +4314,9 @@
    "small",
    "summer",
    "women"
-  ]
+  ],
+  "fw": 140,
+  "sv": 83
  },
  {
   "h": "riptide-compact-squared-sunglasses-blue",
@@ -3997,7 +4337,9 @@
    "small",
    "summer",
    "women"
-  ]
+  ],
+  "fw": 140,
+  "sv": 26
  },
  {
   "h": "riptide-compact-squared-sunglasses-black-black",
@@ -4037,7 +4379,8 @@
    "small",
    "summer",
    "women"
-  ]
+  ],
+  "fw": 140
  },
  {
   "h": "lex-polarised-sports-sunglasses-red",
@@ -4055,7 +4398,9 @@
    "small",
    "sport",
    "women"
-  ]
+  ],
+  "fw": 145,
+  "tn": "strong"
  },
  {
   "h": "lex-polarised-sports-sunglasses-black-blue",
@@ -4073,7 +4418,9 @@
    "small",
    "sport",
    "women"
-  ]
+  ],
+  "fw": 145,
+  "tn": "strong"
  },
  {
   "h": "terminator-futuristic-streetwear-sunglasses",
@@ -4088,7 +4435,8 @@
   "ia": "[ Terminator ] Futuristic Streetwear Sunglasses - projectshades",
   "c": [
    "tech"
-  ]
+  ],
+  "tn": "strong"
  },
  {
   "h": "venom-unisex-techno-sunglasses-gold",
@@ -4104,7 +4452,8 @@
    "medium",
    "men",
    "tech"
-  ]
+  ],
+  "fw": 156
  },
  {
   "h": "venom-unisex-techno-sunglasses-black",
@@ -4120,7 +4469,8 @@
    "medium",
    "men",
    "tech"
-  ]
+  ],
+  "fw": 156
  },
  {
   "h": "isla-y2k-metallic-sunglasses",
@@ -4140,7 +4490,8 @@
    "sale",
    "vint",
    "women"
-  ]
+  ],
+  "sv": 35
  },
  {
   "h": "vancouve-2-0-unisex-aviator-sunglasses",
@@ -4159,7 +4510,8 @@
    "men",
    "rect",
    "vint"
-  ]
+  ],
+  "sv": 29
  },
  {
   "h": "hyperion-double-bridge-aviator-sunglasses-black",
@@ -4177,7 +4529,13 @@
    "men",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "square"
+  ],
+  "fw": 146
  },
  {
   "h": "hyperion-double-bridge-aviator-sunglasses-light-green",
@@ -4195,7 +4553,14 @@
    "men",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "square"
+  ],
+  "fw": 146,
+  "sv": 16
  },
  {
   "h": "hyperion-double-bridge-aviator-sunglasses-olive-green",
@@ -4213,7 +4578,13 @@
    "men",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "square"
+  ],
+  "fw": 146
  },
  {
   "h": "nyx-slim-90s-oval-sunglasses-black",
@@ -4230,7 +4601,14 @@
    "small",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "square"
+  ],
+  "fw": 141,
+  "sv": 19
  },
  {
   "h": "nyx-slim-90s-oval-sunglasses-brown",
@@ -4247,7 +4625,14 @@
    "small",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "square"
+  ],
+  "fw": 141,
+  "sv": 20
  },
  {
   "h": "nyx-slim-90s-oval-sunglasses-cherry",
@@ -4264,7 +4649,14 @@
    "small",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "square"
+  ],
+  "fw": 141,
+  "sv": 19
  },
  {
   "h": "nyx-slim-90s-oval-sunglasses-leopard-green",
@@ -4281,7 +4673,14 @@
    "small",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "square"
+  ],
+  "fw": 141,
+  "sv": 19
  },
  {
   "h": "hyperion-double-bridge-aviator-sunglasses-brown",
@@ -4299,7 +4698,13 @@
    "men",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "square"
+  ],
+  "fw": 146
  },
  {
   "h": "orpheus-slim-metal-navigator-sunglasses-black-silver",
@@ -4317,7 +4722,14 @@
    "rect",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "round"
+  ],
+  "fw": 142,
+  "tn": "strong"
  },
  {
   "h": "orpheus-slim-metal-navigator-sunglasses-blue-silver-copy",
@@ -4335,7 +4747,14 @@
    "rect",
    "vint",
    "women"
-  ]
+  ],
+  "fc": [
+   "heart",
+   "oval",
+   "round"
+  ],
+  "fw": 142,
+  "tn": "strong"
  },
  {
   "h": "zod-semi-rimless-polarised-sunglasses",
@@ -4349,7 +4768,9 @@
   "ia": "[ Zod ] Semi-Rimless Polarised Sunglasses : Photochromatic - projectshades",
   "c": [
    "sport"
-  ]
+  ],
+  "fw": 147,
+  "tn": "strong"
  },
  {
   "h": "mongul-flip-up-polarsied-sunglasses-yellow",
@@ -4366,7 +4787,9 @@
    "medium",
    "men",
    "sport"
-  ]
+  ],
+  "fw": 150,
+  "tn": "strong"
  },
  {
   "h": "mongul-flip-up-polarsied-sunglasses-black",
@@ -4383,7 +4806,9 @@
    "medium",
    "men",
    "sport"
-  ]
+  ],
+  "fw": 150,
+  "tn": "strong"
  },
  {
   "h": "mongul-flip-up-polarsied-sunglasses-blue",
@@ -4400,7 +4825,9 @@
    "medium",
    "men",
    "sport"
-  ]
+  ],
+  "fw": 150,
+  "tn": "strong"
  },
  {
   "h": "mongul-flip-up-polarsied-sunglasses-photochromatic",
@@ -4417,6 +4844,8 @@
    "medium",
    "men",
    "sport"
-  ]
+  ],
+  "fw": 150,
+  "tn": "strong"
  }
 ]
