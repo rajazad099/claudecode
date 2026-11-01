@@ -115,3 +115,30 @@
 .jdgm-write-rev-link, .jdgm-btn { font-size: 12px !important; font-weight: 600 !important; letter-spacing: .06em !important; text-transform: uppercase !important; border-radius: var(--buttons-radius, 0) !important; }
 .jdgm-write-rev-link, .jdgm-btn--solid { background: transparent !important; border: 1px solid rgb(var(--color-foreground-rgb, 0, 0, 0)) !important; color: rgb(var(--color-foreground-rgb, 0, 0, 0)) !important; padding: 0 16px !important; height: 40px !important; line-height: 38px !important; display: inline-block !important; width: auto !important; }
 .jdgm-paginate { margin: 8px 0 0 !important; }
+
+/* LensAdvizor "Add Customised lenses": match the theme's buttons (Montserrat, bold caps, 48px, square).
+   Outline style so ADD TO BAG stays the one primary action. */
+#la-select-lenses-btn.la-select-lenses-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-family: var(--font-accent-family, Montserrat), sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  text-transform: uppercase !important;
+  line-height: 1 !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  padding: 0 20px !important;
+  margin: 10px 0 !important;
+  width: 100% !important;
+  border-radius: 0 !important;
+  border: 1px solid #000 !important;
+  background: #fff !important;
+  color: #000 !important;
+  box-shadow: none !important;
+  transition: background-color .15s, color .15s;
+}
+#la-select-lenses-btn.la-select-lenses-btn:hover { background: #000 !important; color: #fff !important; }
+@media (min-width: 990px) { #la-select-lenses-btn.la-select-lenses-btn { font-size: 13px !important; } }
