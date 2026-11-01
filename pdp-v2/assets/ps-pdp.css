@@ -57,10 +57,6 @@
 .ps-trust span { display: inline; }
 .ps-trust b { font-size: 11.5px; font-weight: 400; color: var(--ps-mute); white-space: nowrap; }
 .ps-trust small { display: none; }
-.ps-trust__link { color: inherit; text-decoration: underline; text-decoration-color: var(--ps-line); text-underline-offset: 3px; }
-.ps-trust__link:hover { text-decoration-color: currentColor; }
-.ps-lensnote { margin: -8px 0 18px !important; font-size: 11.5px; line-height: 1.5; color: var(--ps-mute); text-align: center; }
-.ps-lensnote a { color: var(--ps-ink); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
 
 /* Delivery check: its own block, set apart from the offers by a hairline */
 .ps-ship { margin: 0 0 20px; padding-top: 18px; border-top: 1px solid var(--ps-line); }
