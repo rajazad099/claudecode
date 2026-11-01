@@ -1,4 +1,10 @@
-{%- comment -%} Trust grid: four short promises, 2 x 2. Copy is editable per block. {%- endcomment -%}
+{%- comment -%}
+  Trust line: four short promises. The returns item links to the refund policy. Products in the
+  custom-lenses collection also get a one-line note on made-to-order lens returns.
+{%- endcomment -%}
+{%- assign ps_policy_url = routes.root_url | append: '/policies/refund-policy' | replace: '//', '/' -%}
+{%- assign ps_lens = false -%}
+{%- for c in product.collections -%}{%- if c.handle == 'custom-lenses' -%}{%- assign ps_lens = true -%}{%- break -%}{%- endif -%}{%- endfor -%}
 <ul class="ps ps-trust" {{ block.shopify_attributes }}>
   <li>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3 2.9-4.8 5.5-4.8s4.9 1.8 5.5 4.8"/><path d="M15.5 5.2a3.2 3.2 0 0 1 0 5.6M17.5 14.6c1.6.6 2.7 2.2 3 4.4"/></svg>
@@ -14,6 +20,9 @@
   </li>
   <li>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 7 5 11l4 4"/><path d="M5 11h9a5 5 0 0 1 0 10h-2"/></svg>
-    <span><b>{{ block.settings.t4 }}</b>{% if block.settings.s4 != blank %}<small>{{ block.settings.s4 }}</small>{% endif %}</span>
+    <a class="ps-trust__link" href="{{ ps_policy_url }}"><b>{{ block.settings.t4 }}</b>{% if block.settings.s4 != blank %}<small>{{ block.settings.s4 }}</small>{% endif %}</a>
   </li>
 </ul>
+{%- if ps_lens -%}
+  <p class="ps ps-lensnote">Customised lenses are made to order: ships in 3 working days, prepaid only, and returnable only if damaged or incorrect. <a href="{{ ps_policy_url }}">Return policy</a></p>
+{%- endif -%}
